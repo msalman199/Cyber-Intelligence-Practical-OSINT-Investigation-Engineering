@@ -1,0 +1,503 @@
+Automate Breach Data Alerting Using LeakCheck API
+Objectives
+By the end of this lab, students will be able to:
+
+Integrate the LeakCheck API for automated breach data monitoring
+Develop Python scripts to check emails and domains for data breaches
+Implement an email notification system for security alerts
+Create an automated monitoring solution with scheduled checks
+Apply OSINT techniques for proactive security monitoring
+Prerequisites
+Before starting this lab, students should have:
+
+Basic Python programming knowledge (functions, classes, file I/O)
+Familiarity with Linux command line operations
+Understanding of REST APIs and HTTP requests
+Basic knowledge of email protocols (SMTP)
+Lab Environment
+Ready-to-Use Cloud Machines: Al Nafi provides Linux-based cloud machines for this lab. Simply click Start Lab to access your pre-configured environment with Python 3 and necessary tools pre-installed.
+
+Task 1: Set Up the Development Environment
+Step 1: Create Project Structure
+Create a dedicated directory and set up the Python environment:
+
+mkdir ~/breach-monitor
+cd ~/breach-monitor
+python3 -m venv breach_env
+source breach_env/bin/activate
+Step 2: Install Required Libraries
+Install the necessary Python packages:
+
+pip install requests schedule python-dotenv
+Step 3: Create Configuration File
+Create a configuration file to store API credentials and email settings:
+
+nano config.env
+Add the following configuration (replace with your actual credentials):
+
+LEAKCHECK_API_KEY=your_api_key_here
+LEAKCHECK_BASE_URL=https://leakcheck.io/api
+EMAIL_SENDER=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+EMAIL_RECIPIENT=admin@example.com
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+Note: For Gmail, you'll need to generate an App Password from your Google Account settings.
+
+Step 4: Create Monitoring Target Files
+Create files to store emails and domains to monitor:
+
+touch monitor_emails.txt monitor_domains.txt
+Add sample entries:
+
+echo "admin@example.com" >> monitor_emails.txt
+echo "security@example.com" >> monitor_emails.txt
+echo "example.com" >> monitor_domains.txt
+Task 2: Develop the LeakCheck API Integration Module
+Step 1: Create the API Integration Script
+Create the main API integration module:
+
+nano leakcheck_api.py
+Add the following starter code:
+
+#!/usr/bin/env python3
+"""
+LeakCheck API Integration Module
+Students: Complete the TODO sections to implement breach checking functionality
+"""
+
+import requests
+import json
+import logging
+from datetime import datetime
+from typing import Dict, List
+import os
+from dotenv import load_dotenv
+
+load_dotenv('config.env')
+
+class LeakCheckAPI:
+    def __init__(self):
+        """Initialize the API client with credentials from environment variables"""
+        self.api_key = os.getenv('LEAKCHECK_API_KEY')
+        self.base_url = os.getenv('LEAKCHECK_BASE_URL')
+        
+        # TODO: Create a requests session and set headers
+        # Headers should include: X-API-Key, Content-Type, User-Agent
+        self.session = None
+        
+        # TODO: Set up logging configuration
+        # Log to both file (breach_monitor.log) and console
+        self.logger = logging.getLogger(__name__)
+
+    def check_email_breach(self, email: str) -> Dict:
+        """
+        Check if an email address appears in any data breaches
+        
+        Args:
+            email (str): Email address to check
+            
+        Returns:
+            Dict: Response containing breach information with keys:
+                  - success (bool)
+                  - email (str)
+                  - found (bool)
+                  - sources (list)
+                  - timestamp (str)
+        """
+        try:
+            # TODO: Construct the API endpoint URL
+            endpoint = None
+            
+            # TODO: Set up request parameters
+            # Parameters: check=email, type='email'
+            params = {}
+            
+            # TODO: Make GET request to API with timeout
+            response = None
+            
+            # TODO: Parse response and return formatted result
+            # Handle both success and error cases
+            
+            return {
+                'success': False,
+                'email': email,
+                'error': 'Not implemented',
+                'timestamp': datetime.now().isoformat()
+            }
+            
+        except requests.exceptions.RequestException as e:
+            # TODO: Log the error and return error response
+            return {
+                'success': False,
+                'email': email,
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+
+    def check_domain_breach(self, domain: str) -> Dict:
+        """
+        Check if a domain appears in any data breaches
+        
+        Args:
+            domain (str): Domain to check
+            
+        Returns:
+            Dict: Response containing breach information
+        """
+        # TODO: Implement similar to check_email_breach
+        # Use type='domain' in parameters
+        pass
+
+    def batch_check_emails(self, email_list: List[str]) -> List[Dict]:
+        """
+        Check multiple email addresses for breaches
+        
+        Args:
+            email_list (List[str]): List of email addresses
+            
+        Returns:
+            List[Dict]: Results for each email
+        """
+        results = []
+        
+        # TODO: Loop through email_list
+        # TODO: Call check_email_breach for each email
+        # TODO: Add delay between requests (time.sleep) to respect rate limits
+        # TODO: Append results to list
+        
+        return results
+
+    def save_results(self, results: List[Dict], filename: str = None):
+        """
+        Save breach check results to a JSON file
+        
+        Args:
+            results (List[Dict]): Results to save
+            filename (str): Output filename
+        """
+        if not filename:
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"breach_results_{timestamp}.json"
+        
+        # TODO: Write results to JSON file with proper formatting
+        # TODO: Handle exceptions and log success/failure
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create test function to verify API integration
+    # Test with a sample email address
+    pass
+Step 2: Test the API Integration
+Make the script executable and test it:
+
+chmod +x leakcheck_api.py
+python3 leakcheck_api.py
+Expected Output: The script should successfully connect to the API and return breach check results.
+
+Task 3: Implement the Email Notification System
+Step 1: Create the Email Notifier Module
+Create the email notification script:
+
+nano email_notifier.py
+Add the following starter code:
+
+#!/usr/bin/env python3
+"""
+Email Notification System for Breach Alerts
+Students: Complete the TODO sections to implement email alerting
+"""
+
+import smtplib
+import ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import os
+import logging
+from datetime import datetime
+from typing import Dict, List
+from dotenv import load_dotenv
+
+load_dotenv('config.env')
+
+class EmailNotifier:
+    def __init__(self):
+        """Initialize email notifier with SMTP configuration"""
+        # TODO: Load SMTP settings from environment variables
+        self.smtp_server = None
+        self.smtp_port = None
+        self.sender_email = None
+        self.sender_password = None
+        self.recipient_email = None
+        
+        self.logger = logging.getLogger(__name__)
+
+    def create_breach_alert_email(self, breach_data: Dict) -> MIMEMultipart:
+        """
+        Create an email message for breach alert
+        
+        Args:
+            breach_data (Dict): Breach information
+            
+        Returns:
+            MIMEMultipart: Formatted email message
+        """
+        # TODO: Create MIMEMultipart message
+        message = None
+        
+        # TODO: Set email headers (Subject, From, To)
+        
+        # TODO: Create HTML content with breach details
+        # Include: timestamp, affected email, breach status, sources
+        html_content = """
+        <html>
+          <body>
+            <h2 style="color: #d32f2f;">SECURITY BREACH ALERT</h2>
+            <!-- TODO: Add breach details here -->
+          </body>
+        </html>
+        """
+        
+        # TODO: Create plain text version
+        text_content = ""
+        
+        # TODO: Attach both HTML and text parts to message
+        
+        return message
+
+    def send_breach_alert(self, breach_data: Dict) -> bool:
+        """
+        Send breach alert email
+        
+        Args:
+            breach_data (Dict): Breach information
+            
+        Returns:
+            bool: True if successful, False otherwise
+        """
+        try:
+            # TODO: Create email message using create_breach_alert_email
+            
+            # TODO: Create SSL context
+            context = ssl.create_default_context()
+            
+            # TODO: Connect to SMTP server
+            # TODO: Start TLS encryption
+            # TODO: Login with credentials
+            # TODO: Send message
+            
+            self.logger.info(f"Alert sent for {breach_data.get('email')}")
+            return True
+            
+        except Exception as e:
+            # TODO: Log error
+            return False
+
+    def send_summary_report(self, results: List[Dict]) -> bool:
+        """
+        Send a summary report of all breach checks
+        
+        Args:
+            results (List[Dict]): All breach check results
+            
+        Returns:
+            bool: True if successful
+        """
+        # TODO: Calculate statistics (total checks, breaches found)
+        
+        # TODO: Create HTML table with all results
+        
+        # TODO: Create and send email with summary
+        
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create test function
+    # Test with sample breach data
+    pass
+Step 2: Test Email Notifications
+Test the email notifier with sample data:
+
+python3 email_notifier.py
+Expected Output: You should receive a test email at the configured recipient address.
+
+Task 4: Build the Automated Monitoring System
+Step 1: Create the Main Monitoring Script
+Create the comprehensive monitoring automation script:
+
+nano breach_monitor.py
+Add the following starter code:
+
+#!/usr/bin/env python3
+"""
+Automated Breach Data Monitoring System
+Students: Complete the TODO sections to implement automated monitoring
+"""
+
+import schedule
+import time
+import json
+import os
+import logging
+from datetime import datetime, timedelta
+from typing import List, Dict
+import argparse
+from leakcheck_api import LeakCheckAPI
+from email_notifier import EmailNotifier
+
+class BreachMonitor:
+    def __init__(self):
+        """Initialize the breach monitoring system"""
+        self.api = LeakCheckAPI()
+        self.notifier = EmailNotifier()
+        self.monitored_emails = []
+        self.monitored_domains = []
+        
+        # TODO: Set up logging
+        
+        # TODO: Load monitoring targets from files
+        self.load_monitoring_targets()
+
+    def load_monitoring_targets(self):
+        """Load email addresses and domains to monitor from files"""
+        try:
+            # TODO: Read monitor_emails.txt
+            # TODO: Store emails in self.monitored_emails list
+            
+            # TODO: Read monitor_domains.txt
+            # TODO: Store domains in self.monitored_domains list
+            
+            pass
+            
+        except Exception as e:
+            self.logger.error(f"Error loading targets: {str(e)}")
+
+    def add_email_to_monitor(self, email: str):
+        """
+        Add an email address to the monitoring list
+        
+        Args:
+            email (str): Email address to add
+        """
+        # TODO: Check if email already in list
+        # TODO: Add to list if not present
+        # TODO: Save updated list to file
+        pass
+
+    def perform_breach_check(self) -> List[Dict]:
+        """
+        Perform breach checks on all monitored targets
+        
+        Returns:
+            List[Dict]: All check results
+        """
+        self.logger.info("Starting breach check cycle")
+        all_results = []
+        
+        # TODO: Loop through monitored_emails
+        # TODO: Call api.check_email_breach for each
+        # TODO: If breach found, send alert via notifier
+        # TODO: Add delay between requests
+        
+        # TODO: Loop through monitored_domains
+        # TODO: Call api.check_domain_breach for each
+        # TODO: If breach found, send alert
+        
+        # TODO: Save all results to timestamped JSON file
+        
+        # TODO: Update last check timestamp
+        
+        return all_results
+
+    def start_monitoring(self, check_interval_hours: int = 6):
+        """
+        Start the automated monitoring process
+        
+        Args:
+            check_interval_hours (int): Hours between checks
+        """
+        self.logger.info(f"Starting monitoring (every {check_interval_hours} hours)")
+        
+        # TODO: Schedule regular breach checks using schedule library
+        # schedule.every(check_interval_hours).hours.do(self.perform_breach_check)
+        
+        # TODO: Schedule daily summary report
+        # schedule.every().day.at("09:00").do(self.send_daily_summary)
+        
+        # TODO: Perform initial check
+        
+        # TODO: Keep script running with schedule.run_pending()
+        pass
+
+    def run_single_check(self):
+        """Run a single breach check cycle"""
+        # TODO: Call perform_breach_check
+        # TODO: Display results in formatted output
+        pass
+
+def main():
+    """Main function with command line interface"""
+    parser = argparse.ArgumentParser(description='Breach Monitoring System')
+    parser.add_argument('--mode', choices=['single', 'monitor', 'setup'], 
+                       default='single', help='Operation mode')
+    parser.add_argument('--interval', type=int, default=6, 
+                       help='Check interval in hours')
+    parser.add_argument('--add-email', type=str, 
+                       help='Add email to monitoring')
+    
+    args = parser.parse_args()
+    
+    # TODO: Implement command line argument handling
+    # TODO: Create BreachMonitor instance
+    # TODO: Execute appropriate mode (single, monitor, setup)
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Make Scripts Executable
+Set proper permissions:
+
+chmod +x breach_monitor.py
+chmod +x leakcheck_api.py
+chmod +x email_notifier.py
+Step 3: Run Single Check Test
+Test the monitoring system with a single check:
+
+python3 breach_monitor.py --mode single
+Step 4: Add Monitoring Targets
+Add emails and domains to monitor:
+
+python3 breach_monitor.py --add-email "test@example.com"
+Step 5: Start Continuous Monitoring
+Start the automated monitoring service:
+
+python3 breach_monitor.py --mode monitor --interval 6
+Note: This will run continuously. Use Ctrl+C to stop. For production, consider using systemd or screen.
+
+Expected Outcomes
+Upon completing this lab, students should have:
+
+A functional LeakCheck API integration that queries breach databases
+An automated email notification system that sends alerts for detected breaches
+A complete monitoring solution that checks targets on a schedule
+JSON files containing breach check results with timestamps
+Log files tracking all monitoring activities
+Understanding of API integration, automation, and security monitoring workflows
+Troubleshooting Tips
+Issue: API requests failing with authentication errors
+
+Solution: Verify your API key is correct in config.env and properly loaded
+Check that the API key has not expired or exceeded rate limits
+Issue: Email notifications not sending
+
+Solution: For Gmail, ensure you're using an App Password, not your regular password
+Verify SMTP settings and check firewall rules allow outbound port 587
+Test with a simple SMTP connection first
+Issue: Script stops after first check in monitor mode
+
+Solution: Ensure the while loop in start_monitoring() is properly implemented
+Check for exceptions that might be terminating the script
+Review logs in breach_monitor.log for error messages
+Conclusion
+This lab demonstrated how to build an automated breach data monitoring system using the LeakCheck API. Students learned to integrate external security APIs, implement notification systems, and create scheduled automation for continuous monitoring. These skills are essential for proactive security operations and incident response. The modular design allows for easy extension with additional data sources, notification channels, or monitoring targets. Consider enhancing the system with database storage, web dashboards, or integration with SIEM platforms for enterprise deployment.
