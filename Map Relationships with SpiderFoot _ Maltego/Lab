@@ -1,0 +1,500 @@
+Map Relationships with SpiderFoot & Maltego
+Objectives
+By the end of this lab, students will be able to:
+
+Install and configure SpiderFoot for automated OSINT data collection
+Use SpiderFoot to discover relationships between digital entities
+Install and configure Maltego Community Edition for relationship visualization
+Create Python scripts to automate relationship discovery and analysis
+Analyze and interpret relationship networks for intelligence purposes
+Prerequisites
+Before starting this lab, students should have:
+
+Basic understanding of OSINT (Open Source Intelligence) concepts
+Familiarity with Linux command line operations
+Basic Python programming knowledge
+Understanding of legal and ethical considerations in OSINT activities
+Lab Environment
+Al Nafi provides Linux-based cloud machines for this lab. Click Start Lab to access your pre-configured environment.
+
+Your lab machine includes:
+
+Ubuntu 22.04 LTS
+Python 3.10+
+Required dependencies pre-installed
+Internet connectivity for OSINT activities
+Task 1: Install and Configure SpiderFoot
+Step 1: Install SpiderFoot
+# Update system and install dependencies
+sudo apt update && sudo apt install -y python3 python3-pip git
+
+# Clone SpiderFoot repository
+cd /opt
+sudo git clone https://github.com/smicallef/spiderfoot.git
+sudo chown -R $USER:$USER /opt/spiderfoot
+
+# Install Python dependencies
+cd /opt/spiderfoot
+pip3 install -r requirements.txt
+Step 2: Start SpiderFoot Web Interface
+# Start SpiderFoot on localhost
+cd /opt/spiderfoot
+python3 sf.py -l 127.0.0.1:5001
+Open a web browser and navigate to http://127.0.0.1:5001 to verify installation.
+
+Step 3: Configure Your First Scan
+Click New Scan in the SpiderFoot interface
+
+Configure scan settings:
+
+Scan Name: Lab_Relationship_Mapping
+Target: Use a legitimate educational target (e.g., example.edu)
+Target Type: Select Domain Name
+Enable these modules:
+
+DNS resolver
+Web spider
+Email harvester
+WHOIS lookups
+Certificate transparency logs
+Click Run Scan and monitor progress
+
+Step 4: Export Scan Results
+Once the scan completes (15-30 minutes):
+
+Navigate to your scan results
+Click Export and select CSV format
+Save to /home/$USER/spiderfoot_export.csv
+Task 2: Install and Configure Maltego
+Step 1: Install Maltego Community Edition
+# Download Maltego (check for latest version)
+cd ~/Downloads
+wget https://maltego-downloads.s3.us-east-2.amazonaws.com/linux/Maltego.v4.5.0.deb
+
+# Install Maltego
+sudo dpkg -i Maltego.v4.5.0.deb
+sudo apt-get install -f
+Step 2: Initial Setup
+Launch Maltego: maltego
+Create a free Maltego account and verify email
+Select Maltego CE (Community Edition)
+Complete the setup wizard
+Step 3: Install Transform Hub
+In Maltego, navigate to Transform Hub and install:
+
+MISP Project Transforms
+Have I Been Pwned
+Social Links CE
+Task 3: Manual Relationship Mapping in Maltego
+Step 1: Create a New Graph
+Click New Graph in Maltego
+Save as Relationship_Mapping_Lab
+Step 2: Add and Link Entities
+From the Entity Palette, drag these entities to the graph:
+
+Domain entity
+Person entity
+Email Address entity
+Phone Number entity
+Set entity properties by double-clicking each entity
+
+Manually create links between entities:
+
+Right-click and drag from one entity to another
+Set link labels (e.g., "employs", "owns", "uses")
+Step 3: Run Transforms
+Right-click on the Domain entity
+Select All Transforms > To DNS Name [DNS]
+Explore additional transforms:
+To Email Address [Search Engine]
+To IP Address [DNS]
+To Website [DNS]
+Step 4: Analyze the Graph
+Observe relationship patterns
+Identify central entities (high connectivity)
+Look for clusters or communities
+Document interesting findings
+Task 4: Automate Relationship Discovery with Python
+Step 1: Create SpiderFoot Data Converter
+Create /home/$USER/sf_to_maltego.py:
+
+#!/usr/bin/env python3
+"""
+SpiderFoot to Maltego Data Converter
+Students: Complete the conversion logic
+"""
+
+import csv
+import json
+import sys
+from datetime import datetime
+
+def convert_spiderfoot_to_maltego(input_file, output_file):
+    """
+    Convert SpiderFoot CSV data to Maltego-compatible JSON format
+    
+    Args:
+        input_file: Path to SpiderFoot CSV export
+        output_file: Path to save Maltego JSON format
+    
+    Returns:
+        Boolean indicating success
+    """
+    entities = []
+    links = []
+    
+    try:
+        with open(input_file, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            
+            for row in reader:
+                # TODO: Extract entity_type, entity_value, and source_data from row
+                # TODO: Create entity dictionary based on type
+                # TODO: Map SpiderFoot types to Maltego entity types:
+                #       EMAILADDR -> maltego.EmailAddress
+                #       INTERNET_NAME -> maltego.Domain
+                #       IP_ADDRESS -> maltego.IPv4Address
+                #       SOCIAL_MEDIA -> maltego.URL
+                # TODO: Append entity to entities list
+                # TODO: Create link if source_data exists and differs from entity_value
+                # TODO: Append link to links list
+                pass
+        
+        # TODO: Create maltego_data dictionary with entities, links, and metadata
+        # TODO: Write maltego_data to output_file as JSON
+        # TODO: Print success message with counts
+        
+        return True
+        
+    except Exception as e:
+        print(f"Error: {e}")
+        return False
+
+if __name__ == "__main__":
+    input_file = "/home/$USER/spiderfoot_export.csv"
+    output_file = "/home/$USER/maltego_import.json"
+    
+    # TODO: Call convert_spiderfoot_to_maltego function
+    # TODO: Handle success/failure appropriately
+    pass
+Step 2: Create Automated Relationship Mapper
+Create /home/$USER/relationship_mapper.py:
+
+#!/usr/bin/env python3
+"""
+Automated Relationship Mapping Tool
+Students: Implement the relationship mapping logic
+"""
+
+import requests
+import json
+import time
+import csv
+from datetime import datetime
+
+class RelationshipMapper:
+    def __init__(self, spiderfoot_url="http://127.0.0.1:5001"):
+        self.sf_url = spiderfoot_url
+        self.session = requests.Session()
+        self.scan_id = None
+        
+    def create_spiderfoot_scan(self, target, scan_name):
+        """
+        Create a new SpiderFoot scan programmatically
+        
+        Args:
+            target: Target domain or entity
+            scan_name: Name for the scan
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Create scan_config dictionary with:
+        #       - scanname, scantarget, targettype
+        #       - modulelist (DNS, spider, email, whois, etc.)
+        # TODO: POST to {self.sf_url}/startscan with scan_config
+        # TODO: Extract and store scan_id from response
+        # TODO: Return success status
+        pass
+    
+    def wait_for_scan_completion(self, timeout=1800):
+        """
+        Wait for SpiderFoot scan to complete
+        
+        Args:
+            timeout: Maximum wait time in seconds
+        
+        Returns:
+            Boolean indicating successful completion
+        """
+        # TODO: Implement polling loop
+        # TODO: GET {self.sf_url}/scanstatus?id={self.scan_id}
+        # TODO: Check status every 30 seconds
+        # TODO: Return True if status is 'FINISHED'
+        # TODO: Return False on timeout or error
+        pass
+    
+    def export_scan_results(self, output_file):
+        """
+        Export SpiderFoot scan results to CSV
+        
+        Args:
+            output_file: Path to save CSV results
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: GET {self.sf_url}/scaneventresultexport?id={self.scan_id}&type=csv
+        # TODO: Write response text to output_file
+        # TODO: Return success status
+        pass
+    
+    def analyze_relationships(self, csv_file):
+        """
+        Analyze relationships from SpiderFoot CSV data
+        
+        Args:
+            csv_file: Path to SpiderFoot CSV export
+        
+        Returns:
+            Tuple of (entities dict, relationships list)
+        """
+        entities = {}
+        relationships = []
+        
+        # TODO: Read CSV file
+        # TODO: For each row, extract entity information
+        # TODO: Store entities with their type and connections
+        # TODO: Create relationship entries for source->target pairs
+        # TODO: Return entities and relationships
+        
+        return entities, relationships
+    
+    def generate_report(self, entities, relationships, output_file):
+        """
+        Generate a comprehensive relationship report
+        
+        Args:
+            entities: Dictionary of discovered entities
+            relationships: List of relationships
+            output_file: Path to save report
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Create report with:
+        #       - Summary statistics (total entities, relationships)
+        #       - Entity type breakdown
+        #       - Top connected entities
+        #       - Sample relationships
+        # TODO: Write report to output_file
+        # TODO: Return success status
+        pass
+
+def main():
+    """Main function to orchestrate relationship mapping"""
+    # TODO: Get target domain from user input
+    # TODO: Create RelationshipMapper instance
+    # TODO: Create and run SpiderFoot scan
+    # TODO: Wait for completion
+    # TODO: Export results
+    # TODO: Analyze relationships
+    # TODO: Generate report
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 3: Create Network Analysis Script
+Create /home/$USER/network_analyzer.py:
+
+#!/usr/bin/env python3
+"""
+Network Relationship Analyzer
+Students: Implement network analysis algorithms
+"""
+
+import csv
+import networkx as nx
+import matplotlib.pyplot as plt
+from collections import defaultdict, Counter
+
+class RelationshipAnalyzer:
+    def __init__(self, csv_file):
+        self.csv_file = csv_file
+        self.entities = {}
+        self.relationships = []
+        self.graph = nx.Graph()
+        
+    def load_data(self):
+        """
+        Load data from SpiderFoot CSV export
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Read CSV file
+        # TODO: Parse entities and relationships
+        # TODO: Build NetworkX graph with nodes and edges
+        # TODO: Return success status
+        pass
+    
+    def find_central_entities(self, top_n=10):
+        """
+        Find the most central entities using centrality measures
+        
+        Args:
+            top_n: Number of top entities to return
+        
+        Returns:
+            List of (entity, score) tuples
+        """
+        # TODO: Calculate degree centrality
+        # TODO: Calculate betweenness centrality
+        # TODO: Calculate closeness centrality
+        # TODO: Combine scores and return top_n entities
+        pass
+    
+    def detect_communities(self):
+        """
+        Detect communities in the relationship network
+        
+        Returns:
+            List of community sets
+        """
+        # TODO: Use community detection algorithm
+        # TODO: Return list of communities (sets of nodes)
+        pass
+    
+    def analyze_entity_types(self):
+        """
+        Analyze distribution of entity types
+        
+        Returns:
+            Tuple of (type_counts, type_relationships)
+        """
+        # TODO: Count entities by type
+        # TODO: Analyze relationship patterns between types
+        # TODO: Return counts and patterns
+        pass
+    
+    def create_visualization(self, output_file):
+        """
+        Create network visualization
+        
+        Args:
+            output_file: Path to save visualization
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Create matplotlib figure
+        # TODO: Use spring layout for node positioning
+        # TODO: Color nodes by entity type
+        # TODO: Draw graph with labels
+        # TODO: Save to output_file
+        pass
+    
+    def generate_insights(self):
+        """
+        Generate analytical insights from relationship data
+        
+        Returns:
+            List of insight strings
+        """
+        # TODO: Identify central entities
+        # TODO: Detect communities
+        # TODO: Analyze entity type distribution
+        # TODO: Find relationship patterns
+        # TODO: Return list of formatted insights
+        pass
+
+def main():
+    """Main analysis function"""
+    # TODO: Create RelationshipAnalyzer instance
+    # TODO: Load data from CSV
+    # TODO: Perform analysis
+    # TODO: Generate visualization
+    # TODO: Print insights
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 4: Install Required Dependencies
+# Install Python packages
+pip3 install networkx matplotlib requests
+
+# Make scripts executable
+chmod +x ~/sf_to_maltego.py
+chmod +x ~/relationship_mapper.py
+chmod +x ~/network_analyzer.py
+Step 5: Test Your Scripts
+# Test the converter
+python3 ~/sf_to_maltego.py
+
+# Test the automated mapper (ensure SpiderFoot is running)
+python3 ~/relationship_mapper.py
+
+# Test the network analyzer
+python3 ~/network_analyzer.py
+Expected Outcomes
+After completing this lab, you should have:
+
+SpiderFoot Installation: Working SpiderFoot instance collecting OSINT data
+Maltego Setup: Configured Maltego CE with transforms installed
+Manual Mapping Skills: Ability to create and analyze relationship graphs in Maltego
+Automation Scripts: Three Python scripts for automated relationship discovery and analysis
+Analysis Artifacts: CSV exports, network visualizations, and analytical reports
+Troubleshooting Tips
+SpiderFoot Issues
+Problem: SpiderFoot web interface not accessible
+
+Solution: Check if the service is running: ps aux | grep sf.py
+Restart SpiderFoot: cd /opt/spiderfoot && python3 sf.py -l 127.0.0.1:5001
+Problem: Scan fails or returns no results
+
+Solution: Verify target is accessible and properly formatted
+Check module configuration and API keys if required
+Review SpiderFoot logs for errors
+Maltego Issues
+Problem: Maltego fails to start
+
+Solution: Reinstall with sudo apt-get install -f
+Check Java installation: java -version
+Problem: Transforms not working
+
+Solution: Verify Transform Hub installations
+Check API key configuration for external services
+Ensure internet connectivity
+Python Script Issues
+Problem: Import errors for networkx or matplotlib
+
+Solution: Reinstall packages: pip3 install --upgrade networkx matplotlib
+Use virtual environment if conflicts occur
+Problem: CSV parsing errors
+
+Solution: Verify CSV file format and encoding
+Check for special characters or malformed data
+Use try-except blocks for robust error handling
+Conclusion
+This lab introduced relationship mapping using SpiderFoot and Maltego for OSINT analysis. You learned to:
+
+Deploy and configure automated OSINT collection tools
+Visualize complex relationship networks
+Automate data collection and analysis workflows
+Apply network analysis algorithms to discover patterns
+Generate actionable intelligence from relationship data
+Key Takeaways:
+
+Relationship mapping reveals hidden connections between entities
+Automation scales OSINT collection and analysis
+Network centrality measures identify key entities
+Visualization aids in pattern recognition and analysis
+Always conduct OSINT activities ethically and legally
+Next Steps:
+
+Experiment with different target types and scan configurations
+Enhance scripts with additional analysis features
+Integrate multiple OSINT data sources
+Practice interpreting relationship patterns for real-world scenarios
+Explore advanced Maltego transforms and custom entity types
+Remember to always obtain proper authorization before conducting OSINT activities and respect privacy and legal boundaries.
