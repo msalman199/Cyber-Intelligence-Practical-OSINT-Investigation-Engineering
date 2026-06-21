@@ -1,0 +1,426 @@
+ Remove Metadata from Images & Documents
+Objectives
+By the end of this lab, students will be able to:
+
+Understand metadata risks in digital files and their privacy implications
+Extract and analyze metadata from images using ExifTool
+Remove metadata from images using command-line tools
+Implement Python scripts to clean metadata from PDF and Office documents
+Create automated batch processing workflows for metadata removal
+Prerequisites
+Basic Linux command-line navigation and file operations
+Fundamental Python programming knowledge
+Understanding of common file formats (JPEG, PNG, PDF, DOCX)
+Familiarity with text editors and basic scripting concepts
+Lab Environment
+Ready-to-Use Cloud Machines: Al Nafi provides pre-configured Ubuntu 22.04 LTS environments with all required tools pre-installed. Click Start Lab to access your machine.
+
+Pre-installed Tools:
+
+ExifTool for metadata manipulation
+Python 3.10 with PyPDF2, python-docx, and openpyxl libraries
+Sample files for testing
+Development utilities
+Task 1: Extract and Remove Image Metadata with ExifTool
+Step 1.1: Setup Working Environment
+Create a structured directory for lab activities:
+
+# Create directory structure
+mkdir -p ~/metadata_lab/{original,cleaned,scripts}
+cd ~/metadata_lab
+
+# Verify ExifTool installation
+exiftool -ver
+
+# If not installed, run:
+# sudo apt update && sudo apt install exiftool -y
+Step 1.2: Analyze Image Metadata
+Download or create sample images and examine their metadata:
+
+# Navigate to original directory
+cd ~/metadata_lab/original
+
+# Create test image (requires ImageMagick)
+convert -size 800x600 xc:lightblue -font Arial -pointsize 30 \
+  -draw "text 300,300 'Test Image'" test_image.jpg
+
+# Extract all metadata
+exiftool test_image.jpg
+
+# Extract specific fields
+exiftool -GPS* -CreateDate -ModifyDate test_image.jpg
+
+# Export metadata to JSON
+exiftool -json test_image.jpg > metadata_report.json
+
+# View JSON output
+cat metadata_report.json
+Step 1.3: Remove Metadata from Images
+Practice different metadata removal techniques:
+
+# Method 1: Remove all metadata (creates backup)
+exiftool -all= test_image.jpg
+
+# Restore from backup for next test
+mv test_image.jpg_original test_image.jpg
+
+# Method 2: Remove without backup
+exiftool -all= -overwrite_original test_image.jpg
+
+# Method 3: Remove specific fields only
+exiftool -GPS:all= -EXIF:CreateDate= -overwrite_original test_image.jpg
+
+# Method 4: Clean and save to different directory
+exiftool -all= -o ../cleaned/ test_image.jpg
+
+# Verify removal
+exiftool ../cleaned/test_image.jpg
+Step 1.4: Batch Process Multiple Images
+Process multiple files simultaneously:
+
+# Create multiple test images
+for i in {1..5}; do
+  convert -size 640x480 xc:lightgreen -pointsize 20 \
+    -draw "text 250,240 'Image $i'" image_$i.jpg
+done
+
+# Remove metadata from all JPEG files
+exiftool -all= -overwrite_original *.jpg
+
+# Process specific file types recursively
+exiftool -all= -overwrite_original -ext jpg -ext png -r .
+
+# Verify batch processing
+exiftool -T -filename -filesize *.jpg
+Task 2: Remove Document Metadata with Python
+Step 2.1: Create PDF Metadata Removal Script
+Develop a Python script to handle PDF files:
+
+# Create file: ~/metadata_lab/scripts/clean_pdf.py
+
+#!/usr/bin/env python3
+import PyPDF2
+import sys
+from pathlib import Path
+
+def show_pdf_metadata(pdf_path):
+    """
+    Display metadata from a PDF file.
+    
+    Args:
+        pdf_path: Path to PDF file
+    """
+    # TODO: Open PDF file in read-binary mode
+    # TODO: Create PdfReader object
+    # TODO: Access and print metadata dictionary
+    # TODO: Handle cases where metadata is None
+    pass
+
+def remove_pdf_metadata(input_path, output_path=None):
+    """
+    Remove metadata from PDF by creating a clean copy.
+    
+    Args:
+        input_path: Source PDF file
+        output_path: Destination for cleaned PDF
+    
+    Returns:
+        Boolean indicating success
+    """
+    # TODO: Set default output path if not provided
+    # TODO: Open input PDF and create reader
+    # TODO: Create new PdfWriter object
+    # TODO: Copy all pages to writer (metadata excluded automatically)
+    # TODO: Write cleaned PDF to output file
+    # TODO: Print file size comparison
+    # TODO: Return success status
+    pass
+
+if __name__ == "__main__":
+    # TODO: Parse command-line arguments
+    # TODO: Implement --show flag for viewing metadata
+    # TODO: Call appropriate function based on arguments
+    # TODO: Handle errors gracefully
+    pass
+Step 2.2: Create Office Document Metadata Removal Script
+Develop a script for DOCX and XLSX files:
+
+# Create file: ~/metadata_lab/scripts/clean_office.py
+
+#!/usr/bin/env python3
+from docx import Document
+from openpyxl import load_workbook
+import sys
+from pathlib import Path
+
+def remove_docx_metadata(input_path, output_path=None):
+    """
+    Remove metadata from DOCX files.
+    
+    Args:
+        input_path: Source DOCX file
+        output_path: Destination for cleaned file
+    
+    Returns:
+        Boolean indicating success
+    """
+    # TODO: Set default output path
+    # TODO: Load document using python-docx
+    # TODO: Access core_properties object
+    # TODO: Clear all metadata fields (author, title, subject, etc.)
+    # TODO: Save cleaned document
+    # TODO: Return success status
+    pass
+
+def remove_xlsx_metadata(input_path, output_path=None):
+    """
+    Remove metadata from XLSX files.
+    
+    Args:
+        input_path: Source XLSX file
+        output_path: Destination for cleaned file
+    
+    Returns:
+        Boolean indicating success
+    """
+    # TODO: Set default output path
+    # TODO: Load workbook using openpyxl
+    # TODO: Access properties object
+    # TODO: Clear metadata fields (creator, title, description, etc.)
+    # TODO: Save cleaned workbook
+    # TODO: Return success status
+    pass
+
+def show_office_metadata(file_path):
+    """
+    Display metadata from Office documents.
+    
+    Args:
+        file_path: Path to DOCX or XLSX file
+    """
+    # TODO: Determine file type from extension
+    # TODO: Load appropriate document type
+    # TODO: Access and display metadata properties
+    # TODO: Handle different property structures for DOCX vs XLSX
+    pass
+
+if __name__ == "__main__":
+    # TODO: Parse command-line arguments
+    # TODO: Determine file type and call appropriate function
+    # TODO: Implement --show flag functionality
+    # TODO: Handle errors and unsupported formats
+    pass
+Step 2.3: Test Document Cleaning Scripts
+Create test documents and verify functionality:
+
+# Navigate to scripts directory
+cd ~/metadata_lab/scripts
+
+# Make scripts executable
+chmod +x clean_pdf.py clean_office.py
+
+# Create test DOCX with metadata
+python3 << 'EOF'
+from docx import Document
+doc = Document()
+doc.add_paragraph("Test document with metadata")
+props = doc.core_properties
+props.author = "Test Author"
+props.title = "Test Document"
+props.keywords = "test, metadata"
+doc.save("../original/test_doc.docx")
+print("Created test document")
+EOF
+
+# View metadata
+python3 clean_office.py --show ../original/test_doc.docx
+
+# Remove metadata
+python3 clean_office.py ../original/test_doc.docx ../cleaned/test_doc.docx
+
+# Verify removal
+python3 clean_office.py --show ../cleaned/test_doc.docx
+Task 3: Automate Batch Metadata Removal
+Step 3.1: Create Comprehensive Batch Processing Script
+Build a unified tool for processing multiple file types:
+
+# Create file: ~/metadata_lab/scripts/batch_cleaner.py
+
+#!/usr/bin/env python3
+import os
+import sys
+import subprocess
+from pathlib import Path
+import argparse
+
+class MetadataCleaner:
+    """Batch metadata removal for multiple file types."""
+    
+    def __init__(self):
+        self.image_formats = ['.jpg', '.jpeg', '.png', '.tiff', '.gif']
+        self.doc_formats = ['.pdf', '.docx', '.xlsx']
+        self.processed = []
+        self.failed = []
+    
+    def clean_image(self, file_path, output_dir=None):
+        """
+        Remove metadata from image files using ExifTool.
+        
+        Args:
+            file_path: Path to image file
+            output_dir: Optional output directory
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Build exiftool command based on output_dir
+        # TODO: Use subprocess to execute command
+        # TODO: Check return code for success
+        # TODO: Update processed/failed lists
+        # TODO: Return success status
+        pass
+    
+    def clean_document(self, file_path, output_dir=None):
+        """
+        Remove metadata from documents using Python scripts.
+        
+        Args:
+            file_path: Path to document file
+            output_dir: Optional output directory
+        
+        Returns:
+            Boolean indicating success
+        """
+        # TODO: Determine file type from extension
+        # TODO: Build command to call appropriate cleaning script
+        # TODO: Execute using subprocess
+        # TODO: Check return code and update counters
+        # TODO: Return success status
+        pass
+    
+    def process_directory(self, directory, output_dir=None, recursive=False):
+        """
+        Process all supported files in a directory.
+        
+        Args:
+            directory: Input directory path
+            output_dir: Optional output directory
+            recursive: Process subdirectories if True
+        """
+        # TODO: Create output directory if specified
+        # TODO: Use Path.glob() or rglob() based on recursive flag
+        # TODO: Filter for supported file types
+        # TODO: Process each file using appropriate method
+        # TODO: Print progress and summary
+        pass
+    
+    def print_summary(self):
+        """Print processing statistics."""
+        # TODO: Display count of processed files
+        # TODO: Display count of failed files
+        # TODO: List failed files if any
+        pass
+
+def main():
+    """Main entry point for batch cleaner."""
+    # TODO: Setup argument parser with input, output, recursive options
+    # TODO: Create MetadataCleaner instance
+    # TODO: Determine if input is file or directory
+    # TODO: Call appropriate processing method
+    # TODO: Print summary
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 3.2: Create Shell Script for Quick Operations
+Develop a convenient shell wrapper:
+
+# Create file: ~/metadata_lab/scripts/quick_clean.sh
+
+#!/bin/bash
+
+# Quick metadata cleaning wrapper script
+
+INPUT_DIR="${1:-.}"
+OUTPUT_DIR="${2:-}"
+RECURSIVE="${3:-false}"
+
+# Function to display usage
+usage() {
+    echo "Usage: $0 [input_dir] [output_dir] [recursive]"
+    echo "Example: $0 ./images ./cleaned true"
+    exit 1
+}
+
+# Validate input directory
+if [[ ! -d "$INPUT_DIR" ]]; then
+    echo "Error: Directory not found: $INPUT_DIR"
+    usage
+fi
+
+# TODO: Create output directory if specified
+# TODO: Build find command based on recursive flag
+# TODO: Loop through supported file types
+# TODO: Call exiftool for images
+# TODO: Call Python scripts for documents
+# TODO: Count processed and failed files
+# TODO: Print summary
+
+echo "Metadata cleaning completed"
+Step 3.3: Test Batch Processing
+Verify automated workflows:
+
+# Create test directory structure
+mkdir -p ~/metadata_lab/test_batch/{images,docs,mixed}
+
+# Copy test files
+cp ~/metadata_lab/original/*.jpg ~/metadata_lab/test_batch/images/
+cp ~/metadata_lab/original/*.docx ~/metadata_lab/test_batch/docs/
+
+# Test Python batch processor
+cd ~/metadata_lab/scripts
+python3 batch_cleaner.py ../test_batch/images -o ../batch_output
+
+# Test shell script
+./quick_clean.sh ../test_batch/mixed ../shell_output false
+
+# Verify results
+echo "=== Original files ==="
+exiftool -T -filename -filesize ../test_batch/images/*.jpg
+
+echo "=== Cleaned files ==="
+exiftool -T -filename -filesize ../batch_output/*.jpg
+Expected Outcomes
+After completing this lab, you should have:
+
+Working knowledge of ExifTool for image metadata manipulation
+Python scripts capable of cleaning PDF and Office document metadata
+Automated batch processing tools for multiple file types
+Understanding of metadata privacy risks and mitigation strategies
+Practical experience with command-line and scripting workflows
+Troubleshooting Tips
+Issue: ExifTool not found
+
+Solution: Install with sudo apt install exiftool -y or sudo apt install libimage-exiftool-perl
+Issue: Python library import errors
+
+Solution: Install missing libraries: pip3 install PyPDF2 python-docx openpyxl
+Issue: Permission denied when executing scripts
+
+Solution: Make scripts executable: chmod +x script_name.py or chmod +x script_name.sh
+Issue: Metadata still present after cleaning
+
+Solution: Verify you used -overwrite_original flag with ExifTool, or check that Python scripts completed without errors
+Issue: Batch processing skips files
+
+Solution: Check file extensions match supported formats and verify file permissions
+Conclusion
+This lab provided hands-on experience with metadata removal techniques across multiple file formats. You learned to use ExifTool for images, developed Python scripts for documents, and created automated batch processing workflows. These skills are essential for protecting privacy, maintaining operational security, and understanding digital forensics. Practice these techniques regularly to maintain proficiency and adapt them to your specific security requirements.
+
+Key Takeaways:
+
+Metadata contains sensitive information that should be removed before sharing files
+ExifTool is powerful for image metadata manipulation
+Python libraries enable programmatic document metadata cleaning
+Automation reduces errors and improves efficiency in metadata removal workflows
+Always verify metadata removal with multiple verification methods
