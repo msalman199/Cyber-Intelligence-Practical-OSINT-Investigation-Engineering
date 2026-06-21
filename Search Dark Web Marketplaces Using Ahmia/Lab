@@ -1,0 +1,521 @@
+ Dark Web Search Engine Research with Ahmia
+Objectives
+By the end of this lab, students will be able to:
+
+Configure Tor network for secure dark web research
+Use Ahmia search engine for legitimate OSINT investigations
+Develop Python automation scripts for dark web search operations
+Analyze and extract meaningful patterns from search results
+Apply ethical and legal considerations in dark web research
+Prerequisites
+Basic Linux command line proficiency
+Python programming fundamentals
+Understanding of web scraping concepts
+Knowledge of Tor network basics
+Awareness of cybersecurity ethics and legal boundaries
+Lab Environment
+This lab uses Al Nafi's pre-configured Linux cloud machines. Click Start Lab to access your environment with Tor, Python 3, and required dependencies pre-installed.
+
+Task 1: Configure Tor Network Access
+Step 1: Verify Tor Installation
+Check Tor service status:
+
+sudo systemctl status tor
+Start Tor if not running:
+
+sudo systemctl start tor
+sudo systemctl enable tor
+Step 2: Configure Tor Settings
+Edit Tor configuration:
+
+sudo nano /etc/tor/torrc
+Add these lines:
+
+SocksPort 9050
+ControlPort 9051
+CookieAuthentication 1
+Restart Tor:
+
+sudo systemctl restart tor
+Step 3: Test Tor Connectivity
+Create a test script:
+
+nano test_tor.py
+#!/usr/bin/env python3
+import requests
+
+def test_tor_connection():
+    '''
+    Test if Tor connection is working by comparing IP addresses.
+    
+    TODO: Configure proxy settings for Tor
+    TODO: Make request through Tor to check IP
+    TODO: Compare with regular IP to verify anonymity
+    '''
+    proxies = {
+        'http': 'socks5://127.0.0.1:9050',
+        'https': 'socks5://127.0.0.1:9050'
+    }
+    
+    try:
+        # TODO: Get regular IP address
+        regular_response = requests.get('https://httpbin.org/ip', timeout=10)
+        
+        # TODO: Get Tor IP address
+        tor_response = requests.get('https://httpbin.org/ip', 
+                                   proxies=proxies, timeout=10)
+        
+        # TODO: Compare and display results
+        print(f"Regular IP: {regular_response.json()['origin']}")
+        print(f"Tor IP: {tor_response.json()['origin']}")
+        
+    except Exception as e:
+        print(f"Error: {e}")
+
+if __name__ == "__main__":
+    test_tor_connection()
+Run the test:
+
+python3 test_tor.py
+Step 4: Install Python Dependencies
+pip3 install requests beautifulsoup4 pandas matplotlib seaborn pysocks
+Task 2: Implement Ahmia Search Automation
+Step 1: Create Basic Ahmia Searcher
+nano ahmia_search.py
+#!/usr/bin/env python3
+import requests
+from bs4 import BeautifulSoup
+import json
+import time
+from urllib.parse import quote
+
+class AhmiaSearcher:
+    def __init__(self):
+        '''
+        Initialize Ahmia searcher with Tor proxy configuration.
+        
+        TODO: Set up base URLs for Ahmia
+        TODO: Configure Tor SOCKS proxy
+        TODO: Set appropriate headers
+        '''
+        self.base_url = "https://ahmia.fi"
+        self.search_url = f"{self.base_url}/search/"
+        
+        # TODO: Configure session with Tor proxy
+        self.session = requests.Session()
+        self.proxies = {
+            'http': 'socks5://127.0.0.1:9050',
+            'https': 'socks5://127.0.0.1:9050'
+        }
+        self.session.proxies.update(self.proxies)
+        
+        # TODO: Add realistic headers
+        pass
+    
+    def search(self, query, max_results=20):
+        '''
+        Search Ahmia for given query.
+        
+        Args:
+            query: Search term
+            max_results: Maximum number of results to return
+            
+        Returns:
+            List of result dictionaries
+            
+        TODO: Encode query parameter
+        TODO: Make GET request to search endpoint
+        TODO: Parse HTML response with BeautifulSoup
+        TODO: Extract title, URL, and description from results
+        TODO: Return structured data
+        '''
+        results = []
+        
+        try:
+            # TODO: Implement search logic
+            encoded_query = quote(query)
+            params = {'q': encoded_query}
+            
+            # TODO: Make request and parse response
+            
+        except Exception as e:
+            print(f"Search error: {e}")
+        
+        return results
+    
+    def save_results(self, results, filename):
+        '''
+        Save search results to JSON and CSV files.
+        
+        Args:
+            results: List of result dictionaries
+            filename: Base filename (without extension)
+            
+        TODO: Save results as JSON
+        TODO: Convert to DataFrame and save as CSV
+        TODO: Handle empty results gracefully
+        '''
+        # TODO: Implement save logic
+        pass
+
+def main():
+    searcher = AhmiaSearcher()
+    
+    # Educational queries only
+    queries = [
+        "cybersecurity research",
+        "privacy tools",
+        "security forums"
+    ]
+    
+    # TODO: Loop through queries and collect results
+    # TODO: Add delays between requests (3-5 seconds)
+    # TODO: Save all results
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Implement Result Parsing
+Students should complete the search() method to:
+
+Parse HTML with BeautifulSoup
+Extract result elements (title, URL, description)
+Handle pagination if needed
+Return structured data
+Step 3: Test the Searcher
+Run your implementation:
+
+python3 ahmia_search.py
+Verify output files are created in the working directory.
+
+Task 3: Develop Advanced Search Framework
+Step 1: Create Multi-Engine Searcher
+nano advanced_search.py
+#!/usr/bin/env python3
+import requests
+from bs4 import BeautifulSoup
+import json
+import logging
+from datetime import datetime
+import hashlib
+
+class AdvancedSearcher:
+    def __init__(self):
+        '''
+        Initialize advanced search framework with logging.
+        
+        TODO: Set up logging configuration
+        TODO: Initialize session with Tor
+        TODO: Create results storage directory
+        '''
+        # TODO: Configure logging
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s'
+        )
+        self.logger = logging.getLogger(__name__)
+        
+        # TODO: Set up session and proxies
+        pass
+    
+    def search_with_metadata(self, query, engine='ahmia'):
+        '''
+        Search with additional metadata collection.
+        
+        Args:
+            query: Search term
+            engine: Search engine to use
+            
+        Returns:
+            List of results with metadata
+            
+        TODO: Perform search
+        TODO: Add timestamp to each result
+        TODO: Generate unique ID for each result
+        TODO: Extract domain from URL
+        TODO: Add metadata fields
+        '''
+        results = []
+        
+        # TODO: Implement enhanced search
+        
+        return results
+    
+    def batch_search(self, queries, delay=3):
+        '''
+        Perform batch searches with rate limiting.
+        
+        Args:
+            queries: List of search terms
+            delay: Seconds to wait between searches
+            
+        Returns:
+            Combined results from all queries
+            
+        TODO: Loop through queries
+        TODO: Collect results from each query
+        TODO: Add delays between requests
+        TODO: Log progress
+        '''
+        all_results = []
+        
+        # TODO: Implement batch search logic
+        
+        return all_results
+    
+    def deduplicate_results(self, results):
+        '''
+        Remove duplicate results based on URL.
+        
+        Args:
+            results: List of result dictionaries
+            
+        Returns:
+            Deduplicated results list
+            
+        TODO: Create set of seen URLs
+        TODO: Filter out duplicates
+        TODO: Return unique results
+        '''
+        # TODO: Implement deduplication
+        pass
+
+def main():
+    searcher = AdvancedSearcher()
+    
+    queries = [
+        "threat intelligence",
+        "digital forensics",
+        "penetration testing"
+    ]
+    
+    # TODO: Perform batch search
+    # TODO: Deduplicate results
+    # TODO: Save to file
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Add Error Handling
+Implement robust error handling for:
+
+Network timeouts
+Connection failures
+Invalid responses
+Rate limiting
+Step 3: Implement Logging
+Add comprehensive logging for:
+
+Search operations
+Errors and exceptions
+Progress tracking
+Result statistics
+Task 4: Analyze Search Results
+Step 1: Create Data Analysis Module
+nano analyze_results.py
+#!/usr/bin/env python3
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from collections import Counter
+import re
+
+class ResultAnalyzer:
+    def __init__(self, data_file):
+        '''
+        Initialize analyzer with results data.
+        
+        Args:
+            data_file: Path to CSV or JSON results file
+            
+        TODO: Load data into DataFrame
+        TODO: Validate data structure
+        TODO: Set up plotting style
+        '''
+        # TODO: Load and validate data
+        self.df = None
+        pass
+    
+    def domain_analysis(self):
+        '''
+        Analyze domain distribution in results.
+        
+        TODO: Count results per domain
+        TODO: Identify top domains
+        TODO: Calculate domain statistics
+        TODO: Create visualization
+        '''
+        # TODO: Implement domain analysis
+        pass
+    
+    def query_analysis(self):
+        '''
+        Analyze search query patterns.
+        
+        TODO: Count results per query
+        TODO: Extract common keywords
+        TODO: Analyze query effectiveness
+        TODO: Visualize query distribution
+        '''
+        # TODO: Implement query analysis
+        pass
+    
+    def temporal_analysis(self):
+        '''
+        Analyze temporal patterns in results.
+        
+        TODO: Parse timestamps
+        TODO: Group by time periods
+        TODO: Identify trends
+        TODO: Create time series plot
+        '''
+        # TODO: Implement temporal analysis
+        pass
+    
+    def generate_report(self, output_file='analysis_report.txt'):
+        '''
+        Generate comprehensive analysis report.
+        
+        Args:
+            output_file: Path for report output
+            
+        TODO: Compile statistics
+        TODO: Format report sections
+        TODO: Write to file
+        '''
+        # TODO: Implement report generation
+        pass
+
+def main():
+    # TODO: Load results file
+    # TODO: Create analyzer instance
+    # TODO: Run all analyses
+    # TODO: Generate report
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Implement Visualization Functions
+Create visualizations for:
+
+Domain frequency distribution
+Query effectiveness comparison
+Result count over time
+Top keywords word cloud
+Step 3: Generate Analysis Report
+Students should implement:
+
+Statistical summaries
+Top domains and queries
+Trend identification
+Anomaly detection
+Step 4: Run Complete Analysis
+python3 analyze_results.py
+Review generated plots and reports.
+
+Task 5: Implement Ethical Safeguards
+Step 1: Create Rate Limiting
+import time
+from functools import wraps
+
+def rate_limit(min_delay=3):
+    '''
+    Decorator to enforce minimum delay between requests.
+    
+    Args:
+        min_delay: Minimum seconds between calls
+        
+    TODO: Track last call time
+    TODO: Calculate required delay
+    TODO: Sleep if needed
+    '''
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            # TODO: Implement rate limiting logic
+            pass
+        return wrapper
+    return decorator
+Step 2: Add Query Validation
+def validate_query(query):
+    '''
+    Validate search query for ethical compliance.
+    
+    Args:
+        query: Search term to validate
+        
+    Returns:
+        Boolean indicating if query is acceptable
+        
+    TODO: Check against prohibited terms
+    TODO: Verify educational purpose
+    TODO: Log validation attempts
+    '''
+    # TODO: Implement validation logic
+    pass
+Step 3: Implement Logging and Audit Trail
+Create comprehensive logging for:
+
+All search operations
+Query validation results
+Access timestamps
+Result counts
+Expected Outcomes
+After completing this lab, you should have:
+
+Working Tor configuration for anonymous research
+Functional Ahmia search automation scripts
+Data collection and storage system
+Analysis tools for search results
+Understanding of ethical dark web research practices
+Your implementation should demonstrate:
+
+Proper error handling and logging
+Rate limiting and respectful scraping
+Data validation and sanitization
+Clear documentation and code structure
+Troubleshooting Tips
+Tor Connection Issues:
+
+Verify Tor service is running: sudo systemctl status tor
+Check firewall settings allow port 9050
+Test with curl --socks5 127.0.0.1:9050 https://check.torproject.org
+Search Failures:
+
+Increase timeout values in requests
+Add longer delays between requests
+Verify Ahmia.fi is accessible
+Check proxy configuration in code
+Parsing Errors:
+
+Inspect HTML structure with browser developer tools
+Update CSS selectors if Ahmia changes layout
+Add try-except blocks around parsing code
+Log raw HTML for debugging
+Conclusion
+This lab introduced dark web search automation using Ahmia and Python. You learned to configure Tor for anonymous research, automate search operations, and analyze results systematically. These skills are essential for OSINT investigations, threat intelligence, and cybersecurity research.
+
+Key Takeaways:
+
+Always use Tor for dark web access to maintain anonymity
+Implement rate limiting to respect server resources
+Validate and sanitize all collected data
+Maintain detailed logs for audit purposes
+Only conduct research for legitimate educational or professional purposes
+Next Steps:
+
+Explore additional dark web search engines
+Implement more sophisticated analysis techniques
+Study dark web marketplace structures
+Learn about threat intelligence platforms
+Practice responsible disclosure procedures
+Legal and Ethical Reminder: This lab is for educational purposes only. Always:
+
+Comply with local laws and regulations
+Obtain proper authorization before research
+Respect privacy and avoid illegal content
+Use knowledge for defensive security purposes
+Report illegal activities to appropriate authorities
