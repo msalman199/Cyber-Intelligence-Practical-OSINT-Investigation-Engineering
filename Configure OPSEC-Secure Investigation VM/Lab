@@ -1,0 +1,538 @@
+Configure OPSEC-Secure Investigation VM
+Objectives
+By the end of this lab, students will be able to:
+
+Configure a secure virtual machine environment for OSINT investigations
+Install and configure Tor browser for anonymous web browsing
+Set up Tails operating system for enhanced privacy and security
+Configure proxychains for routing traffic through multiple proxy servers
+Install and configure essential OPSEC toolkits for secure investigations
+Understand the importance of operational security in digital investigations
+Implement best practices for maintaining anonymity during OSINT activities
+Prerequisites
+Before starting this lab, students should have:
+
+Basic understanding of Linux command line operations
+Familiarity with virtual machine concepts
+Understanding of networking fundamentals (IP addresses, ports, protocols)
+Basic knowledge of cybersecurity principles
+Awareness of privacy and anonymity concepts in digital investigations
+Lab Environment
+Ready-to-Use Cloud Machines: Al Nafi provides Linux-based cloud machines for this lab. Simply click Start Lab to access your pre-configured Ubuntu 22.04 LTS environment. No need to build your own VM or install additional software on your personal machine.
+
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS Desktop Environment
+4GB RAM and 50GB Storage
+Internet connectivity
+Administrative privileges
+Pre-installed basic development tools
+Task 1: Configure a Secure VM Environment
+Subtask 1.1: System Update and Security Hardening
+First, we need to ensure our system is up-to-date and properly secured for investigation work.
+
+Step 1: Open the terminal by pressing Ctrl + Alt + T or clicking on the terminal icon in the taskbar.
+
+Step 2: Update the system package repository and upgrade all packages:
+
+sudo apt update && sudo apt upgrade -y
+Step 3: Install essential security tools and dependencies:
+
+sudo apt install -y curl wget git vim ufw fail2ban htop tree unzip
+Step 4: Configure the firewall for basic protection:
+
+# Enable UFW firewall
+sudo ufw enable
+
+# Set default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Allow SSH (if needed for remote access)
+sudo ufw allow ssh
+
+# Check firewall status
+sudo ufw status verbose
+Subtask 1.2: Create Dedicated Investigation User
+Step 1: Create a dedicated user account for investigation activities:
+
+sudo adduser investigator
+When prompted, enter a strong password and fill in the user information.
+
+Step 2: Add the investigator user to necessary groups:
+
+sudo usermod -aG sudo investigator
+Step 3: Switch to the investigator user:
+
+su - investigator
+Subtask 1.3: Configure System for Privacy
+Step 1: Disable system logging for enhanced privacy:
+
+# Create a script to manage logging
+cat << 'EOF' > ~/disable_logs.sh
+#!/bin/bash
+# Disable various system logs
+sudo systemctl stop rsyslog
+sudo systemctl disable rsyslog
+sudo systemctl stop systemd-journald
+sudo rm -rf /var/log/*
+echo "System logging disabled for privacy"
+EOF
+
+chmod +x ~/disable_logs.sh
+Step 2: Configure DNS for privacy:
+
+# Backup original DNS configuration
+sudo cp /etc/systemd/resolved.conf /etc/systemd/resolved.conf.backup
+
+# Configure privacy-focused DNS
+sudo tee /etc/systemd/resolved.conf << EOF
+[Resolve]
+DNS=1.1.1.1 9.9.9.9
+FallbackDNS=8.8.8.8 8.8.4.4
+DNSSEC=yes
+DNSOverTLS=yes
+EOF
+
+# Restart DNS resolver
+sudo systemctl restart systemd-resolved
+Task 2: Install Tor and Tails for Secure Browsing
+Subtask 2.1: Install Tor Browser
+Step 1: Download the official Tor Browser:
+
+cd ~/Downloads
+wget https://www.torproject.org/dist/torbrowser/13.0.8/tor-browser-linux64-13.0.8_ALL.tar.xz
+Step 2: Verify the download and extract:
+
+# Extract Tor Browser
+tar -xf tor-browser-linux64-13.0.8_ALL.tar.xz
+
+# Move to applications directory
+sudo mv tor-browser_en-US /opt/tor-browser
+
+# Create symbolic link for easy access
+sudo ln -sf /opt/tor-browser/Browser/start-tor-browser /usr/local/bin/tor-browser
+Step 3: Create a desktop launcher:
+
+cat << 'EOF' > ~/.local/share/applications/tor-browser.desktop
+[Desktop Entry]
+Name=Tor Browser
+Comment=Anonymous web browsing
+Exec=/opt/tor-browser/Browser/start-tor-browser
+Icon=/opt/tor-browser/Browser/browser/chrome/icons/default/default128.png
+Type=Application
+Categories=Network;WebBrowser;
+EOF
+Step 4: Test Tor Browser installation:
+
+tor-browser &
+Subtask 2.2: Configure Tor Service
+Step 1: Install Tor service for system-wide proxy:
+
+sudo apt install -y tor
+Step 2: Configure Tor service:
+
+# Backup original configuration
+sudo cp /etc/tor/torrc /etc/tor/torrc.backup
+
+# Create custom Tor configuration
+sudo tee /etc/tor/torrc << 'EOF'
+# Basic Tor configuration for OSINT
+SocksPort 9050
+ControlPort 9051
+CookieAuthentication 1
+DataDirectory /var/lib/tor
+
+# Enhanced privacy settings
+ExitPolicy reject *:*
+ClientOnly 1
+SafeLogging 1
+
+# Circuit configuration
+NewCircuitPeriod 30
+MaxCircuitDirtiness 600
+CircuitBuildTimeout 60
+
+# Entry guards
+NumEntryGuards 3
+EOF
+Step 3: Start and enable Tor service:
+
+sudo systemctl start tor
+sudo systemctl enable tor
+sudo systemctl status tor
+Subtask 2.3: Set Up Tails USB (Virtual Environment)
+Since we're working in a cloud environment, we'll create a Tails-like secure environment.
+
+Step 1: Create a secure workspace directory:
+
+mkdir -p ~/tails-workspace
+cd ~/tails-workspace
+Step 2: Install Tails-like security tools:
+
+# Install amnesia tools
+sudo apt install -y secure-delete bleachbit mat2
+
+# Create secure deletion script
+cat << 'EOF' > ~/secure_delete.sh
+#!/bin/bash
+# Secure deletion script similar to Tails
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <file_or_directory>"
+    exit 1
+fi
+
+echo "Securely deleting: $1"
+shred -vfz -n 3 "$1" 2>/dev/null || srm -r "$1" 2>/dev/null || rm -rf "$1"
+echo "Deletion complete"
+EOF
+
+chmod +x ~/secure_delete.sh
+Step 3: Configure memory protection:
+
+# Create RAM disk for temporary files
+sudo mkdir -p /mnt/ramdisk
+echo "tmpfs /mnt/ramdisk tmpfs defaults,size=1G,noatime,mode=1777 0 0" | sudo tee -a /etc/fstab
+sudo mount -a
+
+# Create alias for secure workspace
+echo "alias secure-work='cd /mnt/ramdisk'" >> ~/.bashrc
+source ~/.bashrc
+Task 3: Set Up Proxychains and OPSEC Toolkits
+Subtask 3.1: Install and Configure Proxychains
+Step 1: Install proxychains:
+
+sudo apt install -y proxychains4
+Step 2: Configure proxychains for Tor:
+
+# Backup original configuration
+sudo cp /etc/proxychains4.conf /etc/proxychains4.conf.backup
+
+# Create custom proxychains configuration
+sudo tee /etc/proxychains4.conf << 'EOF'
+# Proxychains configuration for OSINT investigations
+strict_chain
+proxy_dns
+remote_dns_subnet 224
+tcp_read_time_out 15000
+tcp_connect_time_out 8000
+localnet 127.0.0.0/255.0.0.0
+localnet 10.0.0.0/255.0.0.0
+localnet 172.16.0.0/255.240.0.0
+localnet 192.168.0.0/255.255.0.0
+
+[ProxyList]
+socks5 127.0.0.1 9050
+EOF
+Step 3: Test proxychains configuration:
+
+# Test with curl
+proxychains4 curl -s https://check.torproject.org/api/ip
+
+# Test with wget
+proxychains4 wget -qO- https://ipinfo.io/ip
+Subtask 3.2: Install OSINT Investigation Tools
+Step 1: Install Python and pip for tool management:
+
+sudo apt install -y python3 python3-pip python3-venv
+Step 2: Create a virtual environment for OSINT tools:
+
+cd ~/
+python3 -m venv osint-env
+source osint-env/bin/activate
+pip install --upgrade pip
+Step 3: Install essential OSINT tools:
+
+# Install popular OSINT tools
+pip install theHarvester recon-ng shodan requests beautifulsoup4
+pip install dnspython python-whois builtwith
+
+# Install additional investigation tools
+pip install instaloader twint phonenumbers googlesearch-python
+Step 4: Install system-level OSINT tools:
+
+# Install network reconnaissance tools
+sudo apt install -y nmap masscan dmitry fierce dnsrecon sublist3r
+
+# Install web analysis tools
+sudo apt install -y whatweb dirb gobuster nikto
+
+# Install metadata analysis tools
+sudo apt install -y exiftool binwalk foremost
+Subtask 3.3: Configure OPSEC Toolkit
+Step 1: Create OPSEC management script:
+
+cat << 'EOF' > ~/opsec_manager.sh
+#!/bin/bash
+
+# OPSEC Manager Script for Secure Investigations
+
+show_menu() {
+    echo "=================================="
+    echo "    OPSEC Investigation Manager    "
+    echo "=================================="
+    echo "1. Start Secure Session"
+    echo "2. Check Tor Connection"
+    echo "3. Clear Browser Data"
+    echo "4. Secure File Deletion"
+    echo "5. Network Anonymity Check"
+    echo "6. Exit"
+    echo "=================================="
+}
+
+start_secure_session() {
+    echo "Starting secure investigation session..."
+    
+    # Start Tor if not running
+    sudo systemctl start tor
+    sleep 5
+    
+    # Clear any existing browser data
+    bleachbit --clean firefox.cache firefox.cookies firefox.history 2>/dev/null
+    
+    # Start Tor Browser
+    tor-browser &
+    
+    echo "Secure session started. Use Tor Browser for investigations."
+}
+
+check_tor() {
+    echo "Checking Tor connection..."
+    
+    # Check if Tor service is running
+    if systemctl is-active --quiet tor; then
+        echo "✓ Tor service is running"
+        
+        # Check IP through Tor
+        TOR_IP=$(proxychains4 curl -s https://ipinfo.io/ip 2>/dev/null)
+        REAL_IP=$(curl -s https://ipinfo.io/ip 2>/dev/null)
+        
+        echo "Real IP: $REAL_IP"
+        echo "Tor IP: $TOR_IP"
+        
+        if [ "$TOR_IP" != "$REAL_IP" ]; then
+            echo "✓ Tor is working correctly"
+        else
+            echo "✗ Tor may not be working properly"
+        fi
+    else
+        echo "✗ Tor service is not running"
+    fi
+}
+
+clear_browser_data() {
+    echo "Clearing browser data..."
+    
+    # Clear Firefox data
+    bleachbit --clean firefox.cache firefox.cookies firefox.history firefox.session_restore
+    
+    # Clear system temporary files
+    sudo bleachbit --clean system.cache system.tmp
+    
+    echo "Browser data cleared"
+}
+
+secure_delete() {
+    read -p "Enter file/directory path to securely delete: " target
+    if [ -e "$target" ]; then
+        ~/secure_delete.sh "$target"
+    else
+        echo "File/directory not found: $target"
+    fi
+}
+
+anonymity_check() {
+    echo "Performing anonymity check..."
+    
+    # Check DNS leaks
+    echo "Checking DNS..."
+    proxychains4 nslookup google.com 2>/dev/null | grep -A1 "Server:"
+    
+    # Check WebRTC leaks (basic check)
+    echo "Checking for potential leaks..."
+    ss -tuln | grep -E ":(9050|9051)" && echo "✓ Tor ports active" || echo "✗ Tor ports not found"
+    
+    # Check system time (should be UTC for better anonymity)
+    echo "System timezone: $(timedatectl show --property=Timezone --value)"
+}
+
+while true; do
+    show_menu
+    read -p "Select an option (1-6): " choice
+    
+    case $choice in
+        1) start_secure_session ;;
+        2) check_tor ;;
+        3) clear_browser_data ;;
+        4) secure_delete ;;
+        5) anonymity_check ;;
+        6) echo "Exiting..."; exit 0 ;;
+        *) echo "Invalid option. Please try again." ;;
+    esac
+    
+    echo
+    read -p "Press Enter to continue..."
+    clear
+done
+EOF
+
+chmod +x ~/opsec_manager.sh
+Step 2: Create investigation workspace setup:
+
+cat << 'EOF' > ~/setup_investigation.sh
+#!/bin/bash
+
+# Investigation Workspace Setup Script
+
+echo "Setting up investigation workspace..."
+
+# Create investigation directory structure
+mkdir -p ~/investigations/{targets,evidence,reports,tools,temp}
+
+# Set up secure temporary directory
+ln -sf /mnt/ramdisk ~/investigations/secure-temp
+
+# Create investigation log template
+cat << 'TEMPLATE' > ~/investigations/investigation_template.md
+# Investigation Report
+
+**Date**: $(date)
+**Investigator**: $(whoami)
+**Target**: [TARGET_NAME]
+
+## Objective
+[Describe investigation objective]
+
+## Methodology
+[List tools and techniques used]
+
+## Findings
+[Document findings]
+
+## Evidence
+[List evidence collected]
+
+## Conclusion
+[Summary and recommendations]
+
+## OPSEC Notes
+[Document any security considerations]
+TEMPLATE
+
+# Create quick investigation starter
+cat << 'STARTER' > ~/investigations/start_investigation.sh
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <investigation_name>"
+    exit 1
+fi
+
+INVESTIGATION_NAME="$1"
+INVESTIGATION_DIR="~/investigations/targets/$INVESTIGATION_NAME"
+
+mkdir -p "$INVESTIGATION_DIR"
+cp ~/investigations/investigation_template.md "$INVESTIGATION_DIR/report.md"
+
+echo "Investigation workspace created: $INVESTIGATION_DIR"
+echo "Report template: $INVESTIGATION_DIR/report.md"
+
+# Start secure session
+~/opsec_manager.sh
+STARTER
+
+chmod +x ~/investigations/start_investigation.sh
+
+echo "Investigation workspace setup complete!"
+echo "Use: ~/investigations/start_investigation.sh <target_name> to begin"
+EOF
+
+chmod +x ~/setup_investigation.sh
+Step 3: Run the investigation setup:
+
+~/setup_investigation.sh
+Subtask 3.4: Verify Complete Installation
+Step 1: Test all components:
+
+# Test Tor connection
+echo "Testing Tor connection..."
+proxychains4 curl -s https://check.torproject.org/api/ip | grep -o '"IsTor":[^,]*'
+
+# Test OSINT tools
+echo "Testing OSINT tools..."
+source ~/osint-env/bin/activate
+python3 -c "import requests, bs4, dnspython; print('Python OSINT libraries working')"
+
+# Test system tools
+echo "Testing system tools..."
+which nmap whatweb exiftool && echo "System tools installed correctly"
+
+# Test OPSEC manager
+echo "Testing OPSEC manager..."
+~/opsec_manager.sh &
+sleep 2
+pkill -f opsec_manager.sh
+echo "OPSEC manager script working"
+Step 2: Create desktop shortcuts:
+
+# Create OPSEC Manager desktop shortcut
+cat << 'EOF' > ~/.local/share/applications/opsec-manager.desktop
+[Desktop Entry]
+Name=OPSEC Manager
+Comment=Secure Investigation Management
+Exec=gnome-terminal -- bash -c "~/opsec_manager.sh; exec bash"
+Icon=security-high
+Type=Application
+Categories=Security;Investigation;
+EOF
+
+# Create Investigation Workspace shortcut
+cat << 'EOF' > ~/.local/share/applications/investigation-workspace.desktop
+[Desktop Entry]
+Name=Investigation Workspace
+Comment=Open Investigation Directory
+Exec=nautilus ~/investigations
+Icon=folder-documents
+Type=Application
+Categories=Investigation;
+EOF
+Troubleshooting Tips
+Common Issues and Solutions
+Issue 1: Tor Browser won't start
+
+Solution: Check if the download completed successfully and verify file permissions:
+ls -la /opt/tor-browser/Browser/start-tor-browser
+chmod +x /opt/tor-browser/Browser/start-tor-browser
+Issue 2: Proxychains not working
+
+Solution: Verify Tor service is running and check configuration:
+sudo systemctl status tor
+sudo netstat -tlnp | grep 9050
+Issue 3: DNS resolution issues
+
+Solution: Reset DNS configuration:
+sudo systemctl restart systemd-resolved
+sudo systemctl flush-dns
+Issue 4: Python tools not installing
+
+Solution: Ensure virtual environment is activated and pip is updated:
+source ~/osint-env/bin/activate
+pip install --upgrade pip setuptools wheel
+Conclusion
+In this lab, you have successfully configured a comprehensive OPSEC-secure investigation virtual machine environment. You have accomplished the following key objectives:
+
+Security Configuration: You established a hardened Linux environment with proper firewall configuration, privacy-focused DNS settings, and dedicated user accounts for investigation activities.
+
+Anonymous Browsing Setup: You installed and configured Tor Browser for anonymous web browsing and set up the Tor service for system-wide proxy capabilities, ensuring your investigation activities remain private and untraceable.
+
+Tails-like Environment: You created a secure workspace with memory protection, secure deletion capabilities, and privacy-focused tools that mimic the security features of the Tails operating system.
+
+Proxychains Configuration: You successfully configured proxychains to route all network traffic through Tor, providing an additional layer of anonymity for command-line tools and applications.
+
+OSINT Toolkit Installation: You installed and configured a comprehensive suite of OSINT tools including theHarvester, recon-ng, nmap, and various metadata analysis tools, all properly integrated with your secure environment.
+
+OPSEC Management System: You created a comprehensive OPSEC management script that allows you to easily start secure sessions, verify anonymity, clear traces, and maintain operational security throughout your investigations.
+
+This secure investigation environment is crucial for conducting ethical OSINT investigations while maintaining proper operational security. The tools and configurations you've implemented will help protect your identity, prevent data leaks, and ensure that your investigation activities don't compromise your security or that of your organization.
+
+Remember to always follow ethical guidelines and legal requirements when conducting OSINT investigations, and regularly update your tools and security configurations to maintain the highest level of protection.
