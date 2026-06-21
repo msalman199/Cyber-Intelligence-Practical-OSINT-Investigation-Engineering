@@ -1,0 +1,401 @@
+Build Secure Research Workflow with Firefox Containers
+Objectives
+By the end of this lab, students will be able to:
+
+Install and configure Firefox Multi-Account Containers for OSINT research
+Create dedicated containers for different research activities
+Implement secure browsing practices using container isolation
+Automate container management using Python scripts
+Apply container-based workflows to real-world OSINT investigations
+Prerequisites
+Basic understanding of web browsers and internet navigation
+Familiarity with Linux command line operations
+Basic Python programming knowledge
+Understanding of OSINT fundamentals and privacy concepts
+Lab Environment
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS
+Firefox browser (latest version)
+Python 3.10+
+Text editors (nano, vim)
+Pre-installed Python libraries
+Click Start Lab to access your environment. No additional setup required.
+
+Task 1: Install and Configure Firefox Multi-Account Containers
+Step 1.1: Install the Extension
+Launch Firefox from the terminal:
+firefox &
+Navigate to about:addons in the address bar
+
+Search for "Firefox Multi-Account Containers" and click Add to Firefox
+
+Confirm installation and verify the container icon appears in the toolbar
+
+Step 1.2: Create Research Containers
+Create five specialized containers with the following configurations:
+
+Click the Multi-Account Containers icon in the toolbar
+Select Manage Containers
+Create these containers:
+Social Media Research (Blue, Circle icon)
+Corporate Intelligence (Green, Briefcase icon)
+Technical Research (Orange, Cog icon)
+News and Media (Red, Fence icon)
+Academic Research (Purple, Tree icon)
+Step 1.3: Document Container Assignments
+Create a reference file for container usage:
+
+nano ~/container_assignments.txt
+Add the following structure:
+
+# Container Assignments for OSINT Research
+
+Social Media Research:
+- linkedin.com, twitter.com, facebook.com, instagram.com
+
+Corporate Intelligence:
+- sec.gov, opencorporates.com, crunchbase.com, bloomberg.com
+
+Technical Research:
+- github.com, shodan.io, exploit-db.com, cve.mitre.org
+
+News and Media:
+- reuters.com, bbc.com, cnn.com, theguardian.com
+
+Academic Research:
+- scholar.google.com, researchgate.net, jstor.org, pubmed.ncbi.nlm.nih.gov
+Save with Ctrl+X, Y, Enter
+
+Task 2: Practice Container-Based Research
+Step 2.1: Conduct Multi-Container Investigation
+Scenario: Research a fictional company "TechCorp Solutions"
+
+Social Media Container:
+
+Right-click the + tab button
+Select "Social Media Research" container
+Navigate to LinkedIn and search for company profiles
+Note the colored tab indicator
+Corporate Container:
+
+Open new tab in "Corporate Intelligence" container
+Visit sec.gov and search for company filings
+Check opencorporates.com for registration data
+Technical Container:
+
+Open new tab in "Technical Research" container
+Search GitHub for company repositories
+Check for exposed credentials or vulnerabilities
+Step 2.2: Document Research Activities
+Create a research log:
+
+nano ~/research_log.txt
+Use this template:
+
+OSINT Research Session Log
+Date: [Current Date]
+Target: TechCorp Solutions
+
+Container | Website | Findings
+----------|---------|----------
+Social    | LinkedIn| [Your findings]
+Corporate | SEC.gov | [Your findings]
+Technical | GitHub  | [Your findings]
+
+Security Notes:
+- Containers maintained isolation: Yes/No
+- Privacy settings verified: Yes/No
+- Data collection method: [Describe]
+Task 3: Automate Container Management with Python
+Step 3.1: Create Container Manager Script
+Create the automation script:
+
+nano ~/firefox_container_manager.py
+Add this starter template:
+
+#!/usr/bin/env python3
+"""
+Firefox Container Manager for OSINT Research
+Students: Complete the TODO sections to implement functionality
+"""
+
+import json
+import subprocess
+import datetime
+from pathlib import Path
+
+class FirefoxContainerManager:
+    def __init__(self):
+        self.containers = {
+            "social_media": {
+                "name": "Social Media Research",
+                "sites": ["linkedin.com", "twitter.com", "facebook.com"]
+            },
+            "corporate": {
+                "name": "Corporate Intelligence",
+                "sites": ["sec.gov", "opencorporates.com", "crunchbase.com"]
+            },
+            "technical": {
+                "name": "Technical Research",
+                "sites": ["github.com", "shodan.io", "exploit-db.com"]
+            }
+        }
+        self.session_log = []
+    
+    def create_research_session(self, topic, containers_to_use):
+        """
+        Create a new research session with specified containers
+        
+        Args:
+            topic: Research topic/target
+            containers_to_use: List of container names to use
+        
+        Returns:
+            session_id: Unique identifier for the session
+        """
+        # TODO: Create session dictionary with:
+        # - Unique ID
+        # - Topic
+        # - Start timestamp
+        # - Container list
+        # - Status (active/closed)
+        
+        # TODO: Append to self.session_log
+        
+        # TODO: Print confirmation message
+        
+        # TODO: Return session ID
+        pass
+    
+    def open_container_tabs(self, container_names):
+        """
+        Open Firefox tabs in specified containers
+        
+        Args:
+            container_names: List of container names to open
+        """
+        # TODO: Loop through container_names
+        # TODO: For each container, get associated sites
+        # TODO: Use subprocess to open Firefox tabs:
+        #       subprocess.Popen(f"firefox --new-tab {url}", shell=True)
+        # TODO: Add delay between tabs (time.sleep(2))
+        pass
+    
+    def generate_research_report(self, session_id):
+        """
+        Generate a research report for a session
+        
+        Args:
+            session_id: ID of the session to report on
+        
+        Returns:
+            report_filename: Path to generated report
+        """
+        # TODO: Validate session_id exists
+        # TODO: Get session data from self.session_log
+        # TODO: Create report filename with timestamp
+        # TODO: Write report with:
+        #       - Session details
+        #       - Containers used
+        #       - Sites visited
+        #       - Findings section (template)
+        # TODO: Return filename
+        pass
+    
+    def list_active_sessions(self):
+        """List all active research sessions"""
+        # TODO: Loop through self.session_log
+        # TODO: Print details for sessions with status='active'
+        pass
+    
+    def export_session_data(self, filename="research_sessions.json"):
+        """Export all session data to JSON file"""
+        # TODO: Use json.dump() to save self.session_log
+        # TODO: Print confirmation message
+        pass
+
+def main():
+    """Main function - implement interactive menu"""
+    manager = FirefoxContainerManager()
+    
+    # TODO: Create menu loop with options:
+    # 1. Create new research session
+    # 2. Open container tabs
+    # 3. Generate research report
+    # 4. List active sessions
+    # 5. Export session data
+    # 6. Exit
+    
+    # TODO: Implement user input handling
+    # TODO: Call appropriate manager methods based on choice
+    pass
+
+if __name__ == "__main__":
+    main()
+Make executable:
+
+chmod +x ~/firefox_container_manager.py
+Step 3.2: Create Health Check Script
+Create a container health monitoring script:
+
+nano ~/container_health_check.py
+Add this template:
+
+#!/usr/bin/env python3
+"""
+Firefox Container Health Check Script
+Students: Complete the implementation
+"""
+
+import os
+import json
+import datetime
+from pathlib import Path
+
+class ContainerHealthChecker:
+    def __init__(self):
+        self.firefox_profile_path = self.find_firefox_profile()
+        self.health_report = {
+            "timestamp": datetime.datetime.now().isoformat(),
+            "checks": [],
+            "warnings": [],
+            "recommendations": []
+        }
+    
+    def find_firefox_profile(self):
+        """
+        Find Firefox profile directory
+        
+        Returns:
+            Path to Firefox profile or None
+        """
+        # TODO: Get home directory using Path.home()
+        # TODO: Construct path to ~/.mozilla/firefox
+        # TODO: Check if profiles.ini exists
+        # TODO: Parse profiles.ini to find default profile path
+        # TODO: Return profile path or None
+        pass
+    
+    def check_container_extension(self):
+        """
+        Check if Multi-Account Containers extension is installed
+        
+        Returns:
+            True if installed, False otherwise
+        """
+        # TODO: Check if profile path exists
+        # TODO: Look for extension files in extensions directory
+        # TODO: Search for container-related files
+        # TODO: Add result to self.health_report["checks"]
+        # TODO: Return True/False
+        pass
+    
+    def check_system_resources(self):
+        """Check available system resources"""
+        # TODO: Read /proc/meminfo to check available memory
+        # TODO: Use subprocess to run 'df -h /' for disk space
+        # TODO: Add results to health_report
+        # TODO: Generate warnings if resources are low
+        pass
+    
+    def generate_recommendations(self):
+        """Generate security recommendations"""
+        recommendations = [
+            "Regularly clear container data for sensitive research",
+            "Use VPN for additional privacy protection",
+            "Enable Firefox Enhanced Tracking Protection",
+            "Monitor container usage for data leaks",
+            "Document all research activities"
+        ]
+        # TODO: Add recommendations to self.health_report
+        pass
+    
+    def generate_health_report(self):
+        """
+        Generate comprehensive health report
+        
+        Returns:
+            Path to generated report file
+        """
+        # TODO: Create report filename with timestamp
+        # TODO: Write JSON report with self.health_report data
+        # TODO: Create human-readable text version
+        # TODO: Return report filename
+        pass
+    
+    def run_full_check(self):
+        """Run complete health check"""
+        # TODO: Call all check methods
+        # TODO: Generate recommendations
+        # TODO: Create final report
+        # TODO: Print summary
+        pass
+
+def main():
+    checker = ContainerHealthChecker()
+    checker.run_full_check()
+
+if __name__ == "__main__":
+    main()
+Make executable:
+
+chmod +x ~/container_health_check.py
+Step 3.3: Test Your Scripts
+Test the container manager:
+python3 ~/firefox_container_manager.py
+Create a test research session
+
+Generate a sample report
+
+Verify output files are created
+
+Test the health checker:
+
+python3 ~/container_health_check.py
+Review the generated health report
+Expected Outcomes
+After completing this lab, you should have:
+
+Firefox configured with 5 specialized research containers
+Understanding of container isolation benefits
+Documented container assignments for different research types
+Working Python scripts for container automation
+Experience conducting multi-container OSINT investigations
+Health monitoring system for container security
+Troubleshooting Tips
+Issue: Container extension not installing
+
+Solution: Check Firefox version (must be 57+), restart browser after installation
+Issue: Python scripts not opening Firefox tabs
+
+Solution: Verify Firefox is in PATH, check subprocess command syntax, ensure Firefox is not already running in safe mode
+Issue: Cannot find Firefox profile directory
+
+Solution: Run firefox -P to see profile locations, check ~/.mozilla/firefox directory exists
+Issue: Containers not maintaining isolation
+
+Solution: Verify extension is enabled, check Firefox privacy settings, restart browser
+Conclusion
+This lab introduced container-based workflows for secure OSINT research. You learned to:
+
+Configure Firefox Multi-Account Containers for research compartmentalization
+Implement secure browsing practices using container isolation
+Automate container management with Python scripts
+Monitor container health and security
+Container isolation is essential for maintaining operational security during OSINT investigations. By separating research activities into dedicated containers, you prevent cross-contamination of cookies, sessions, and tracking data.
+
+Key Takeaways:
+
+Always use appropriate containers for different research phases
+Document container usage in investigation logs
+Regularly audit container configurations for security
+Automate repetitive container management tasks
+Maintain strict separation between research identities
+Next Steps:
+
+Expand your container automation scripts with additional features
+Integrate container workflows with other OSINT tools
+Develop custom container configurations for specific investigation types
+Practice advanced container isolation techniques
+Continue practicing container-based research workflows to build proficiency in secure OSINT operations.
