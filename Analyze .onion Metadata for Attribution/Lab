@@ -1,0 +1,540 @@
+Analyze .onion Metadata for Attribution
+Objectives
+By the end of this lab, students will be able to:
+
+Extract metadata from .onion sites using automated tools
+Identify attribution indicators within dark web site metadata
+Analyze technology fingerprints and infrastructure patterns
+Correlate metadata across multiple sites for attribution analysis
+Generate comprehensive attribution reports for investigative purposes
+Prerequisites
+Before starting this lab, students should have:
+
+Basic understanding of Tor network and .onion services
+Fundamental Python programming skills
+Familiarity with Linux command line operations
+Basic knowledge of HTML, HTTP headers, and web technologies
+Lab Environment
+Al Nafi provides Linux-based cloud machines for this lab. Click Start Lab to access your pre-configured environment with Tor and Python pre-installed.
+
+Task 1: Set Up Metadata Extraction Environment
+Step 1: Prepare Working Directory
+Create a dedicated workspace for the lab:
+
+mkdir ~/onion_metadata_lab
+cd ~/onion_metadata_lab
+Step 2: Install Required Dependencies
+Install necessary packages and Python libraries:
+
+# Update system
+sudo apt update
+
+# Install core packages
+sudo apt install -y python3 python3-pip tor torsocks
+
+# Install Python libraries
+pip3 install requests beautifulsoup4 lxml
+
+# Start Tor service
+sudo systemctl start tor
+sudo systemctl status tor
+Step 3: Configure Tor Proxy Settings
+Create a configuration file for Tor connectivity:
+
+cat > tor_config.py << 'EOF'
+import requests
+
+# Tor SOCKS5 proxy configuration
+TOR_PROXY = {
+    'http': 'socks5h://127.0.0.1:9050',
+    'https': 'socks5h://127.0.0.1:9050'
+}
+
+def test_tor_connection():
+    """Test if Tor connection is working"""
+    # TODO: Implement connection test to check.torproject.org
+    # TODO: Print current IP address
+    # TODO: Return True if connected, False otherwise
+    pass
+
+def get_onion_content(url, timeout=30):
+    """Fetch content from .onion URL through Tor"""
+    # TODO: Configure headers with User-Agent
+    # TODO: Make request through TOR_PROXY
+    # TODO: Handle exceptions and return response object
+    pass
+EOF
+Step 4: Verify Tor Connection
+Test your Tor setup:
+
+# Test Tor connection using curl
+curl --socks5-hostname 127.0.0.1:9050 https://check.torproject.org/api/ip
+
+# Expected output should show Tor exit node IP
+Task 2: Extract Metadata from .onion Sites
+Step 1: Create Metadata Extractor Class
+Build the core metadata extraction tool:
+
+#!/usr/bin/env python3
+# metadata_extractor.py
+
+import requests
+from bs4 import BeautifulSoup
+import json
+from datetime import datetime
+from tor_config import TOR_PROXY, get_onion_content
+
+class OnionMetadataExtractor:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.proxies = TOR_PROXY
+        
+    def extract_html_metadata(self, url):
+        """
+        Extract HTML metadata including meta tags, links, scripts, and forms.
+        
+        Args:
+            url: Target .onion URL
+            
+        Returns:
+            Dictionary containing HTML metadata
+        """
+        # TODO: Fetch page content using get_onion_content()
+        # TODO: Parse HTML with BeautifulSoup
+        # TODO: Extract title, meta tags, links, scripts, stylesheets
+        # TODO: Extract images, forms, and HTML comments
+        # TODO: Include response headers and status code
+        # TODO: Return metadata dictionary
+        pass
+    
+    def extract_server_metadata(self, url):
+        """
+        Extract server-related metadata from HTTP headers.
+        
+        Args:
+            url: Target .onion URL
+            
+        Returns:
+            Dictionary containing server metadata
+        """
+        # TODO: Make request and measure response time
+        # TODO: Extract Server, X-Powered-By, Content-Type headers
+        # TODO: Extract security headers (CSP, HSTS, X-Frame-Options)
+        # TODO: Extract cache control and cookie information
+        # TODO: Return server metadata dictionary
+        pass
+    
+    def extract_technology_fingerprints(self, url):
+        """
+        Identify technology stack and frameworks used.
+        
+        Args:
+            url: Target .onion URL
+            
+        Returns:
+            Dictionary containing technology fingerprints
+        """
+        # TODO: Fetch and parse page content
+        # TODO: Detect CMS (WordPress, Drupal, Joomla patterns)
+        # TODO: Identify JavaScript frameworks (jQuery, React, Angular)
+        # TODO: Detect CSS frameworks (Bootstrap, Foundation)
+        # TODO: Return technology fingerprints dictionary
+        pass
+    
+    def save_metadata(self, metadata, filename):
+        """Save extracted metadata to JSON file"""
+        # TODO: Write metadata to JSON file with proper formatting
+        # TODO: Handle exceptions and print status messages
+        pass
+
+def main():
+    # TODO: Parse command line arguments for .onion URL
+    # TODO: Validate URL format
+    # TODO: Create extractor instance
+    # TODO: Extract all metadata types
+    # TODO: Combine and save results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Test Metadata Extraction
+Run the extractor on a test .onion site:
+
+# Make script executable
+chmod +x metadata_extractor.py
+
+# Run extraction (use a known test .onion site)
+python3 metadata_extractor.py http://example.onion
+
+# Review extracted metadata
+cat metadata_*.json | python3 -m json.tool | less
+Step 3: Analyze Extraction Results
+Review the extracted metadata structure:
+
+# Count meta tags extracted
+jq '.html_metadata.meta_tags | length' metadata_*.json
+
+# List detected technologies
+jq '.technology_fingerprints' metadata_*.json
+
+# View server headers
+jq '.server_metadata' metadata_*.json
+Task 3: Analyze Metadata for Attribution Indicators
+Step 1: Create Attribution Analyzer
+Build a tool to identify attribution clues:
+
+#!/usr/bin/env python3
+# attribution_analyzer.py
+
+import json
+import re
+from datetime import datetime
+
+class AttributionAnalyzer:
+    def __init__(self):
+        self.attribution_indicators = {
+            'language_indicators': [],
+            'timezone_indicators': [],
+            'technology_stack': [],
+            'coding_patterns': [],
+            'infrastructure_patterns': []
+        }
+    
+    def load_metadata(self, filename):
+        """Load metadata from JSON file"""
+        # TODO: Read and parse JSON file
+        # TODO: Return metadata dictionary
+        pass
+    
+    def analyze_language_indicators(self, metadata):
+        """
+        Identify language and locale indicators.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            List of language indicators
+        """
+        # TODO: Check HTML lang attribute and meta tags
+        # TODO: Analyze Content-Language headers
+        # TODO: Detect character sets (Cyrillic, Chinese, Japanese)
+        # TODO: Examine text content for language patterns
+        # TODO: Return list of indicators
+        pass
+    
+    def analyze_timezone_indicators(self, metadata):
+        """
+        Analyze temporal patterns and timezone indicators.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            List of timezone indicators
+        """
+        # TODO: Extract Date and Last-Modified headers
+        # TODO: Compare server time with extraction time
+        # TODO: Identify timezone patterns
+        # TODO: Return list of indicators
+        pass
+    
+    def analyze_technology_stack(self, metadata):
+        """
+        Analyze technology choices for attribution.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            List of technology indicators
+        """
+        # TODO: Extract server software information
+        # TODO: Identify CMS and frameworks
+        # TODO: Detect CDN usage patterns
+        # TODO: Analyze JavaScript library choices
+        # TODO: Return list of indicators
+        pass
+    
+    def analyze_coding_patterns(self, metadata):
+        """
+        Identify coding conventions and patterns.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            List of coding pattern indicators
+        """
+        # TODO: Analyze meta tag patterns (generator, author)
+        # TODO: Examine URL structure conventions
+        # TODO: Identify form patterns and naming conventions
+        # TODO: Analyze HTML comment patterns
+        # TODO: Return list of indicators
+        pass
+    
+    def analyze_infrastructure_patterns(self, metadata):
+        """
+        Analyze hosting and infrastructure indicators.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            List of infrastructure indicators
+        """
+        # TODO: Analyze response time patterns
+        # TODO: Evaluate security header implementation
+        # TODO: Examine caching strategies
+        # TODO: Identify hosting characteristics
+        # TODO: Return list of indicators
+        pass
+    
+    def generate_attribution_report(self, metadata):
+        """
+        Generate comprehensive attribution analysis report.
+        
+        Args:
+            metadata: Extracted metadata dictionary
+            
+        Returns:
+            Attribution indicators dictionary
+        """
+        # TODO: Run all analysis functions
+        # TODO: Compile results into report structure
+        # TODO: Calculate attribution confidence score
+        # TODO: Save report to JSON file
+        # TODO: Print formatted report to console
+        pass
+
+def main():
+    # TODO: Parse command line arguments for metadata file
+    # TODO: Load metadata
+    # TODO: Run attribution analysis
+    # TODO: Display and save results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Run Attribution Analysis
+Analyze the extracted metadata:
+
+# Make script executable
+chmod +x attribution_analyzer.py
+
+# Run analysis on extracted metadata
+python3 attribution_analyzer.py metadata_example.onion_*.json
+
+# Review attribution report
+cat attribution_report_*.json | python3 -m json.tool
+Step 3: Interpret Attribution Indicators
+Key indicators to examine:
+
+Language Indicators: Character sets, meta language tags, content patterns
+Technology Stack: Server software, CMS, frameworks, libraries
+Coding Patterns: Naming conventions, URL structures, comment styles
+Infrastructure: Response times, security headers, hosting characteristics
+Temporal Patterns: Timezone indicators, update patterns
+Task 4: Correlate Metadata Across Multiple Sites
+Step 1: Create Correlation Analyzer
+Build a tool to find patterns across multiple sites:
+
+#!/usr/bin/env python3
+# correlation_analyzer.py
+
+import json
+import os
+from collections import defaultdict
+
+class CorrelationAnalyzer:
+    def __init__(self):
+        self.sites_data = []
+        self.correlations = {}
+    
+    def load_multiple_reports(self, directory):
+        """
+        Load multiple attribution reports from directory.
+        
+        Args:
+            directory: Path to directory containing reports
+            
+        Returns:
+            Number of reports loaded
+        """
+        # TODO: Scan directory for attribution report files
+        # TODO: Load each JSON report
+        # TODO: Store in sites_data list
+        # TODO: Return count of loaded reports
+        pass
+    
+    def analyze_technology_correlations(self):
+        """
+        Find common technology patterns across sites.
+        
+        Returns:
+            Dictionary of technology correlations
+        """
+        # TODO: Extract technology indicators from all sites
+        # TODO: Group sites by common technologies
+        # TODO: Identify patterns used by multiple sites
+        # TODO: Return correlation dictionary
+        pass
+    
+    def analyze_infrastructure_correlations(self):
+        """
+        Find common infrastructure patterns.
+        
+        Returns:
+            Dictionary of infrastructure correlations
+        """
+        # TODO: Extract infrastructure indicators
+        # TODO: Group by server types, response patterns
+        # TODO: Identify shared hosting characteristics
+        # TODO: Return correlation dictionary
+        pass
+    
+    def analyze_coding_style_correlations(self):
+        """
+        Find common coding patterns and conventions.
+        
+        Returns:
+            Dictionary of coding style correlations
+        """
+        # TODO: Extract coding patterns from all sites
+        # TODO: Identify common conventions
+        # TODO: Group sites with similar patterns
+        # TODO: Return correlation dictionary
+        pass
+    
+    def calculate_similarity_score(self, site1, site2):
+        """
+        Calculate similarity score between two sites.
+        
+        Args:
+            site1: First site data dictionary
+            site2: Second site data dictionary
+            
+        Returns:
+            Similarity score (0-100)
+        """
+        # TODO: Compare technology stacks
+        # TODO: Compare infrastructure patterns
+        # TODO: Compare coding patterns
+        # TODO: Calculate weighted similarity score
+        # TODO: Return score
+        pass
+    
+    def generate_correlation_report(self):
+        """
+        Generate comprehensive correlation analysis report.
+        
+        Returns:
+            Correlation report dictionary
+        """
+        # TODO: Run all correlation analyses
+        # TODO: Calculate similarity scores for all site pairs
+        # TODO: Identify clusters of related sites
+        # TODO: Generate report structure
+        # TODO: Save and display results
+        pass
+
+def main():
+    # TODO: Parse command line arguments for reports directory
+    # TODO: Load all attribution reports
+    # TODO: Run correlation analysis
+    # TODO: Display and save correlation report
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Collect Multiple Site Metadata
+Extract metadata from several .onion sites:
+
+# Create directory for multiple extractions
+mkdir -p multi_site_analysis
+
+# Extract metadata from multiple sites (example)
+for site in site1.onion site2.onion site3.onion; do
+    python3 metadata_extractor.py http://$site
+    python3 attribution_analyzer.py metadata_${site}_*.json
+    mv attribution_report_*.json multi_site_analysis/
+done
+Step 3: Run Correlation Analysis
+Analyze patterns across all collected sites:
+
+# Make script executable
+chmod +x correlation_analyzer.py
+
+# Run correlation analysis
+python3 correlation_analyzer.py multi_site_analysis/
+
+# Review correlation findings
+cat correlation_report_*.json | python3 -m json.tool
+Step 4: Visualize Correlation Results
+Create a summary of findings:
+
+# Extract key correlations
+jq '.technology_correlations' correlation_report_*.json
+
+# List sites with high similarity scores
+jq '.similarity_matrix | to_entries | sort_by(.value) | reverse | .[0:5]' correlation_report_*.json
+
+# Identify potential site clusters
+jq '.site_clusters' correlation_report_*.json
+Expected Outcomes
+After completing this lab, students should have:
+
+Functional metadata extraction tools for .onion sites
+Attribution analysis scripts identifying key indicators
+Correlation analysis capabilities across multiple sites
+JSON reports containing comprehensive metadata and attribution findings
+Understanding of metadata-based attribution techniques
+Key files produced:
+
+metadata_extractor.py - Core extraction tool
+attribution_analyzer.py - Attribution analysis tool
+correlation_analyzer.py - Multi-site correlation tool
+metadata_*.json - Extracted metadata files
+attribution_report_*.json - Attribution analysis reports
+correlation_report_*.json - Correlation analysis reports
+Troubleshooting Tips
+Tor Connection Issues:
+
+Verify Tor service is running: sudo systemctl status tor
+Check Tor logs: sudo journalctl -u tor -n 50
+Test connection: curl --socks5-hostname 127.0.0.1:9050 https://check.torproject.org
+Restart Tor if needed: sudo systemctl restart tor
+Timeout Errors:
+
+Increase timeout values in get_onion_content() function
+Some .onion sites are slow; wait 30-60 seconds
+Verify the .onion URL is accessible and active
+Try accessing the site manually with Tor Browser first
+JSON Parsing Errors:
+
+Validate JSON syntax: python3 -m json.tool < file.json
+Check for incomplete extractions due to timeouts
+Ensure proper encoding handling for non-ASCII characters
+Re-run extraction if metadata file is corrupted
+Missing Dependencies:
+
+Reinstall Python packages: pip3 install --upgrade requests beautifulsoup4 lxml
+Check Python version: python3 --version (should be 3.6+)
+Verify all imports work: python3 -c "import requests, bs4, json"
+Conclusion
+This lab demonstrated practical techniques for extracting and analyzing metadata from .onion sites for attribution purposes. Students learned to:
+
+Automate metadata extraction through Tor network
+Identify attribution indicators in HTML, headers, and technology choices
+Analyze coding patterns and infrastructure characteristics
+Correlate findings across multiple sites to identify relationships
+These skills are essential for dark web investigations, threat intelligence, and cybersecurity research. Metadata analysis provides valuable attribution clues even when operators attempt to remain anonymous. Always conduct such analysis ethically and within legal boundaries.
+
+Key Takeaways:
+
+Metadata reveals technology choices, coding patterns, and infrastructure details
+Correlation analysis can link seemingly unrelated sites
+Multiple indicators provide stronger attribution confidence
+Automated tools enable systematic analysis at scale
+Attribution is probabilistic, not definitive
+Continue practicing with various .onion sites to refine your analysis techniques and build a comprehensive understanding of dark web attribution methodologies.
