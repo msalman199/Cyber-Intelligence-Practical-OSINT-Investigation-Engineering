@@ -1,0 +1,757 @@
+Private Research with Tails + Tor
+Objectives
+By the end of this lab, students will be able to:
+
+Boot and configure Tails OS for anonymous browsing
+Understand the fundamentals of Tor network routing
+Configure Tor browser for secure research activities
+Implement Python scripts for automated proxy routing
+Conduct private research while maintaining operational security
+Verify anonymity and privacy settings throughout the research process
+Prerequisites
+Before starting this lab, students should have:
+
+Basic understanding of Linux command line operations
+Familiarity with web browsers and internet research techniques
+Basic knowledge of networking concepts (IP addresses, DNS)
+Elementary Python programming skills
+Understanding of privacy and anonymity concepts in cybersecurity
+Lab Environment Setup
+Al Nafi Cloud Machine: This lab runs entirely on Al Nafi's provided Linux-based cloud machines. Simply click Start Lab to access your pre-configured environment. No additional VM setup required.
+
+System Requirements:
+
+Ubuntu 20.04 LTS or newer
+Minimum 4GB RAM
+20GB available disk space
+Internet connectivity
+Task 1: Boot Tails OS and Configure Tor
+Subtask 1.1: Download and Prepare Tails OS
+First, we'll download Tails OS and prepare it for use on our Linux machine.
+
+# Create a working directory for Tails
+mkdir ~/tails-lab
+cd ~/tails-lab
+
+# Download Tails ISO (latest stable version)
+wget https://download.tails.net/tails/stable/tails-amd64-5.19.1/tails-amd64-5.19.1.img
+
+# Verify the download integrity
+wget https://download.tails.net/tails/stable/tails-amd64-5.19.1/tails-amd64-5.19.1.img.sig
+
+# Install required packages for verification
+sudo apt update
+sudo apt install -y gnupg2 qemu-kvm qemu-utils virt-manager
+Subtask 1.2: Set Up Virtual Environment for Tails
+Since we're working on a single Linux machine, we'll use QEMU to run Tails in a virtual environment.
+
+# Create a virtual disk for persistent storage (optional)
+qemu-img create -f qcow2 ~/tails-lab/tails-persistent.qcow2 8G
+
+# Create a script to launch Tails
+cat > ~/tails-lab/launch-tails.sh << 'EOF'
+#!/bin/bash
+qemu-system-x86_64 \
+    -m 2048 \
+    -enable-kvm \
+    -cdrom ~/tails-lab/tails-amd64-5.19.1.img \
+    -boot d \
+    -netdev user,id=net0 \
+    -device e1000,netdev=net0 \
+    -display gtk \
+    -usb \
+    -device usb-tablet
+EOF
+
+# Make the script executable
+chmod +x ~/tails-lab/launch-tails.sh
+Subtask 1.3: Boot Tails and Initial Configuration
+# Launch Tails OS
+./launch-tails.sh
+Manual Steps in Tails GUI:
+
+Boot Menu: Select Tails from the boot menu
+Welcome Screen:
+Click Start Tails
+For advanced users, click Additional Settings to configure:
+Administration password
+MAC address spoofing
+Network configuration
+Desktop Loading: Wait for Tails desktop to fully load
+Subtask 1.4: Configure Tor Connection
+Once Tails desktop loads:
+
+Tor Connection:
+
+Tor Connection dialog will appear automatically
+Select Connect to Tor automatically
+Click Connect to Tor
+Wait for connection establishment (green onion icon)
+Verify Tor Connection:
+
+Open Tor Browser from Applications menu
+Navigate to https://check.torproject.org
+Confirm message: "Congratulations. This browser is configured to use Tor."
+Task 2: Use Tor to Browse and Search Securely
+Subtask 2.1: Configure Tor Browser Security Settings
+Open Tor Browser and configure security settings:
+
+Security Level Configuration:
+
+Click the shield icon in address bar
+Select Advanced Security Settings
+Choose Safer or Safest level based on requirements
+Privacy Settings:
+
+Type about:preferences#privacy in address bar
+Ensure Strict tracking protection is enabled
+Disable Remember logins and passwords
+Set Delete cookies and site data when Tor Browser is closed
+Subtask 2.2: Conduct Secure Research Activities
+Create a research methodology for private investigations:
+
+# Create a research log template (in Tails terminal)
+cat > ~/research-log.txt << 'EOF'
+PRIVATE RESEARCH SESSION LOG
+============================
+Date: $(date)
+Session ID: $(openssl rand -hex 8)
+Research Topic: [ENTER TOPIC]
+Security Level: Safest
+Tor Circuit: [TO BE UPDATED]
+
+SEARCH QUERIES:
+--------------
+1. Query: 
+   Source: 
+   Results: 
+   Notes: 
+
+2. Query: 
+   Source: 
+   Results: 
+   Notes: 
+
+CIRCUIT INFORMATION:
+-------------------
+Entry Node: 
+Middle Node: 
+Exit Node: 
+
+OPERATIONAL SECURITY NOTES:
+--------------------------
+- New identity requested: [Y/N]
+- JavaScript disabled: [Y/N]
+- Images blocked: [Y/N]
+- Cookies cleared: [Y/N]
+EOF
+Subtask 2.3: Practice Secure Search Techniques
+Search Engine Selection:
+
+Use DuckDuckGo (default in Tor Browser)
+Alternative: Startpage.com
+Avoid Google, Bing, or other tracking search engines
+Research Best Practices:
+
+Use specific, targeted keywords
+Avoid personal information in searches
+Request new Tor identity between different research topics
+Document findings without revealing research patterns
+New Identity Process:
+
+Click hamburger menu (three lines)
+Select New Identity
+Confirm identity reset
+Verify new circuit information
+Subtask 2.4: Verify Anonymity During Research
+Create a verification script to check anonymity:
+
+# Create anonymity verification script
+cat > ~/verify-anonymity.sh << 'EOF'
+#!/bin/bash
+
+echo "ANONYMITY VERIFICATION CHECKLIST"
+echo "================================="
+
+# Check current IP via Tor
+echo "1. Checking current IP address..."
+curl -s --socks5-hostname 127.0.0.1:9050 https://httpbin.org/ip | grep -o '"origin": "[^"]*"'
+
+# Check DNS leaks
+echo "2. Checking DNS configuration..."
+nslookup google.com 127.0.0.1
+
+# Check Tor circuit
+echo "3. Current Tor circuit information:"
+echo "   Check Tor Browser -> hamburger menu -> Tor Network Settings"
+
+# Check for WebRTC leaks
+echo "4. WebRTC Status:"
+echo "   Navigate to: https://browserleaks.com/webrtc"
+
+# Time zone check
+echo "5. System timezone (should be UTC):"
+timedatectl show --property=Timezone --value
+
+echo ""
+echo "VERIFICATION COMPLETE"
+echo "Review each item above for privacy compliance"
+EOF
+
+chmod +x ~/verify-anonymity.sh
+./verify-anonymity.sh
+Task 3: Automate Proxy Routing with Python Scripts
+Subtask 3.1: Install Required Python Libraries
+In the Tails terminal, install necessary packages:
+
+# Update package list
+sudo apt update
+
+# Install Python pip and required libraries
+sudo apt install -y python3-pip python3-requests python3-stem
+
+# Install additional Python packages
+pip3 install --user requests[socks] stem
+Subtask 3.2: Create Tor Control Script
+Create a Python script to control Tor programmatically:
+
+# Create tor_controller.py
+cat > ~/tor_controller.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Tor Controller Script for Automated Proxy Management
+"""
+
+import time
+import requests
+from stem import Signal
+from stem.control import Controller
+import socket
+import json
+
+class TorController:
+    def __init__(self, control_port=9051, socks_port=9050):
+        self.control_port = control_port
+        self.socks_port = socks_port
+        self.session = requests.Session()
+        
+        # Configure requests to use Tor SOCKS proxy
+        self.session.proxies = {
+            'http': f'socks5://127.0.0.1:{socks_port}',
+            'https': f'socks5://127.0.0.1:{socks_port}'
+        }
+    
+    def get_current_ip(self):
+        """Get current IP address through Tor"""
+        try:
+            response = self.session.get('https://httpbin.org/ip', timeout=10)
+            return response.json()['origin']
+        except Exception as e:
+            return f"Error getting IP: {e}"
+    
+    def new_identity(self):
+        """Request new Tor identity"""
+        try:
+            with Controller.from_port(port=self.control_port) as controller:
+                controller.authenticate()
+                controller.signal(Signal.NEWNYM)
+                print("New Tor identity requested")
+                time.sleep(5)  # Wait for new circuit
+                return True
+        except Exception as e:
+            print(f"Error requesting new identity: {e}")
+            return False
+    
+    def get_circuit_info(self):
+        """Get current Tor circuit information"""
+        try:
+            with Controller.from_port(port=self.control_port) as controller:
+                controller.authenticate()
+                circuits = list(controller.get_circuits())
+                if circuits:
+                    circuit = circuits[0]
+                    path = " -> ".join([f"{hop.fingerprint[:8]}({hop.nickname})" 
+                                      for hop in circuit.path])
+                    return f"Circuit: {path}"
+                return "No active circuits"
+        except Exception as e:
+            return f"Error getting circuit info: {e}"
+    
+    def automated_research(self, queries, delay=10):
+        """Perform automated research with identity rotation"""
+        results = []
+        
+        for i, query in enumerate(queries):
+            print(f"\n--- Research Query {i+1}: {query} ---")
+            
+            # Get current IP and circuit
+            current_ip = self.get_current_ip()
+            circuit_info = self.get_circuit_info()
+            
+            print(f"Current IP: {current_ip}")
+            print(f"{circuit_info}")
+            
+            # Simulate research (replace with actual research logic)
+            try:
+                # Example: Search DuckDuckGo
+                search_url = f"https://duckduckgo.com/html/?q={query.replace(' ', '+')}"
+                response = self.session.get(search_url, timeout=15)
+                
+                result = {
+                    'query': query,
+                    'ip': current_ip,
+                    'circuit': circuit_info,
+                    'status': 'Success' if response.status_code == 200 else 'Failed',
+                    'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+                }
+                results.append(result)
+                
+                print(f"Research completed: {result['status']}")
+                
+            except Exception as e:
+                result = {
+                    'query': query,
+                    'ip': current_ip,
+                    'circuit': circuit_info,
+                    'status': f'Error: {e}',
+                    'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+                }
+                results.append(result)
+            
+            # Request new identity for next query (except last one)
+            if i < len(queries) - 1:
+                print("Requesting new identity...")
+                self.new_identity()
+                time.sleep(delay)
+        
+        return results
+
+def main():
+    print("Tor Automated Research Controller")
+    print("=================================")
+    
+    # Initialize controller
+    tor_ctrl = TorController()
+    
+    # Test basic functionality
+    print(f"Initial IP: {tor_ctrl.get_current_ip()}")
+    print(f"Initial {tor_ctrl.get_circuit_info()}")
+    
+    # Example research queries
+    research_queries = [
+        "cybersecurity best practices",
+        "OSINT investigation techniques",
+        "digital forensics tools",
+        "network security analysis"
+    ]
+    
+    # Perform automated research
+    print("\nStarting automated research...")
+    results = tor_ctrl.automated_research(research_queries, delay=15)
+    
+    # Save results
+    with open('research_results.json', 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    print("\nResearch Results Summary:")
+    print("========================")
+    for result in results:
+        print(f"Query: {result['query']}")
+        print(f"Status: {result['status']}")
+        print(f"IP: {result['ip']}")
+        print(f"Time: {result['timestamp']}")
+        print("-" * 40)
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x ~/tor_controller.py
+Subtask 3.3: Create Proxy Rotation Script
+Develop a script for advanced proxy management:
+
+# Create proxy_rotator.py
+cat > ~/proxy_rotator.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Advanced Proxy Rotation Script for Research Automation
+"""
+
+import requests
+import time
+import random
+import json
+from datetime import datetime
+import threading
+import queue
+
+class ProxyRotator:
+    def __init__(self):
+        self.tor_proxies = [
+            {'http': 'socks5://127.0.0.1:9050', 'https': 'socks5://127.0.0.1:9050'}
+        ]
+        self.current_proxy = 0
+        self.request_count = 0
+        self.max_requests_per_identity = 5
+        self.results_queue = queue.Queue()
+    
+    def get_session(self):
+        """Get requests session with current proxy"""
+        session = requests.Session()
+        session.proxies = self.tor_proxies[self.current_proxy]
+        session.headers.update({
+            'User-Agent': self.get_random_user_agent()
+        })
+        return session
+    
+    def get_random_user_agent(self):
+        """Return random user agent string"""
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; rv:91.0) Gecko/20100101 Firefox/91.0',
+            'Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0) Gecko/20100101 Firefox/91.0'
+        ]
+        return random.choice(user_agents)
+    
+    def rotate_identity(self):
+        """Rotate Tor identity"""
+        try:
+            from stem import Signal
+            from stem.control import Controller
+            
+            with Controller.from_port(port=9051) as controller:
+                controller.authenticate()
+                controller.signal(Signal.NEWNYM)
+                print("Identity rotated successfully")
+                time.sleep(5)
+                self.request_count = 0
+                return True
+        except Exception as e:
+            print(f"Error rotating identity: {e}")
+            return False
+    
+    def check_anonymity(self):
+        """Verify current anonymity status"""
+        session = self.get_session()
+        try:
+            # Check IP
+            ip_response = session.get('https://httpbin.org/ip', timeout=10)
+            current_ip = ip_response.json()['origin']
+            
+            # Check headers
+            headers_response = session.get('https://httpbin.org/headers', timeout=10)
+            headers = headers_response.json()['headers']
+            
+            return {
+                'ip': current_ip,
+                'user_agent': headers.get('User-Agent', 'Unknown'),
+                'timestamp': datetime.now().isoformat()
+            }
+        except Exception as e:
+            return {'error': str(e)}
+    
+    def research_worker(self, query, result_id):
+        """Worker function for threaded research"""
+        session = self.get_session()
+        
+        try:
+            # Simulate research delay
+            time.sleep(random.uniform(2, 5))
+            
+            # Perform search
+            search_url = f"https://duckduckgo.com/html/?q={query.replace(' ', '+')}"
+            response = session.get(search_url, timeout=15)
+            
+            result = {
+                'id': result_id,
+                'query': query,
+                'status': 'success' if response.status_code == 200 else 'failed',
+                'response_size': len(response.content),
+                'timestamp': datetime.now().isoformat()
+            }
+            
+            self.results_queue.put(result)
+            print(f"Completed research for: {query}")
+            
+        except Exception as e:
+            result = {
+                'id': result_id,
+                'query': query,
+                'status': 'error',
+                'error': str(e),
+                'timestamp': datetime.now().isoformat()
+            }
+            self.results_queue.put(result)
+    
+    def automated_research_session(self, queries, concurrent_requests=2):
+        """Perform automated research with rotation"""
+        print(f"Starting research session with {len(queries)} queries")
+        
+        # Initial anonymity check
+        anonymity_status = self.check_anonymity()
+        print(f"Initial IP: {anonymity_status.get('ip', 'Unknown')}")
+        
+        results = []
+        threads = []
+        
+        for i, query in enumerate(queries):
+            # Rotate identity if needed
+            if self.request_count >= self.max_requests_per_identity:
+                print("Rotating identity...")
+                self.rotate_identity()
+            
+            # Create worker thread
+            thread = threading.Thread(
+                target=self.research_worker,
+                args=(query, i)
+            )
+            threads.append(thread)
+            thread.start()
+            
+            self.request_count += 1
+            
+            # Limit concurrent requests
+            if len(threads) >= concurrent_requests:
+                for t in threads:
+                    t.join()
+                threads = []
+                
+                # Random delay between batches
+                time.sleep(random.uniform(5, 10))
+        
+        # Wait for remaining threads
+        for thread in threads:
+            thread.join()
+        
+        # Collect results
+        while not self.results_queue.empty():
+            results.append(self.results_queue.get())
+        
+        # Sort results by ID
+        results.sort(key=lambda x: x['id'])
+        
+        return results
+
+def main():
+    print("Advanced Proxy Rotation Research Tool")
+    print("====================================")
+    
+    rotator = ProxyRotator()
+    
+    # Test queries
+    research_queries = [
+        "threat intelligence gathering",
+        "social engineering techniques",
+        "malware analysis methods",
+        "incident response procedures",
+        "vulnerability assessment tools",
+        "penetration testing frameworks"
+    ]
+    
+    # Perform research
+    results = rotator.automated_research_session(research_queries)
+    
+    # Save results
+    output_file = f"research_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    with open(output_file, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    # Display summary
+    print(f"\nResearch Session Complete")
+    print(f"Results saved to: {output_file}")
+    print(f"Total queries: {len(results)}")
+    print(f"Successful: {sum(1 for r in results if r['status'] == 'success')}")
+    print(f"Failed: {sum(1 for r in results if r['status'] != 'success')}")
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x ~/proxy_rotator.py
+Subtask 3.4: Execute Automated Research Scripts
+Run the automation scripts:
+
+# First, ensure Tor control port is accessible
+echo "ControlPort 9051" | sudo tee -a /etc/tor/torrc
+sudo systemctl restart tor
+
+# Wait for Tor to restart
+sleep 10
+
+# Run the basic Tor controller
+echo "Running basic Tor controller..."
+python3 ~/tor_controller.py
+
+# Run the advanced proxy rotator
+echo "Running advanced proxy rotator..."
+python3 ~/proxy_rotator.py
+Subtask 3.5: Monitor and Verify Automation
+Create a monitoring script to verify automation effectiveness:
+
+# Create monitoring script
+cat > ~/monitor_research.sh << 'EOF'
+#!/bin/bash
+
+echo "RESEARCH AUTOMATION MONITORING"
+echo "=============================="
+
+# Check if Tor is running
+if pgrep -x "tor" > /dev/null; then
+    echo "✓ Tor service is running"
+else
+    echo "✗ Tor service is not running"
+fi
+
+# Check Tor control port
+if netstat -ln | grep -q ":9051"; then
+    echo "✓ Tor control port (9051) is accessible"
+else
+    echo "✗ Tor control port (9051) is not accessible"
+fi
+
+# Check SOCKS proxy port
+if netstat -ln | grep -q ":9050"; then
+    echo "✓ Tor SOCKS proxy (9050) is running"
+else
+    echo "✗ Tor SOCKS proxy (9050) is not running"
+fi
+
+# Check recent research results
+echo ""
+echo "RECENT RESEARCH FILES:"
+ls -la ~/research_*.json 2>/dev/null || echo "No research result files found"
+
+# Display current IP through Tor
+echo ""
+echo "CURRENT TOR IP:"
+curl -s --socks5-hostname 127.0.0.1:9050 https://httpbin.org/ip | grep -o '"origin": "[^"]*"' || echo "Unable to retrieve IP"
+
+# Check system resources
+echo ""
+echo "SYSTEM RESOURCES:"
+echo "Memory usage: $(free -h | grep Mem | awk '{print $3 "/" $2}')"
+echo "CPU usage: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)%"
+
+echo ""
+echo "MONITORING COMPLETE"
+EOF
+
+chmod +x ~/monitor_research.sh
+./monitor_research.sh
+Troubleshooting Common Issues
+Issue 1: Tor Connection Problems
+Symptoms: Unable to connect to Tor network
+
+Solutions:
+
+# Restart Tor service
+sudo systemctl restart tor
+
+# Check Tor logs
+sudo journalctl -u tor -f
+
+# Verify Tor configuration
+sudo tor --verify-config
+Issue 2: Python Script Errors
+Symptoms: ImportError or connection timeouts
+
+Solutions:
+
+# Install missing dependencies
+pip3 install --user requests[socks] stem
+
+# Check Python path
+which python3
+
+# Verify Tor control authentication
+sudo grep -i "HashedControlPassword\|CookieAuthentication" /etc/tor/torrc
+Issue 3: Slow Performance
+Symptoms: Long response times or timeouts
+
+Solutions:
+
+# Increase timeout values in scripts
+# Add delays between requests
+# Use fewer concurrent connections
+# Check network connectivity
+ping -c 4 8.8.8.8
+Security Best Practices
+Operational Security Guidelines
+Identity Management:
+
+Request new identity between different research topics
+Never reuse the same circuit for sensitive queries
+Clear browser data regularly
+Query Sanitization:
+
+Avoid personal information in search terms
+Use generic, non-attributable language
+Vary search patterns and timing
+Data Handling:
+
+Encrypt research results
+Use secure deletion for temporary files
+Avoid saving sensitive data to persistent storage
+Network Security:
+
+Verify DNS settings point to Tor
+Disable WebRTC and JavaScript when possible
+Monitor for IP leaks regularly
+Verification Commands
+# Create security verification script
+cat > ~/security_check.sh << 'EOF'
+#!/bin/bash
+
+echo "SECURITY VERIFICATION CHECKLIST"
+echo "==============================="
+
+# Check for DNS leaks
+echo "1. DNS Leak Test:"
+nslookup google.com 127.0.0.1 | grep -E "Server|Address"
+
+# Verify Tor circuit
+echo "2. Tor Circuit Status:"
+curl -s --socks5-hostname 127.0.0.1:9050 https://check.torproject.org | grep -o "Congratulations.*Tor" || echo "Tor verification failed"
+
+# Check system time (should be UTC)
+echo "3. System Timezone:"
+timedatectl show --property=Timezone --value
+
+# Verify no direct connections
+echo "4. Active Network Connections:"
+netstat -tuln | grep -E ":80|:443|:53" | head -5
+
+# Check for WebRTC leaks (manual verification required)
+echo "5. WebRTC Status:"
+echo "   Manual check required: Visit https://browserleaks.com/webrtc in Tor Browser"
+
+echo ""
+echo "VERIFICATION COMPLETE"
+echo "Review each item for security compliance"
+EOF
+
+chmod +x ~/security_check.sh
+./security_check.sh
+Conclusion
+In this comprehensive lab, students have successfully:
+
+Configured Tails OS for anonymous research operations using QEMU virtualization
+Mastered Tor Browser security settings and identity management techniques
+Implemented automated research using Python scripts with proxy rotation
+Developed operational security practices for private investigations
+Created monitoring tools to verify anonymity and system security
+This lab demonstrates critical skills for cybersecurity professionals conducting OSINT investigations while maintaining operational security. The techniques learned here are essential for:
+
+Threat Intelligence Gathering: Researching adversaries without revealing investigator identity
+Digital Forensics: Collecting evidence while preserving anonymity
+Security Research: Investigating vulnerabilities and threats safely
+Compliance Investigations: Conducting research within legal and ethical boundaries
+The automation scripts developed provide a foundation for scalable research operations while maintaining the highest standards of privacy and security. Students can extend these tools for specific investigation requirements while adhering to the security principles demonstrated throughout this lab.
+
+Key Takeaways:
+
+Anonymity requires multiple layers of protection (Tails + Tor + Operational Security)
+Automation must include identity rotation and traffic pattern obfuscation
+Continuous monitoring and verification are essential for maintaining security
+Proper documentation enables reproducible and auditable research processes
+Students should practice these techniques regularly and stay updated with the latest security developments in anonymous research methodologies.
