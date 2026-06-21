@@ -1,0 +1,622 @@
+Deep Search with Google Dorking & recon-ng
+Objectives
+By the end of this lab, students will be able to:
+
+Apply advanced Google Dorking techniques for information discovery
+Utilize recon-ng framework for systematic reconnaissance
+Automate OSINT collection using Python scripts
+Understand ethical and legal boundaries of information gathering
+Correlate data from multiple intelligence sources
+Prerequisites
+Basic Linux command line proficiency
+Fundamental Python programming skills
+Understanding of web technologies and DNS
+Knowledge of cybersecurity ethics and legal considerations
+Lab Environment Setup
+Ready-to-Use Cloud Machines: Al Nafi provides pre-configured Linux-based cloud machines with all necessary tools installed. Simply click Start Lab to access your dedicated environment.
+
+Your cloud machine includes:
+
+Ubuntu 20.04 LTS
+Pre-installed recon-ng framework
+Python 3.8+ with required libraries
+Text editors (nano, vim)
+Task 1: Master Google Dorking Techniques
+Step 1: Create Lab Directory and Reference Materials
+Open terminal and create your workspace:
+
+mkdir ~/lab9_osint && cd ~/lab9_osint
+Create a Google Dork operators reference file:
+
+nano google_dorks_reference.txt
+Add this content:
+
+GOOGLE DORK OPERATORS
+=====================
+
+Basic Operators:
+- site:domain.com          Search within specific domain
+- filetype:pdf             Find specific file types
+- intitle:"keyword"        Search in page titles
+- inurl:"keyword"          Search in URLs
+- intext:"keyword"         Search in page content
+- cache:url                View cached version
+- related:domain.com       Find related websites
+
+Advanced Operators:
+- "exact phrase"           Exact phrase matching
+- keyword1 OR keyword2     Either term
+- keyword1 AND keyword2    Both terms
+- -keyword                 Exclude term
+- *                        Wildcard
+- 2020..2023              Range operator
+
+Security-Focused Examples:
+- intitle:"index of"       Directory listings
+- filetype:sql "password"  SQL files with passwords
+- inurl:admin              Admin panels
+- intitle:"login"          Login pages
+Save and exit (Ctrl+X, Y, Enter).
+
+Step 2: Build Google Dork Generator Script
+Create a Python script for generating Google Dorks:
+
+nano google_dork_generator.py
+Add this starter template:
+
+#!/usr/bin/env python3
+"""
+Google Dork Generator - Educational Tool
+Students: Complete the TODO sections
+"""
+
+import urllib.parse
+
+class GoogleDorkGenerator:
+    def __init__(self):
+        self.base_url = "https://www.google.com/search?q="
+        
+    def create_dork_url(self, dork_query):
+        """
+        Create properly encoded Google search URL
+        
+        Args:
+            dork_query: The Google dork string
+            
+        Returns:
+            Complete search URL
+        """
+        # TODO: Implement URL encoding using urllib.parse.quote_plus()
+        # TODO: Concatenate with base_url
+        # TODO: Return the complete URL
+        pass
+    
+    def build_site_dork(self, domain, filetype=None, keyword=None):
+        """
+        Build a site-specific dork
+        
+        Args:
+            domain: Target domain
+            filetype: Optional file type filter
+            keyword: Optional keyword to search
+            
+        Returns:
+            Formatted dork string
+        """
+        # TODO: Start with site:domain
+        # TODO: Add filetype:extension if provided
+        # TODO: Add keyword if provided
+        # TODO: Return complete dork string
+        pass
+    
+    def build_sensitive_file_dork(self, domain, file_extensions):
+        """
+        Build dork to find sensitive files
+        
+        Args:
+            domain: Target domain
+            file_extensions: List of file extensions
+            
+        Returns:
+            List of dork strings
+        """
+        # TODO: Create dorks for each file extension
+        # TODO: Include keywords like "confidential", "password"
+        # TODO: Return list of dork strings
+        pass
+    
+    def display_dork_examples(self):
+        """Display example dorks for learning"""
+        examples = [
+            ("File Discovery", 'site:example.com filetype:pdf'),
+            ("Login Pages", 'intitle:"login" site:example.com'),
+            ("Directory Listings", 'intitle:"index of" site:example.com'),
+            ("Config Files", 'filetype:conf site:example.com')
+        ]
+        
+        print("\nGoogle Dork Examples:")
+        print("=" * 50)
+        for category, dork in examples:
+            print(f"\n{category}:")
+            print(f"  Dork: {dork}")
+            print(f"  URL: {self.create_dork_url(dork)}")
+
+def main():
+    """Main function - students complete this"""
+    generator = GoogleDorkGenerator()
+    
+    print("Google Dork Generator")
+    print("=" * 40)
+    
+    # TODO: Display example dorks
+    # TODO: Get user input for target domain
+    # TODO: Build custom dorks based on user input
+    # TODO: Display generated URLs
+    
+    print("\nRemember: Use ethically and legally!")
+
+if __name__ == "__main__":
+    main()
+Make executable and test:
+
+chmod +x google_dork_generator.py
+python3 google_dork_generator.py
+Step 3: Create Dork Database Manager
+Create a database management script:
+
+nano dork_database.py
+Add this template:
+
+#!/usr/bin/env python3
+"""
+Google Dork Database Manager
+Students: Implement the TODO sections
+"""
+
+import json
+from datetime import datetime
+
+class DorkDatabase:
+    def __init__(self):
+        self.dorks = {
+            "sensitive_files": [
+                'filetype:pdf "confidential"',
+                'filetype:xls "password"'
+            ],
+            "login_pages": [
+                'intitle:"login" inurl:admin',
+                'intitle:"admin panel"'
+            ],
+            "config_files": [
+                'filetype:conf',
+                'filetype:ini "password"'
+            ]
+        }
+    
+    def add_dork(self, category, dork):
+        """
+        Add a new dork to database
+        
+        Args:
+            category: Dork category
+            dork: Dork string to add
+        """
+        # TODO: Check if category exists, create if not
+        # TODO: Append dork to category list
+        # TODO: Print confirmation message
+        pass
+    
+    def search_by_category(self, category):
+        """
+        Retrieve dorks by category
+        
+        Args:
+            category: Category name
+            
+        Returns:
+            List of dorks or empty list
+        """
+        # TODO: Return dorks for category
+        # TODO: Handle missing category gracefully
+        pass
+    
+    def save_to_file(self, filename="dork_db.json"):
+        """
+        Save database to JSON file
+        
+        Args:
+            filename: Output filename
+        """
+        # TODO: Open file for writing
+        # TODO: Use json.dump() to save self.dorks
+        # TODO: Print success message
+        pass
+    
+    def load_from_file(self, filename="dork_db.json"):
+        """
+        Load database from JSON file
+        
+        Args:
+            filename: Input filename
+        """
+        # TODO: Try to open and read file
+        # TODO: Use json.load() to read data
+        # TODO: Handle FileNotFoundError
+        pass
+    
+    def display_all(self):
+        """Display entire database"""
+        # TODO: Iterate through categories
+        # TODO: Print category name and dorks
+        # TODO: Format output nicely
+        pass
+
+def main():
+    """Main function"""
+    db = DorkDatabase()
+    
+    # TODO: Create menu system
+    # TODO: Handle user choices (view, add, save, load)
+    # TODO: Implement input validation
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Task 2: Utilize recon-ng Framework
+Step 4: Initialize recon-ng and Create Workspace
+Launch recon-ng:
+
+recon-ng
+Inside recon-ng console, execute:
+
+help
+show modules
+workspaces create lab9_recon
+workspaces select lab9_recon
+Step 5: Install Essential Modules
+Install reconnaissance modules:
+
+marketplace search
+marketplace install recon/domains-hosts/google_site_web
+marketplace install recon/hosts-hosts/resolve
+marketplace install recon/domains-hosts/hackertarget
+marketplace install reporting/html
+show modules
+Step 6: Perform Basic Reconnaissance
+Add target domain and run modules:
+
+db insert domains example.com
+modules load recon/domains-hosts/google_site_web
+options set SOURCE example.com
+run
+show hosts
+Resolve discovered hosts:
+
+modules load recon/hosts-hosts/resolve
+run
+show hosts
+Generate HTML report:
+
+modules load reporting/html
+options set FILENAME ~/lab9_osint/recon_report.html
+run
+exit
+View the report:
+
+firefox ~/lab9_osint/recon_report.html &
+Task 3: Automate OSINT with Python
+Step 7: Create recon-ng Automation Script
+Create automation framework:
+
+nano recon_automation.py
+Add this template:
+
+#!/usr/bin/env python3
+"""
+Recon-ng Automation Framework
+Students: Complete the implementation
+"""
+
+import subprocess
+import json
+import os
+from datetime import datetime
+
+class ReconAutomation:
+    def __init__(self, target_domain, workspace_name=None):
+        self.target = target_domain
+        self.workspace = workspace_name or f"auto_{target_domain.replace('.', '_')}"
+        self.results_dir = f"results_{self.workspace}"
+        self.setup_environment()
+    
+    def setup_environment(self):
+        """Create necessary directories"""
+        # TODO: Create results directory if not exists
+        # TODO: Create subdirectories for different output types
+        # TODO: Print setup confirmation
+        pass
+    
+    def create_recon_script(self, modules_to_run):
+        """
+        Create recon-ng command script
+        
+        Args:
+            modules_to_run: List of module names
+            
+        Returns:
+            Path to command script file
+        """
+        # TODO: Create command list starting with workspace setup
+        # TODO: Add db insert domains command
+        # TODO: Add module load and run commands for each module
+        # TODO: Add reporting commands
+        # TODO: Write commands to .rc file
+        # TODO: Return script file path
+        pass
+    
+    def run_recon_ng(self, script_file):
+        """
+        Execute recon-ng with command script
+        
+        Args:
+            script_file: Path to command script
+            
+        Returns:
+            Tuple of (stdout, stderr)
+        """
+        # TODO: Use subprocess.run() to execute recon-ng
+        # TODO: Pass script file with -r flag
+        # TODO: Capture output
+        # TODO: Handle timeouts and errors
+        # TODO: Return output
+        pass
+    
+    def parse_results(self, output):
+        """
+        Parse recon-ng output
+        
+        Args:
+            output: Raw output from recon-ng
+            
+        Returns:
+            Dictionary with structured results
+        """
+        # TODO: Initialize results dictionary
+        # TODO: Parse output for domains, hosts, contacts
+        # TODO: Extract data from table format
+        # TODO: Return structured data
+        pass
+    
+    def save_results(self, results):
+        """
+        Save results to files
+        
+        Args:
+            results: Dictionary with results
+        """
+        # TODO: Save as JSON file
+        # TODO: Create text summary report
+        # TODO: Include timestamp and metadata
+        pass
+    
+    def generate_report(self, results):
+        """
+        Generate comprehensive report
+        
+        Args:
+            results: Dictionary with results
+        """
+        # TODO: Create formatted text report
+        # TODO: Include summary statistics
+        # TODO: List all discovered items
+        # TODO: Add recommendations section
+        pass
+
+def main():
+    """Main execution function"""
+    print("Recon-ng Automation Tool")
+    print("=" * 40)
+    
+    # TODO: Get target domain from user
+    # TODO: Create ReconAutomation instance
+    # TODO: Define modules to run
+    # TODO: Create and execute recon script
+    # TODO: Parse and save results
+    # TODO: Generate final report
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 8: Build Integrated OSINT Framework
+Create comprehensive automation:
+
+nano osint_framework.py
+Add this template:
+
+#!/usr/bin/env python3
+"""
+Integrated OSINT Framework
+Combines Google Dorking and recon-ng
+Students: Implement all TODO sections
+"""
+
+import subprocess
+import json
+import os
+import urllib.parse
+from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor
+
+class OSINTFramework:
+    def __init__(self, target):
+        self.target = target
+        self.workspace = f"osint_{target.replace('.', '_')}"
+        self.results_dir = f"osint_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.setup_directories()
+    
+    def setup_directories(self):
+        """Create directory structure"""
+        # TODO: Create main results directory
+        # TODO: Create subdirectories: dorks, recon, reports
+        # TODO: Print setup information
+        pass
+    
+    def generate_target_dorks(self):
+        """
+        Generate Google Dorks for target
+        
+        Returns:
+            List of dork dictionaries
+        """
+        # TODO: Create list of dork templates
+        # TODO: Format each dork with target domain
+        # TODO: Generate search URLs
+        # TODO: Return structured dork data
+        pass
+    
+    def save_dork_results(self, dorks):
+        """
+        Save Google Dork results
+        
+        Args:
+            dorks: List of dork dictionaries
+        """
+        # TODO: Save as JSON file
+        # TODO: Create text summary
+        # TODO: Include all search URLs
+        pass
+    
+    def run_recon_ng_scan(self):
+        """
+        Execute recon-ng reconnaissance
+        
+        Returns:
+            Dictionary with recon results
+        """
+        # TODO: Create recon-ng command script
+        # TODO: Execute recon-ng
+        # TODO: Parse output
+        # TODO: Return structured results
+        pass
+    
+    def correlate_results(self, dork_results, recon_results):
+        """
+        Correlate data from multiple sources
+        
+        Args:
+            dork_results: Results from Google Dorking
+            recon_results: Results from recon-ng
+            
+        Returns:
+            Dictionary with correlated intelligence
+        """
+        # TODO: Combine results from both sources
+        # TODO: Identify overlapping information
+        # TODO: Create unified dataset
+        # TODO: Return correlated results
+        pass
+    
+    def generate_comprehensive_report(self, all_results):
+        """
+        Generate final comprehensive report
+        
+        Args:
+            all_results: All collected intelligence
+        """
+        # TODO: Create detailed text report
+        # TODO: Include executive summary
+        # TODO: List all findings by category
+        # TODO: Add recommendations
+        # TODO: Include timestamps and metadata
+        pass
+    
+    def run_full_scan(self):
+        """Execute complete OSINT workflow"""
+        # TODO: Run Google Dork generation
+        # TODO: Run recon-ng scan
+        # TODO: Correlate all results
+        # TODO: Generate comprehensive report
+        # TODO: Print summary to console
+        pass
+
+def main():
+    """Main execution"""
+    print("Integrated OSINT Framework")
+    print("=" * 50)
+    print("WARNING: Use only for authorized targets!")
+    print()
+    
+    # TODO: Get target from user input
+    # TODO: Validate target format
+    # TODO: Create OSINTFramework instance
+    # TODO: Run full scan
+    # TODO: Display results location
+    
+    pass
+
+if __name__ == "__main__":
+    main()
+Make executable:
+
+chmod +x recon_automation.py osint_framework.py
+Step 9: Test Your Automation
+Run your completed scripts:
+
+# Test recon automation
+python3 recon_automation.py
+
+# Test integrated framework
+python3 osint_framework.py
+Expected Outcomes
+After completing this lab, you should have:
+
+Google Dork Generator: Functional script that creates targeted search queries
+Dork Database: Organized collection of useful Google Dorks
+recon-ng Skills: Ability to use framework for domain reconnaissance
+Automation Scripts: Python tools that automate OSINT collection
+Comprehensive Reports: Structured output from multiple intelligence sources
+Your results directory should contain:
+
+JSON files with structured data
+Text reports with findings
+HTML reports from recon-ng
+Search URLs for manual verification
+Troubleshooting Tips
+Issue: recon-ng modules not found
+
+Solution: Run marketplace refresh then reinstall modules
+Issue: Python script permission denied
+
+Solution: Ensure script is executable: chmod +x script.py
+Issue: recon-ng command not found
+
+Solution: Install recon-ng: sudo apt update && sudo apt install recon-ng -y
+Issue: Empty results from recon-ng
+
+Solution: Some modules require API keys. Use modules that work without keys for this lab
+Issue: Timeout errors in automation
+
+Solution: Increase timeout value in subprocess.run() or reduce number of modules
+Conclusion
+This lab introduced advanced OSINT techniques combining Google Dorking with automated reconnaissance using recon-ng. You learned to:
+
+Construct effective Google Dorks for targeted information discovery
+Utilize recon-ng framework for systematic domain reconnaissance
+Automate intelligence gathering with Python scripts
+Correlate data from multiple sources for comprehensive analysis
+Key Takeaways:
+
+Always obtain proper authorization before conducting reconnaissance
+Google Dorking reveals publicly available but often overlooked information
+Automation increases efficiency but requires careful implementation
+Multiple intelligence sources provide more complete picture
+Proper documentation and reporting are essential
+Next Steps:
+
+Explore additional recon-ng modules and API integrations
+Practice on authorized targets or bug bounty programs
+Study advanced OSINT frameworks like Maltego or SpiderFoot
+Learn about defensive measures against reconnaissance
+Ethical Reminder: The techniques learned in this lab are powerful tools that must be used responsibly. Only perform reconnaissance on systems you own or have explicit written permission to test. Unauthorized reconnaissance may violate laws and ethical guidelines.
