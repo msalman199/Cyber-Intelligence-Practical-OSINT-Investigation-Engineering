@@ -1,0 +1,605 @@
+Investigate a Suspect's Online Presence with Sherlock
+Objectives
+By the end of this lab, students will be able to:
+
+Install and configure Sherlock and Maigret tools for OSINT investigations
+Use Sherlock to search for usernames across multiple social media platforms
+Utilize Maigret to scrape additional data and perform advanced username searches
+Create Python scripts to automate username searches across multiple websites
+Analyze and document findings from online presence investigations
+Apply proper OSINT methodologies for digital investigations
+Prerequisites
+Before starting this lab, students should have:
+
+Basic understanding of Linux command line operations
+Fundamental knowledge of Python programming
+Understanding of OSINT (Open Source Intelligence) concepts
+Familiarity with web browsers and social media platforms
+Basic knowledge of cybersecurity investigation principles
+Note: Al Nafi provides ready-to-use Linux-based cloud machines. Simply click Start Lab to begin - no need to build your own virtual machine.
+
+Lab Environment Setup
+Task 1: Prepare the Investigation Environment
+Subtask 1.1: Update System and Install Dependencies
+First, ensure your system is up to date and install necessary dependencies:
+
+sudo apt update && sudo apt upgrade -y
+sudo apt install python3 python3-pip git curl wget -y
+Subtask 1.2: Create Investigation Directory
+Create a dedicated workspace for your investigation:
+
+mkdir ~/osint_investigation
+cd ~/osint_investigation
+mkdir sherlock_results maigret_results custom_scripts
+Subtask 1.3: Install Sherlock
+Clone and install Sherlock from the official repository:
+
+git clone https://github.com/sherlock-project/sherlock.git
+cd sherlock
+python3 -m pip install -r requirements.txt
+cd ..
+Subtask 1.4: Install Maigret
+Install Maigret using pip:
+
+python3 -m pip install maigret
+Verify the installation:
+
+maigret --version
+Task 2: Username Investigation with Sherlock
+Subtask 2.1: Basic Username Search
+Let's start with a basic username search using Sherlock. For this lab, we'll use the username johnsmith123 as our investigation target.
+
+Navigate to the Sherlock directory and run a basic search:
+
+cd ~/osint_investigation/sherlock
+python3 sherlock johnsmith123
+This command will search for the username across hundreds of social media platforms and websites.
+
+Subtask 2.2: Save Results to File
+Run the search again and save results to a file for documentation:
+
+python3 sherlock johnsmith123 --output ../sherlock_results/johnsmith123_results.txt
+Subtask 2.3: Search Multiple Usernames
+Create a file with multiple usernames to investigate:
+
+cd ~/osint_investigation
+echo -e "johnsmith123\njane_doe_2023\nmike_wilson_dev" > usernames.txt
+Search for all usernames in the file:
+
+cd sherlock
+python3 sherlock --folderoutput ../sherlock_results/ --timeout 10 $(cat ../usernames.txt)
+Subtask 2.4: Target Specific Platforms
+Search only on specific platforms (e.g., Twitter, Instagram, GitHub):
+
+python3 sherlock johnsmith123 --site Twitter --site Instagram --site GitHub --output ../sherlock_results/specific_platforms.txt
+Task 3: Advanced Investigation with Maigret
+Subtask 3.1: Basic Maigret Search
+Maigret provides more detailed information and additional features. Run a basic search:
+
+cd ~/osint_investigation
+maigret johnsmith123 --folderoutput maigret_results/
+Subtask 3.2: Generate HTML Report
+Create a comprehensive HTML report with Maigret:
+
+maigret johnsmith123 --html --folderoutput maigret_results/
+Open the HTML report in a browser:
+
+firefox maigret_results/johnsmith123/report.html &
+Subtask 3.3: Extract Additional Metadata
+Use Maigret to extract additional metadata and perform deeper analysis:
+
+maigret johnsmith123 --extract --folderoutput maigret_results/ --timeout 15
+Subtask 3.4: Search with Custom Tags
+Search for usernames with specific tags or categories:
+
+maigret johnsmith123 --tags social --folderoutput maigret_results/social_only/
+Task 4: Create Custom Python Scripts for Automation
+Subtask 4.1: Basic Username Search Script
+Create a Python script to automate username searches:
+
+cd ~/osint_investigation/custom_scripts
+nano username_searcher.py
+Add the following code:
+
+#!/usr/bin/env python3
+import subprocess
+import sys
+import os
+from datetime import datetime
+
+def search_username_sherlock(username, output_dir):
+    """Search username using Sherlock"""
+    print(f"[+] Searching for {username} using Sherlock...")
+    
+    sherlock_path = "../sherlock"
+    output_file = f"{output_dir}/sherlock_{username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    
+    try:
+        cmd = [
+            "python3", f"{sherlock_path}/sherlock.py", 
+            username, 
+            "--output", output_file,
+            "--timeout", "10"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print(f"[+] Sherlock search completed. Results saved to: {output_file}")
+            return output_file
+        else:
+            print(f"[-] Sherlock search failed: {result.stderr}")
+            return None
+            
+    except Exception as e:
+        print(f"[-] Error running Sherlock: {str(e)}")
+        return None
+
+def search_username_maigret(username, output_dir):
+    """Search username using Maigret"""
+    print(f"[+] Searching for {username} using Maigret...")
+    
+    try:
+        cmd = [
+            "maigret", 
+            username, 
+            "--folderoutput", f"{output_dir}/maigret_{username}_{datetime.now().strftime('%Y%m%d_%H%M%S')}/",
+            "--html",
+            "--timeout", "15"
+        ]
+        
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print(f"[+] Maigret search completed successfully")
+            return True
+        else:
+            print(f"[-] Maigret search failed: {result.stderr}")
+            return False
+            
+    except Exception as e:
+        print(f"[-] Error running Maigret: {str(e)}")
+        return False
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 username_searcher.py <username>")
+        sys.exit(1)
+    
+    username = sys.argv[1]
+    output_dir = "../investigation_results"
+    
+    # Create output directory
+    os.makedirs(output_dir, exist_ok=True)
+    
+    print(f"[+] Starting investigation for username: {username}")
+    print(f"[+] Results will be saved to: {output_dir}")
+    print("-" * 50)
+    
+    # Run Sherlock search
+    sherlock_result = search_username_sherlock(username, output_dir)
+    
+    print("-" * 50)
+    
+    # Run Maigret search
+    maigret_result = search_username_maigret(username, output_dir)
+    
+    print("-" * 50)
+    print("[+] Investigation completed!")
+    
+    if sherlock_result:
+        print(f"[+] Sherlock results: {sherlock_result}")
+    if maigret_result:
+        print(f"[+] Maigret results saved to output directory")
+
+if __name__ == "__main__":
+    main()
+Make the script executable:
+
+chmod +x username_searcher.py
+Subtask 4.2: Multi-Username Batch Script
+Create a script to process multiple usernames from a file:
+
+nano batch_username_searcher.py
+Add the following code:
+
+#!/usr/bin/env python3
+import subprocess
+import sys
+import os
+from datetime import datetime
+import time
+
+def read_usernames_from_file(filename):
+    """Read usernames from a text file"""
+    try:
+        with open(filename, 'r') as file:
+            usernames = [line.strip() for line in file if line.strip()]
+        return usernames
+    except FileNotFoundError:
+        print(f"[-] File {filename} not found")
+        return []
+    except Exception as e:
+        print(f"[-] Error reading file: {str(e)}")
+        return []
+
+def create_investigation_report(usernames, output_dir):
+    """Create a summary report of the investigation"""
+    report_file = f"{output_dir}/investigation_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    
+    with open(report_file, 'w') as f:
+        f.write("OSINT Username Investigation Report\n")
+        f.write("=" * 40 + "\n")
+        f.write(f"Investigation Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"Total Usernames Investigated: {len(usernames)}\n")
+        f.write("\nUsernames Investigated:\n")
+        f.write("-" * 25 + "\n")
+        
+        for i, username in enumerate(usernames, 1):
+            f.write(f"{i}. {username}\n")
+        
+        f.write("\nInvestigation Tools Used:\n")
+        f.write("- Sherlock: Username search across social platforms\n")
+        f.write("- Maigret: Advanced username analysis with metadata\n")
+        f.write("\nNote: Check individual result files for detailed findings.\n")
+    
+    print(f"[+] Investigation summary saved to: {report_file}")
+
+def search_single_username(username, output_dir):
+    """Search a single username using both tools"""
+    print(f"\n[+] Investigating username: {username}")
+    print("-" * 30)
+    
+    # Sherlock search
+    sherlock_cmd = [
+        "python3", "../sherlock/sherlock.py",
+        username,
+        "--output", f"{output_dir}/sherlock_{username}.txt",
+        "--timeout", "10"
+    ]
+    
+    try:
+        print("[+] Running Sherlock search...")
+        subprocess.run(sherlock_cmd, check=True)
+        print("[+] Sherlock search completed")
+    except subprocess.CalledProcessError:
+        print("[-] Sherlock search failed")
+    
+    # Small delay between searches
+    time.sleep(2)
+    
+    # Maigret search
+    maigret_cmd = [
+        "maigret",
+        username,
+        "--folderoutput", f"{output_dir}/maigret_{username}/",
+        "--html",
+        "--timeout", "15"
+    ]
+    
+    try:
+        print("[+] Running Maigret search...")
+        subprocess.run(maigret_cmd, check=True)
+        print("[+] Maigret search completed")
+    except subprocess.CalledProcessError:
+        print("[-] Maigret search failed")
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 batch_username_searcher.py <usernames_file>")
+        print("Example: python3 batch_username_searcher.py ../usernames.txt")
+        sys.exit(1)
+    
+    usernames_file = sys.argv[1]
+    output_dir = "../batch_investigation_results"
+    
+    # Create output directory
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Read usernames from file
+    usernames = read_usernames_from_file(usernames_file)
+    
+    if not usernames:
+        print("[-] No usernames found in file")
+        sys.exit(1)
+    
+    print(f"[+] Starting batch investigation for {len(usernames)} usernames")
+    print(f"[+] Results will be saved to: {output_dir}")
+    
+    # Process each username
+    for i, username in enumerate(usernames, 1):
+        print(f"\n[+] Processing {i}/{len(usernames)}: {username}")
+        search_single_username(username, output_dir)
+        
+        # Add delay between usernames to avoid rate limiting
+        if i < len(usernames):
+            print("[+] Waiting 5 seconds before next search...")
+            time.sleep(5)
+    
+    # Create summary report
+    create_investigation_report(usernames, output_dir)
+    
+    print("\n" + "=" * 50)
+    print("[+] Batch investigation completed!")
+    print(f"[+] All results saved to: {output_dir}")
+
+if __name__ == "__main__":
+    main()
+Make the script executable:
+
+chmod +x batch_username_searcher.py
+Subtask 4.3: Test the Custom Scripts
+Test the single username script:
+
+python3 username_searcher.py testuser123
+Test the batch script with your usernames file:
+
+python3 batch_username_searcher.py ../usernames.txt
+Subtask 4.4: Advanced Analysis Script
+Create a script to analyze and summarize findings:
+
+nano analysis_script.py
+Add the following code:
+
+#!/usr/bin/env python3
+import os
+import re
+import json
+from datetime import datetime
+
+def analyze_sherlock_results(results_dir):
+    """Analyze Sherlock result files"""
+    findings = {}
+    
+    for filename in os.listdir(results_dir):
+        if filename.startswith('sherlock_') and filename.endswith('.txt'):
+            username = filename.replace('sherlock_', '').replace('.txt', '').split('_')[0]
+            
+            filepath = os.path.join(results_dir, filename)
+            
+            try:
+                with open(filepath, 'r') as f:
+                    content = f.read()
+                
+                # Count found profiles
+                found_profiles = content.count('[+]')
+                total_searches = content.count('Checking username')
+                
+                findings[username] = {
+                    'found_profiles': found_profiles,
+                    'total_searches': total_searches,
+                    'success_rate': round((found_profiles / total_searches * 100), 2) if total_searches > 0 else 0
+                }
+                
+            except Exception as e:
+                print(f"[-] Error analyzing {filename}: {str(e)}")
+    
+    return findings
+
+def generate_analysis_report(findings, output_file):
+    """Generate a comprehensive analysis report"""
+    with open(output_file, 'w') as f:
+        f.write("OSINT Investigation Analysis Report\n")
+        f.write("=" * 40 + "\n")
+        f.write(f"Analysis Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
+        
+        if not findings:
+            f.write("No findings to analyze.\n")
+            return
+        
+        f.write("Username Analysis Summary:\n")
+        f.write("-" * 30 + "\n")
+        
+        total_profiles = 0
+        for username, data in findings.items():
+            f.write(f"\nUsername: {username}\n")
+            f.write(f"  Found Profiles: {data['found_profiles']}\n")
+            f.write(f"  Total Searches: {data['total_searches']}\n")
+            f.write(f"  Success Rate: {data['success_rate']}%\n")
+            total_profiles += data['found_profiles']
+        
+        f.write(f"\nOverall Statistics:\n")
+        f.write(f"Total Usernames Analyzed: {len(findings)}\n")
+        f.write(f"Total Profiles Found: {total_profiles}\n")
+        f.write(f"Average Profiles per Username: {round(total_profiles / len(findings), 2)}\n")
+        
+        # Identify most successful usernames
+        sorted_findings = sorted(findings.items(), key=lambda x: x[1]['found_profiles'], reverse=True)
+        
+        f.write(f"\nTop Usernames by Profile Count:\n")
+        f.write("-" * 35 + "\n")
+        for i, (username, data) in enumerate(sorted_findings[:5], 1):
+            f.write(f"{i}. {username}: {data['found_profiles']} profiles\n")
+
+def main():
+    results_dir = "../investigation_results"
+    batch_results_dir = "../batch_investigation_results"
+    
+    print("[+] Starting analysis of investigation results...")
+    
+    # Analyze results from both directories
+    all_findings = {}
+    
+    if os.path.exists(results_dir):
+        findings1 = analyze_sherlock_results(results_dir)
+        all_findings.update(findings1)
+        print(f"[+] Analyzed {len(findings1)} results from {results_dir}")
+    
+    if os.path.exists(batch_results_dir):
+        findings2 = analyze_sherlock_results(batch_results_dir)
+        all_findings.update(findings2)
+        print(f"[+] Analyzed {len(findings2)} results from {batch_results_dir}")
+    
+    if not all_findings:
+        print("[-] No results found to analyze")
+        return
+    
+    # Generate analysis report
+    analysis_file = f"../analysis_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    generate_analysis_report(all_findings, analysis_file)
+    
+    print(f"[+] Analysis completed! Report saved to: {analysis_file}")
+    
+    # Display summary
+    print("\n" + "=" * 40)
+    print("QUICK SUMMARY")
+    print("=" * 40)
+    
+    total_profiles = sum(data['found_profiles'] for data in all_findings.values())
+    print(f"Total Usernames Analyzed: {len(all_findings)}")
+    print(f"Total Profiles Found: {total_profiles}")
+    
+    if all_findings:
+        avg_profiles = round(total_profiles / len(all_findings), 2)
+        print(f"Average Profiles per Username: {avg_profiles}")
+
+if __name__ == "__main__":
+    main()
+Make the script executable:
+
+chmod +x analysis_script.py
+Task 5: Comprehensive Investigation Workflow
+Subtask 5.1: Run Complete Investigation
+Execute a complete investigation workflow using all tools:
+
+cd ~/osint_investigation/custom_scripts
+
+# Run single username investigation
+python3 username_searcher.py johnsmith123
+
+# Run batch investigation
+python3 batch_username_searcher.py ../usernames.txt
+
+# Analyze results
+python3 analysis_script.py
+Subtask 5.2: Document Findings
+Create a comprehensive documentation of your findings:
+
+cd ~/osint_investigation
+nano investigation_documentation.md
+Add the following template and fill in your findings:
+
+# OSINT Investigation Report
+
+## Investigation Details
+- **Date**: [Current Date]
+- **Investigator**: [Your Name]
+- **Tools Used**: Sherlock, Maigret, Custom Python Scripts
+- **Target Usernames**: [List usernames investigated]
+
+## Methodology
+1. Used Sherlock for broad username searches across social platforms
+2. Employed Maigret for detailed analysis and metadata extraction
+3. Created custom Python scripts for automation and batch processing
+4. Analyzed results for patterns and insights
+
+## Key Findings
+### Username: johnsmith123
+- **Platforms Found**: [List platforms where username was found]
+- **Profile Links**: [List any discovered profile URLs]
+- **Additional Information**: [Any metadata or additional details]
+
+### Username: [Other usernames]
+[Repeat format for each username]
+
+## Technical Observations
+- **Most Common Platforms**: [List platforms where usernames are most commonly found]
+- **Success Rate**: [Overall success rate of finding profiles]
+- **Interesting Patterns**: [Any patterns noticed in username usage]
+
+## Recommendations
+- [List any recommendations for further investigation]
+- [Suggest additional tools or techniques]
+
+## Conclusion
+[Summarize the investigation results and their significance]
+Subtask 5.3: Create Investigation Archive
+Create an organized archive of all investigation materials:
+
+cd ~/osint_investigation
+
+# Create archive directory
+mkdir investigation_archive_$(date +%Y%m%d)
+cd investigation_archive_$(date +%Y%m%d)
+
+# Copy all results
+cp -r ../sherlock_results ./
+cp -r ../maigret_results ./
+cp -r ../investigation_results ./
+cp -r ../batch_investigation_results ./
+cp -r ../custom_scripts ./
+cp ../analysis_report_*.txt ./
+cp ../investigation_documentation.md ./
+
+# Create archive summary
+echo "OSINT Investigation Archive" > README.txt
+echo "Created: $(date)" >> README.txt
+echo "Tools Used: Sherlock, Maigret, Custom Python Scripts" >> README.txt
+echo "" >> README.txt
+echo "Directory Structure:" >> README.txt
+echo "- sherlock_results/: Raw Sherlock output files" >> README.txt
+echo "- maigret_results/: Maigret analysis and HTML reports" >> README.txt
+echo "- investigation_results/: Single username investigation results" >> README.txt
+echo "- batch_investigation_results/: Batch processing results" >> README.txt
+echo "- custom_scripts/: Python automation scripts" >> README.txt
+echo "- analysis_report_*.txt: Analysis and summary reports" >> README.txt
+echo "- investigation_documentation.md: Detailed investigation report" >> README.txt
+
+echo "[+] Investigation archive created successfully!"
+Troubleshooting Common Issues
+Issue 1: Sherlock Installation Problems
+If you encounter issues installing Sherlock:
+
+# Update pip and try again
+python3 -m pip install --upgrade pip
+cd ~/osint_investigation/sherlock
+python3 -m pip install -r requirements.txt --user
+Issue 2: Maigret Not Found
+If Maigret command is not found:
+
+# Install using user directory
+python3 -m pip install --user maigret
+# Add to PATH
+echo 'export PATH=$PATH:~/.local/bin' >> ~/.bashrc
+source ~/.bashrc
+Issue 3: Permission Denied Errors
+If you get permission errors:
+
+# Make scripts executable
+chmod +x ~/osint_investigation/custom_scripts/*.py
+# Fix ownership if needed
+sudo chown -R $USER:$USER ~/osint_investigation/
+Issue 4: Network Timeout Issues
+If searches timeout frequently:
+
+# Increase timeout values in commands
+python3 sherlock username --timeout 30
+maigret username --timeout 30
+Security and Legal Considerations
+Important Notes:
+
+Always ensure you have proper authorization before investigating individuals
+Use these tools only for legitimate security research, education, or authorized investigations
+Respect platform terms of service and rate limits
+Be aware of privacy laws and regulations in your jurisdiction
+Document your methodology for legal compliance
+Consider the ethical implications of your investigations
+Conclusion
+In this lab, you have successfully:
+
+Installed and configured Sherlock and Maigret for OSINT investigations
+Conducted username searches across multiple social media platforms and websites
+Created custom Python scripts to automate and streamline the investigation process
+Analyzed and documented findings from your investigations
+Developed a comprehensive workflow for online presence investigations
+These skills are essential for cybersecurity professionals, digital forensics investigators, and security researchers. The ability to gather intelligence from publicly available sources is crucial for threat assessment, incident response, and security investigations.
+
+Key Takeaways:
+
+Automation is crucial - Custom scripts save time and ensure consistency in investigations
+Multiple tools provide better coverage - Different tools may find different platforms or provide varying levels of detail
+Documentation is essential - Proper documentation ensures investigations are reproducible and legally defensible
+Ethical considerations matter - Always conduct investigations within legal and ethical boundaries
+The techniques learned in this lab form the foundation for more advanced OSINT investigations and can be expanded with additional tools and methodologies as you progress in your cybersecurity career.
+
+Remember to practice these skills regularly and stay updated with the latest tools and techniques in the rapidly evolving field of Open Source Intelligence.
