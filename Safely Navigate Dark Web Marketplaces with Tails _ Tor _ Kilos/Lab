@@ -1,0 +1,594 @@
+Safely Navigate Dark Web Marketplaces with Tails + Tor + Kilos
+Objectives
+By the end of this lab, students will be able to:
+
+Configure Tor for anonymous dark web access
+Navigate dark web search engines safely
+Implement Python scripts for automated dark web research
+Apply operational security (OPSEC) principles
+Understand legal and ethical boundaries of dark web investigation
+Prerequisites
+Basic Linux command line knowledge
+Python programming fundamentals
+Understanding of networking concepts
+Awareness of cybersecurity ethics and legal frameworks
+Lab Environment
+Al Nafi provides pre-configured cloud machines with Tails-like security features and Tor pre-installed. Click Start Lab to access your environment. All necessary tools are ready to use.
+
+Legal and Ethical Notice
+WARNING: This lab is for educational purposes only. Students must:
+
+Access only publicly available information
+Never engage in illegal activities
+Follow all applicable laws and regulations
+Report illegal content to authorities
+Use knowledge for defensive cybersecurity only
+Task 1: Configure and Verify Tor Connection
+Step 1.1: Verify Tor Service
+Check that Tor is running properly:
+
+# Check Tor service status
+sudo systemctl status tor
+
+# Verify Tor is listening on SOCKS port
+netstat -tlnp | grep 9050
+
+# Check Tor configuration
+cat /etc/tor/torrc | grep -v "^#" | grep -v "^$"
+Step 1.2: Create Tor Connection Verification Script
+Create a Python script to verify Tor connectivity:
+
+#!/usr/bin/env python3
+"""
+Tor Connection Verification Tool
+Students: Complete the TODOs to verify Tor connectivity
+"""
+
+import requests
+import json
+
+def verify_tor_connection():
+    """
+    Verify connection through Tor network
+    
+    Returns:
+        bool: True if connected through Tor, False otherwise
+    """
+    # TODO: Configure SOCKS5 proxy for Tor (port 9050)
+    proxies = {
+        'http': 'socks5://127.0.0.1:9050',
+        'https': 'socks5://127.0.0.1:9050'
+    }
+    
+    try:
+        # TODO: Make request to Tor check service
+        # URL: https://check.torproject.org/api/ip
+        # TODO: Parse JSON response and check 'IsTor' field
+        # TODO: Print exit IP address if connected
+        # TODO: Return True/False based on connection status
+        pass
+        
+    except Exception as e:
+        print(f"[-] Connection test failed: {e}")
+        return False
+
+def get_current_ip():
+    """
+    Get current exit IP address
+    
+    Returns:
+        str: Current IP address or None
+    """
+    # TODO: Implement IP retrieval through Tor
+    pass
+
+if __name__ == "__main__":
+    # TODO: Call verification function
+    # TODO: Display results to user
+    pass
+Save as: tor_verify.py
+
+Step 1.3: Test Tor Browser Configuration
+# Launch Tor browser
+tor-browser &
+
+# Manual configuration checklist:
+# 1. Navigate to: about:preferences#privacy
+# 2. Set security level to "Safest"
+# 3. Verify NoScript is enabled
+# 4. Test connection: https://check.torproject.org
+Task 2: Navigate Dark Web Search Engines Safely
+Step 2.1: Create Research Directory Structure
+# Create organized research environment
+mkdir -p ~/darkweb_research/{logs,data,scripts,reports}
+cd ~/darkweb_research
+
+# Create research log template
+cat > logs/research_log.txt << 'EOF'
+Dark Web Research Log
+=====================
+Date: $(date)
+Researcher: $(whoami)
+Purpose: Educational cybersecurity research
+
+Session Log:
+- Start Time: 
+- Sites Accessed:
+- Findings:
+- Security Measures:
+EOF
+Step 2.2: Implement Safe Search Functionality
+Create a dark web search tool:
+
+#!/usr/bin/env python3
+"""
+Dark Web Search Tool
+Students: Complete the implementation for safe searching
+"""
+
+import requests
+from bs4 import BeautifulSoup
+import time
+import random
+import json
+
+class DarkWebSearcher:
+    def __init__(self):
+        """Initialize searcher with Tor proxy configuration"""
+        # TODO: Create requests session
+        # TODO: Configure SOCKS5 proxy
+        # TODO: Set appropriate User-Agent header
+        pass
+    
+    def search_kilos(self, query, max_results=5):
+        """
+        Search Kilos dark web search engine
+        
+        Args:
+            query: Search term
+            max_results: Maximum number of results to return
+            
+        Returns:
+            list: Search results with title, URL, description
+        """
+        # Kilos onion address (educational reference)
+        kilos_url = "http://dnpscnbaix6nkwvystl3yxglz7nteicqrou3t75tpcc5532cztc46qyd.onion"
+        
+        # TODO: Implement random delay (2-5 seconds) for OPSEC
+        # TODO: Construct search URL with query parameter
+        # TODO: Make GET request through Tor
+        # TODO: Parse HTML response with BeautifulSoup
+        # TODO: Extract search results (title, URL, description)
+        # TODO: Return list of results (max_results limit)
+        pass
+    
+    def log_search(self, query, results):
+        """
+        Log search activity for accountability
+        
+        Args:
+            query: Search term used
+            results: List of search results
+        """
+        # TODO: Create log entry with timestamp
+        # TODO: Include query, result count, and summary
+        # TODO: Append to research_log.txt
+        pass
+    
+    def validate_onion_url(self, url):
+        """
+        Validate onion URL format
+        
+        Args:
+            url: URL to validate
+            
+        Returns:
+            bool: True if valid onion URL
+        """
+        # TODO: Check if URL ends with .onion
+        # TODO: Verify URL format
+        # TODO: Return validation result
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create searcher instance
+    # TODO: Perform test search (educational terms only)
+    # TODO: Log results
+    # TODO: Display summary
+    pass
+Save as: scripts/darkweb_search.py
+
+Step 2.3: Create Marketplace Analysis Tool
+#!/usr/bin/env python3
+"""
+Marketplace Analysis Tool
+Students: Implement marketplace structure analysis
+"""
+
+import requests
+from bs4 import BeautifulSoup
+import hashlib
+import json
+from datetime import datetime
+
+class MarketplaceAnalyzer:
+    def __init__(self):
+        """Initialize analyzer with Tor configuration"""
+        # TODO: Setup session with Tor proxy
+        pass
+    
+    def analyze_site(self, onion_url):
+        """
+        Analyze marketplace structure and security features
+        
+        Args:
+            onion_url: Onion address to analyze
+            
+        Returns:
+            dict: Analysis results
+        """
+        analysis = {
+            'url': onion_url,
+            'timestamp': datetime.now().isoformat(),
+            'status': None,
+            'security_features': {},
+            'content_hash': None
+        }
+        
+        # TODO: Make request to onion URL
+        # TODO: Check response status
+        # TODO: Extract page title
+        # TODO: Identify security features (HTTPS, CAPTCHA, login, PGP)
+        # TODO: Calculate content hash (SHA256)
+        # TODO: Return analysis dictionary
+        pass
+    
+    def check_security_features(self, html_content):
+        """
+        Identify security features in HTML content
+        
+        Args:
+            html_content: HTML page content
+            
+        Returns:
+            dict: Security features found
+        """
+        features = {
+            'https': False,
+            'captcha': False,
+            'login_required': False,
+            'pgp_support': False,
+            'two_factor': False
+        }
+        
+        # TODO: Search for security indicators in HTML
+        # TODO: Update features dictionary
+        # TODO: Return results
+        pass
+    
+    def save_analysis(self, analysis):
+        """Save analysis to JSON file"""
+        # TODO: Load existing analyses
+        # TODO: Append new analysis
+        # TODO: Save to data/marketplace_analysis.json
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create analyzer instance
+    # TODO: Test with DuckDuckGo onion (safe test site)
+    # TODO: Save and display results
+    pass
+Save as: scripts/marketplace_analyzer.py
+
+Task 3: Automate Dark Web Research with Python
+Step 3.1: Build Automated Research Framework
+#!/usr/bin/env python3
+"""
+Automated Dark Web Research Framework
+Students: Complete the automation workflow
+"""
+
+import logging
+import json
+import time
+import random
+from datetime import datetime
+
+class ResearchAutomation:
+    def __init__(self):
+        """Initialize automation framework"""
+        self.setup_logging()
+        # TODO: Initialize session with Tor
+        # TODO: Create data storage structures
+        pass
+    
+    def setup_logging(self):
+        """Configure logging system"""
+        # TODO: Setup logging to file and console
+        # TODO: Use format: timestamp - level - message
+        # TODO: Save to logs/automation.log
+        pass
+    
+    def automated_search_cycle(self, search_terms, delay_range=(5, 10)):
+        """
+        Perform automated search cycle with proper delays
+        
+        Args:
+            search_terms: List of terms to search
+            delay_range: Tuple of (min, max) delay in seconds
+            
+        Returns:
+            list: All search results
+        """
+        results = []
+        
+        # TODO: Iterate through search terms
+        # TODO: Add random delay between searches
+        # TODO: Perform search for each term
+        # TODO: Log each search activity
+        # TODO: Collect and return all results
+        pass
+    
+    def monitor_site_changes(self, url, check_interval=300):
+        """
+        Monitor site for content changes
+        
+        Args:
+            url: Site to monitor
+            check_interval: Seconds between checks
+        """
+        previous_hash = None
+        
+        # TODO: Implement monitoring loop
+        # TODO: Fetch site content periodically
+        # TODO: Calculate content hash
+        # TODO: Compare with previous hash
+        # TODO: Log changes detected
+        # TODO: Handle KeyboardInterrupt for clean exit
+        pass
+    
+    def generate_report(self):
+        """Generate comprehensive research report"""
+        report = {
+            'timestamp': datetime.now().isoformat(),
+            'summary': {},
+            'findings': [],
+            'recommendations': []
+        }
+        
+        # TODO: Compile research data
+        # TODO: Calculate statistics
+        # TODO: Generate recommendations
+        # TODO: Save to reports/research_report.json
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create automation instance
+    # TODO: Define search terms (educational only)
+    # TODO: Run automated search cycle
+    # TODO: Generate and save report
+    pass
+Save as: scripts/research_automation.py
+
+Step 3.2: Implement Security Monitoring
+#!/usr/bin/env python3
+"""
+Security Monitoring System
+Students: Implement security checks and monitoring
+"""
+
+import subprocess
+import psutil
+import json
+from datetime import datetime
+
+class SecurityMonitor:
+    def __init__(self):
+        """Initialize security monitor"""
+        # TODO: Setup logging
+        pass
+    
+    def check_tor_status(self):
+        """
+        Verify Tor service is running
+        
+        Returns:
+            bool: True if Tor is active
+        """
+        # TODO: Check systemctl status for tor service
+        # TODO: Return True/False based on status
+        pass
+    
+    def monitor_connections(self):
+        """
+        Monitor network connections for Tor activity
+        
+        Returns:
+            list: Active Tor connections
+        """
+        # TODO: Use psutil to get network connections
+        # TODO: Filter for Tor ports (9050, 9051)
+        # TODO: Return list of Tor connections
+        pass
+    
+    def check_system_resources(self):
+        """
+        Monitor system resource usage
+        
+        Returns:
+            dict: CPU, memory, disk usage
+        """
+        # TODO: Get CPU usage percentage
+        # TODO: Get memory usage percentage
+        # TODO: Get disk usage percentage
+        # TODO: Alert if usage > 80%
+        # TODO: Return resource dictionary
+        pass
+    
+    def verify_dns_config(self):
+        """
+        Verify DNS configuration for security
+        
+        Returns:
+            bool: True if properly configured
+        """
+        # TODO: Read /etc/resolv.conf
+        # TODO: Check for local DNS (127.0.0.1)
+        # TODO: Return validation result
+        pass
+    
+    def run_security_scan(self):
+        """Execute comprehensive security scan"""
+        scan_results = {
+            'timestamp': datetime.now().isoformat(),
+            'tor_status': None,
+            'connections': [],
+            'resources': {},
+            'dns_config': None
+        }
+        
+        # TODO: Run all security checks
+        # TODO: Compile results
+        # TODO: Save to logs/security_scan.json
+        # TODO: Return results
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create monitor instance
+    # TODO: Run security scan
+    # TODO: Display results
+    pass
+Save as: scripts/security_monitor.py
+
+Step 3.3: Create Data Analysis Tool
+#!/usr/bin/env python3
+"""
+Research Data Analysis Tool
+Students: Implement data analysis and visualization
+"""
+
+import json
+from collections import Counter
+from datetime import datetime
+
+class DataAnalyzer:
+    def __init__(self):
+        """Initialize data analyzer"""
+        self.data = None
+        self.results = {}
+    
+    def load_data(self, filename):
+        """
+        Load research data from JSON file
+        
+        Args:
+            filename: Path to data file
+            
+        Returns:
+            bool: True if loaded successfully
+        """
+        # TODO: Load JSON data from file
+        # TODO: Store in self.data
+        # TODO: Return success status
+        pass
+    
+    def analyze_search_patterns(self):
+        """
+        Analyze search patterns and trends
+        
+        Returns:
+            dict: Analysis results
+        """
+        # TODO: Extract search terms from data
+        # TODO: Calculate term frequency
+        # TODO: Calculate success rates
+        # TODO: Identify top search terms
+        # TODO: Return analysis dictionary
+        pass
+    
+    def generate_timeline(self):
+        """
+        Generate timeline of research activities
+        
+        Returns:
+            dict: Timeline data
+        """
+        # TODO: Extract timestamps from data
+        # TODO: Calculate start/end times
+        # TODO: Calculate duration
+        # TODO: Count activities
+        # TODO: Return timeline dictionary
+        pass
+    
+    def export_report(self):
+        """Export analysis report to JSON"""
+        # TODO: Compile all analysis results
+        # TODO: Add summary and recommendations
+        # TODO: Save to reports/analysis_report.json
+        pass
+
+if __name__ == "__main__":
+    # TODO: Create analyzer instance
+    # TODO: Load research data
+    # TODO: Run all analyses
+    # TODO: Export report
+    pass
+Save as: scripts/data_analyzer.py
+
+Expected Outcomes
+After completing this lab, you should have:
+
+Verified Tor connectivity with working Python verification script
+Functional search tool for safe dark web navigation
+Automated research framework with proper OPSEC delays
+Security monitoring system for continuous protection
+Data analysis capabilities for research insights
+Complete documentation in research logs
+Troubleshooting Tips
+Issue: Tor Connection Fails
+# Restart Tor service
+sudo systemctl restart tor
+
+# Check Tor logs
+sudo journalctl -u tor -n 50
+
+# Verify Tor configuration
+sudo tor --verify-config
+Issue: Python Import Errors
+# Install required packages
+pip3 install requests beautifulsoup4 PySocks
+
+# Verify installations
+pip3 list | grep -E "requests|beautifulsoup4|PySocks"
+Issue: SOCKS Proxy Errors
+# Test SOCKS proxy directly
+curl --socks5 127.0.0.1:9050 https://check.torproject.org/api/ip
+
+# Check if port 9050 is listening
+netstat -tlnp | grep 9050
+Security Best Practices
+Operational Security (OPSEC)
+Always verify Tor connection before accessing dark web
+Use random delays between automated requests (5-10 seconds minimum)
+Maintain detailed logs for accountability and legal protection
+Never access illegal content or engage in illegal activities
+Encrypt sensitive data collected during research
+Regular security scans to ensure system integrity
+Legal Compliance Checklist
+ Research purpose is educational/defensive
+ All activities are documented
+ No illegal content accessed
+ Proper authorization obtained
+ Incident response plan in place
+ Legal counsel consulted if needed
+Conclusion
+This lab provided hands-on experience with dark web research tools and techniques. You learned to:
+
+Configure Tor for anonymous access
+Navigate dark web search engines safely
+Automate research with Python while maintaining OPSEC
+Monitor security continuously
+Analyze collected data for insights
+Remember: These skills are powerful and must be used responsibly. Always operate within legal and ethical boundaries. Dark web research should only be conducted for legitimate cybersecurity defense, threat intelligence, or law enforcement purposes with proper authorization.
+
+Next Steps: Practice implementing the TODO sections in each script, enhance security monitoring, and develop more sophisticated analysis capabilities while maintaining strict adherence to legal and ethical guidelines.
