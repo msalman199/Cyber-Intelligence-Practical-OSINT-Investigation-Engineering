@@ -1,0 +1,470 @@
+ Extract Coordinates from Image Metadata with ExifTool
+Objectives
+By the end of this lab, students will be able to:
+
+Install and configure ExifTool on Linux systems
+Extract GPS coordinates and metadata from digital images
+Interpret EXIF data including latitude, longitude, and timestamps
+Create automated scripts for batch GPS extraction
+Visualize extracted coordinates using mapping tools
+Apply geolocation techniques for OSINT investigations
+Prerequisites
+Before starting this lab, students should have:
+
+Basic Linux command line proficiency
+Understanding of GPS coordinate systems (latitude/longitude)
+Familiarity with Python programming basics
+Knowledge of file system navigation
+Lab Environment
+Al Nafi provides ready-to-use Linux-based cloud machines for this lab. Click Start Lab to access your pre-configured environment with all necessary tools.
+
+Task 1: Install ExifTool and Setup Workspace
+Step 1.1: Install ExifTool
+Update your system and install ExifTool for metadata extraction:
+
+# Update package repositories
+sudo apt update
+
+# Install ExifTool
+sudo apt install exiftool -y
+
+# Verify installation
+exiftool -ver
+Step 1.2: Create Lab Directory Structure
+Organize your workspace for efficient data management:
+
+# Create main lab directory
+mkdir -p ~/gps_lab/{sample_images,extracted_data,scripts}
+cd ~/gps_lab
+
+# Verify structure
+tree -L 1
+Step 1.3: Obtain Sample Images
+For this lab, you need images with GPS metadata. Options include:
+
+Transfer photos from your smartphone (with location services enabled)
+Download sample images from public datasets
+Use provided test images in the lab environment
+# Check for images in sample_images directory
+cd ~/gps_lab/sample_images
+ls -lh *.jpg *.jpeg *.png 2>/dev/null || echo "No images found - add your sample images here"
+Task 2: Extract GPS Metadata Using ExifTool
+Step 2.1: View All Metadata
+Extract complete metadata from a single image:
+
+# Navigate to sample images
+cd ~/gps_lab/sample_images
+
+# View all EXIF data (replace IMAGE.jpg with your filename)
+exiftool IMAGE.jpg
+
+# View only GPS-related tags
+exiftool -GPS* IMAGE.jpg
+Step 2.2: Extract Specific GPS Fields
+Create a script to extract key GPS information:
+
+cat > ~/gps_lab/scripts/extract_gps.sh << 'EOF'
+#!/bin/bash
+# GPS Extraction Script
+# Usage: ./extract_gps.sh IMAGE.jpg
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $0 <image_file>"
+    exit 1
+fi
+
+IMAGE="$1"
+
+# TODO: Add file existence check
+
+# Extract GPS coordinates in decimal format
+LAT=$(exiftool -GPSLatitude -n "$IMAGE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
+LON=$(exiftool -GPSLongitude -n "$IMAGE" 2>/dev/null | cut -d':' -f2 | tr -d ' ')
+
+# TODO: Extract altitude and timestamp
+# TODO: Check if GPS data exists
+# TODO: Generate Google Maps URL
+
+echo "Latitude: $LAT"
+echo "Longitude: $LON"
+echo "Google Maps: https://www.google.com/maps?q=$LAT,$LON"
+EOF
+
+chmod +x ~/gps_lab/scripts/extract_gps.sh
+Step 2.3: Batch Process Multiple Images
+Create a script for processing multiple images:
+
+cat > ~/gps_lab/scripts/batch_extract.sh << 'EOF'
+#!/bin/bash
+# Batch GPS Extraction Script
+
+OUTPUT_CSV="../extracted_data/gps_results.csv"
+echo "Filename,Latitude,Longitude,Altitude,DateTime,MapsURL" > "$OUTPUT_CSV"
+
+# TODO: Loop through all image files (jpg, jpeg, png)
+# TODO: Extract GPS data for each image
+# TODO: Write results to CSV file
+# TODO: Count successful extractions
+# TODO: Display summary statistics
+
+echo "Processing complete. Results saved to $OUTPUT_CSV"
+EOF
+
+chmod +x ~/gps_lab/scripts/batch_extract.sh
+Step 2.4: Test Your Scripts
+Run your extraction scripts on sample images:
+
+cd ~/gps_lab/sample_images
+
+# Test single image extraction
+../scripts/extract_gps.sh IMAGE.jpg
+
+# Test batch extraction
+../scripts/batch_extract.sh
+
+# View results
+cat ../extracted_data/gps_results.csv
+Task 3: Visualize Coordinates on Maps
+Step 3.1: Generate Google Maps URLs
+Create a script to generate clickable map links:
+
+cat > ~/gps_lab/scripts/generate_urls.sh << 'EOF'
+#!/bin/bash
+# Generate mapping URLs from CSV data
+
+INPUT_CSV="../extracted_data/gps_results.csv"
+OUTPUT_HTML="../extracted_data/map_links.html"
+
+# TODO: Read CSV file (skip header)
+# TODO: Parse latitude and longitude
+# TODO: Generate HTML with clickable links
+# TODO: Include both Google Maps and OpenStreetMap links
+
+echo "HTML file created: $OUTPUT_HTML"
+EOF
+
+chmod +x ~/gps_lab/scripts/generate_urls.sh
+Step 3.2: Create KML File for Google Earth
+Generate a KML file for 3D visualization:
+
+cat > ~/gps_lab/scripts/create_kml.sh << 'EOF'
+#!/bin/bash
+# KML Generator for Google Earth
+
+INPUT_CSV="../extracted_data/gps_results.csv"
+OUTPUT_KML="../extracted_data/locations.kml"
+
+cat > "$OUTPUT_KML" << 'KML_HEADER'
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>GPS Locations from Images</name>
+    <Style id="photoIcon">
+      <IconStyle>
+        <Icon>
+          <href>http://maps.google.com/mapfiles/kml/shapes/camera.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+KML_HEADER
+
+# TODO: Read CSV and create Placemark for each location
+# TODO: Format coordinates as: longitude,latitude,altitude
+# TODO: Add filename as placemark name
+
+cat >> "$OUTPUT_KML" << 'KML_FOOTER'
+  </Document>
+</kml>
+KML_FOOTER
+
+echo "KML file created: $OUTPUT_KML"
+EOF
+
+chmod +x ~/gps_lab/scripts/create_kml.sh
+Task 4: Automate with Python
+Step 4.1: Install Python Dependencies
+Set up Python environment for advanced processing:
+
+# Install required libraries
+pip3 install pillow exifread folium pandas
+
+# Verify installations
+python3 -c "import PIL, exifread, folium, pandas; print('All libraries installed')"
+Step 4.2: Create Python GPS Extractor
+Develop a Python script for GPS extraction:
+
+cat > ~/gps_lab/scripts/gps_extractor.py << 'EOF'
+#!/usr/bin/env python3
+"""
+GPS Metadata Extractor
+Extracts GPS coordinates from image EXIF data
+"""
+
+import os
+import sys
+from PIL import Image
+from PIL.ExifTags import TAGS, GPSTAGS
+import csv
+import json
+
+class GPSExtractor:
+    def __init__(self, image_dir):
+        """
+        Initialize GPS extractor
+        
+        Args:
+            image_dir: Directory containing images
+        """
+        self.image_dir = image_dir
+        self.results = []
+    
+    def get_exif_data(self, image_path):
+        """
+        Extract EXIF data from image
+        
+        Args:
+            image_path: Path to image file
+            
+        Returns:
+            Dictionary of EXIF data or None
+        """
+        # TODO: Open image using PIL
+        # TODO: Extract EXIF data using _getexif()
+        # TODO: Handle exceptions
+        pass
+    
+    def get_gps_info(self, exif_data):
+        """
+        Extract GPS information from EXIF data
+        
+        Args:
+            exif_data: EXIF data dictionary
+            
+        Returns:
+            Dictionary with GPS tags or None
+        """
+        # TODO: Find GPSInfo tag in EXIF data
+        # TODO: Map GPS tag IDs to names using GPSTAGS
+        # TODO: Return GPS dictionary
+        pass
+    
+    def convert_to_decimal(self, dms, ref):
+        """
+        Convert DMS (degrees, minutes, seconds) to decimal
+        
+        Args:
+            dms: Tuple of (degrees, minutes, seconds)
+            ref: Reference (N/S for latitude, E/W for longitude)
+            
+        Returns:
+            Decimal coordinate value
+        """
+        # TODO: Extract degrees, minutes, seconds
+        # TODO: Calculate decimal value
+        # TODO: Apply negative sign for S/W
+        pass
+    
+    def extract_coordinates(self, image_path):
+        """
+        Extract GPS coordinates from image
+        
+        Args:
+            image_path: Path to image file
+            
+        Returns:
+            Dictionary with latitude, longitude, altitude
+        """
+        # TODO: Get EXIF data
+        # TODO: Get GPS info
+        # TODO: Convert coordinates to decimal
+        # TODO: Return coordinate dictionary
+        pass
+    
+    def process_directory(self):
+        """Process all images in directory"""
+        # TODO: List all image files
+        # TODO: Extract GPS from each image
+        # TODO: Store results in self.results
+        # TODO: Print progress
+        pass
+    
+    def save_to_csv(self, output_file):
+        """
+        Save results to CSV file
+        
+        Args:
+            output_file: Path to output CSV file
+        """
+        # TODO: Define CSV headers
+        # TODO: Write results to CSV
+        pass
+    
+    def save_to_json(self, output_file):
+        """
+        Save results to JSON file
+        
+        Args:
+            output_file: Path to output JSON file
+        """
+        # TODO: Convert results to JSON
+        # TODO: Write to file with proper formatting
+        pass
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 gps_extractor.py <image_directory>")
+        sys.exit(1)
+    
+    # TODO: Initialize extractor
+    # TODO: Process directory
+    # TODO: Save results
+    # TODO: Print summary
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x ~/gps_lab/scripts/gps_extractor.py
+Step 4.3: Create Interactive Map Generator
+Build a script to create interactive HTML maps:
+
+cat > ~/gps_lab/scripts/map_generator.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Interactive Map Generator
+Creates HTML maps with GPS locations
+"""
+
+import json
+import folium
+from folium import plugins
+import sys
+
+class MapGenerator:
+    def __init__(self, gps_data_file):
+        """
+        Initialize map generator
+        
+        Args:
+            gps_data_file: Path to JSON file with GPS data
+        """
+        self.gps_data_file = gps_data_file
+        self.locations = []
+    
+    def load_gps_data(self):
+        """Load GPS data from JSON file"""
+        # TODO: Read JSON file
+        # TODO: Filter locations with valid GPS data
+        # TODO: Store in self.locations
+        pass
+    
+    def calculate_center(self):
+        """
+        Calculate map center from all locations
+        
+        Returns:
+            List with [latitude, longitude]
+        """
+        # TODO: Calculate average latitude
+        # TODO: Calculate average longitude
+        # TODO: Return center coordinates
+        pass
+    
+    def create_marker_map(self, output_file):
+        """
+        Create map with markers for each location
+        
+        Args:
+            output_file: Path to output HTML file
+        """
+        # TODO: Create folium Map object
+        # TODO: Add markers for each location
+        # TODO: Add popups with image info
+        # TODO: Add layer controls
+        # TODO: Save to HTML file
+        pass
+    
+    def create_heatmap(self, output_file):
+        """
+        Create heatmap of GPS locations
+        
+        Args:
+            output_file: Path to output HTML file
+        """
+        # TODO: Create folium Map object
+        # TODO: Prepare coordinate list for heatmap
+        # TODO: Add HeatMap layer
+        # TODO: Save to HTML file
+        pass
+    
+    def create_cluster_map(self, output_file):
+        """
+        Create map with marker clustering
+        
+        Args:
+            output_file: Path to output HTML file
+        """
+        # TODO: Create folium Map object
+        # TODO: Add MarkerCluster
+        # TODO: Add markers to cluster
+        # TODO: Save to HTML file
+        pass
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 map_generator.py <gps_json_file>")
+        sys.exit(1)
+    
+    # TODO: Initialize generator
+    # TODO: Load GPS data
+    # TODO: Create different map types
+    # TODO: Print output file locations
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x ~/gps_lab/scripts/map_generator.py
+Step 4.4: Test Python Scripts
+Execute your Python scripts:
+
+# Extract GPS data
+python3 ~/gps_lab/scripts/gps_extractor.py ~/gps_lab/sample_images
+
+# Generate interactive maps
+python3 ~/gps_lab/scripts/map_generator.py ~/gps_lab/extracted_data/gps_data.json
+
+# View results in browser
+firefox ~/gps_lab/extracted_data/interactive_map.html
+Expected Outcomes
+After completing this lab, you should have:
+
+Successfully extracted GPS coordinates from multiple images
+Created CSV and JSON files with organized geolocation data
+Generated KML files viewable in Google Earth
+Built interactive HTML maps showing photo locations
+Developed reusable scripts for automated GPS extraction
+Understanding of EXIF metadata structure and GPS data formats
+Troubleshooting Tips
+No GPS data found in images:
+
+Verify location services were enabled when photos were taken
+Check if images were edited/processed (may strip metadata)
+Use exiftool -a -G1 IMAGE.jpg to view all metadata groups
+Python import errors:
+
+Ensure pip3 packages installed: pip3 install --user pillow exifread folium
+Check Python version: python3 --version (should be 3.6+)
+Use virtual environment if system packages conflict
+Coordinate conversion issues:
+
+Verify DMS format in EXIF data matches expected structure
+Check reference values (N/S/E/W) are present
+Handle missing or malformed GPS tags gracefully
+Map not displaying correctly:
+
+Ensure output HTML file has proper permissions
+Check browser console for JavaScript errors
+Verify folium library version: pip3 show folium
+Conclusion
+This lab introduced practical techniques for extracting and analyzing GPS metadata from digital images using ExifTool and Python. You learned to automate geolocation extraction, visualize coordinates on interactive maps, and apply these skills to OSINT investigations. These techniques are valuable for digital forensics, journalism, and security research. Practice with diverse image sources to strengthen your metadata analysis capabilities.
