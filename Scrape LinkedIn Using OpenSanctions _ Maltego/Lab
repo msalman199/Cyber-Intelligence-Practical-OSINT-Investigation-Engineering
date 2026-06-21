@@ -1,0 +1,652 @@
+LinkedIn OSINT with OpenSanctions and Maltego
+Objectives
+By the end of this lab, students will be able to:
+
+Query OpenSanctions database for entity intelligence gathering
+Correlate public data sources with professional networking information
+Configure Maltego for social network analysis and visualization
+Develop Python scripts for automated OSINT data collection
+Create relationship graphs from collected intelligence data
+Apply ethical OSINT practices within legal boundaries
+Prerequisites
+Students should have:
+
+Basic Linux command line proficiency
+Fundamental Python programming knowledge
+Understanding of web scraping concepts and HTTP protocols
+Awareness of legal and ethical considerations in OSINT activities
+Lab Environment
+Pre-configured Cloud Environment: Access your dedicated Ubuntu 22.04 LTS machine with pre-installed tools including Python 3.10, Maltego Community Edition, and required libraries. Click Start Lab to begin.
+
+Important Legal Notice: This lab uses publicly available data and ethical OSINT techniques. Always respect privacy laws, terms of service, and ethical guidelines. Use only for authorized educational purposes.
+
+Task 1: Query OpenSanctions Database
+Overview
+OpenSanctions aggregates sanctions lists, politically exposed persons (PEPs), and entities of interest from global sources. You'll learn to query this database and correlate findings with professional network data.
+
+Step 1: Setup Project Environment
+# Create project directory
+mkdir ~/linkedin_osint && cd ~/linkedin_osint
+
+# Install required libraries
+pip3 install opensanctions requests pandas
+Step 2: Create OpenSanctions Query Script
+Create opensanctions_query.py:
+
+#!/usr/bin/env python3
+import json
+import requests
+from typing import List, Dict, Optional
+
+class OpenSanctionsAnalyzer:
+    def __init__(self):
+        self.base_url = "https://api.opensanctions.org/search"
+        self.headers = {'User-Agent': 'Mozilla/5.0 Educational OSINT Tool'}
+    
+    def search_entity(self, name: str, country: Optional[str] = None) -> Optional[Dict]:
+        """
+        Search OpenSanctions database for entities.
+        
+        Args:
+            name: Entity name to search
+            country: Optional country code filter
+        
+        Returns:
+            Dictionary containing search results
+        """
+        params = {'q': name, 'limit': 50}
+        if country:
+            params['countries'] = country
+        
+        # TODO: Implement API request with error handling
+        # TODO: Parse and return JSON response
+        # TODO: Handle rate limiting and timeouts
+        pass
+    
+    def extract_risk_indicators(self, entity_data: Dict) -> List[str]:
+        """
+        Extract risk indicators from entity data.
+        
+        Args:
+            entity_data: Entity information from OpenSanctions
+        
+        Returns:
+            List of identified risk indicators
+        """
+        # TODO: Check for sanctions list presence
+        # TODO: Identify PEP status
+        # TODO: Extract associated entities
+        # TODO: Return compiled risk indicators
+        pass
+    
+    def save_results(self, results: Dict, filename: str):
+        """Save query results to JSON file."""
+        # TODO: Implement JSON file writing with proper formatting
+        pass
+
+# Example usage
+if __name__ == "__main__":
+    analyzer = OpenSanctionsAnalyzer()
+    
+    # TODO: Search for sample entities
+    # TODO: Extract and analyze results
+    # TODO: Save findings to file
+Step 3: Create Correlation Analysis Script
+Create correlation_analyzer.py:
+
+#!/usr/bin/env python3
+import json
+import re
+from typing import List, Dict
+
+class CorrelationAnalyzer:
+    def __init__(self):
+        self.linkedin_patterns = [
+            r'linkedin\.com/in/([a-zA-Z0-9\-]+)',
+            r'linkedin\.com/pub/([a-zA-Z0-9\-]+)'
+        ]
+    
+    def load_opensanctions_data(self, filename: str) -> List[Dict]:
+        """Load previously saved OpenSanctions results."""
+        # TODO: Implement file loading with error handling
+        pass
+    
+    def analyze_entity_connections(self, entity_data: List[Dict]) -> List[Dict]:
+        """
+        Analyze potential connections from entity data.
+        
+        Args:
+            entity_data: List of entities from OpenSanctions
+        
+        Returns:
+            List of connection analyses with risk assessments
+        """
+        connections = []
+        
+        for entity in entity_data:
+            analysis = {
+                'name': '',
+                'potential_profiles': [],
+                'related_entities': [],
+                'risk_indicators': []
+            }
+            
+            # TODO: Extract entity properties
+            # TODO: Identify LinkedIn references in data
+            # TODO: Assess risk based on datasets
+            # TODO: Compile related entities
+            
+            connections.append(analysis)
+        
+        return connections
+    
+    def generate_investigation_leads(self, correlations: List[Dict]) -> List[Dict]:
+        """
+        Generate prioritized investigation leads.
+        
+        Args:
+            correlations: Analyzed entity connections
+        
+        Returns:
+            Sorted list of investigation leads by priority
+        """
+        # TODO: Prioritize leads based on risk indicators
+        # TODO: Sort by priority level
+        # TODO: Return formatted lead list
+        pass
+    
+    def save_report(self, leads: List[Dict], filename: str):
+        """Save correlation report with metadata."""
+        # TODO: Create report structure with timestamp
+        # TODO: Include summary statistics
+        # TODO: Write to JSON file
+        pass
+
+# Example usage
+if __name__ == "__main__":
+    # TODO: Load OpenSanctions results
+    # TODO: Perform correlation analysis
+    # TODO: Generate and save investigation leads
+    pass
+Step 4: Execute Analysis
+# Run OpenSanctions query
+python3 opensanctions_query.py
+
+# Perform correlation analysis
+python3 correlation_analyzer.py
+
+# Review generated reports
+cat linkedin_investigation_leads.json
+Task 2: Configure Maltego for LinkedIn Analysis
+Overview
+Maltego provides visual link analysis for OSINT investigations. You'll configure transforms and create social graphs from collected data.
+
+Step 1: Create Maltego Transform Script
+Create maltego_transform.py:
+
+#!/usr/bin/env python3
+import json
+import time
+from typing import List, Dict
+from urllib.parse import quote
+
+class MaltegoLinkedInTransform:
+    def __init__(self):
+        self.search_delay = (2, 5)  # Rate limiting delay range
+    
+    def search_profiles_duckduckgo(self, name: str, company: str = None) -> List[Dict]:
+        """
+        Search for LinkedIn profiles using privacy-focused search.
+        
+        Args:
+            name: Person name to search
+            company: Optional company name
+        
+        Returns:
+            List of found profile URLs with metadata
+        """
+        search_terms = [f'"{name}"', 'site:linkedin.com/in/']
+        if company:
+            search_terms.append(f'"{company}"')
+        
+        # TODO: Build search query
+        # TODO: Execute search with rate limiting
+        # TODO: Parse results for LinkedIn URLs
+        # TODO: Return list of profile dictionaries
+        pass
+    
+    def extract_profile_metadata(self, profile_url: str) -> Dict:
+        """
+        Extract metadata from LinkedIn profile URL.
+        
+        Args:
+            profile_url: LinkedIn profile URL
+        
+        Returns:
+            Dictionary containing extracted metadata
+        """
+        metadata = {
+            'url': profile_url,
+            'title': '',
+            'description': '',
+            'og_data': {}
+        }
+        
+        # TODO: Fetch page content with proper headers
+        # TODO: Parse HTML for meta tags
+        # TODO: Extract Open Graph data
+        # TODO: Return compiled metadata
+        pass
+    
+    def generate_maltego_entities(self, profile_data: List[Dict]) -> List[Dict]:
+        """
+        Generate Maltego entity structures from profile data.
+        
+        Args:
+            profile_data: List of profile metadata
+        
+        Returns:
+            List of Maltego-compatible entity dictionaries
+        """
+        entities = []
+        
+        for profile in profile_data:
+            # TODO: Create Person entity
+            # TODO: Create URL entity
+            # TODO: Extract and create Company entities
+            # TODO: Add properties to each entity
+            pass
+        
+        return entities
+    
+    def save_maltego_graph(self, entities: List[Dict], filename: str):
+        """Save entities in Maltego-compatible JSON format."""
+        # TODO: Create graph structure
+        # TODO: Add metadata and timestamps
+        # TODO: Write to JSON file
+        pass
+
+# Example usage
+if __name__ == "__main__":
+    # TODO: Load investigation leads
+    # TODO: Search for profiles
+    # TODO: Extract metadata
+    # TODO: Generate and save Maltego entities
+    pass
+Step 2: Create Maltego Import Generator
+Create maltego_import.py:
+
+#!/usr/bin/env python3
+import json
+import csv
+import xml.etree.ElementTree as ET
+from xml.dom import minidom
+
+class MaltegoImportGenerator:
+    def create_maltego_xml(self, graph_data: dict) -> ET.Element:
+        """
+        Create Maltego XML format from graph data.
+        
+        Args:
+            graph_data: Dictionary containing entities and links
+        
+        Returns:
+            XML Element tree for Maltego import
+        """
+        # TODO: Create root MaltegoMessage element
+        # TODO: Add MaltegoTransformResponseMessage
+        # TODO: Create Entities section
+        # TODO: Add each entity with properties
+        pass
+    
+    def save_maltego_xml(self, graph_data: dict, filename: str):
+        """Save graph as Maltego XML file."""
+        # TODO: Generate XML structure
+        # TODO: Pretty print XML
+        # TODO: Write to file
+        pass
+    
+    def create_csv_import(self, graph_data: dict, filename: str):
+        """
+        Create CSV file for Maltego entity import.
+        
+        Args:
+            graph_data: Dictionary containing entities
+            filename: Output CSV filename
+        """
+        # TODO: Define CSV structure
+        # TODO: Write entity data to CSV
+        # TODO: Format properties as string
+        pass
+
+# Example usage
+if __name__ == "__main__":
+    # TODO: Load graph data from previous step
+    # TODO: Generate XML import file
+    # TODO: Generate CSV import file
+    pass
+Step 3: Generate Import Files and Use Maltego
+# Generate Maltego import files
+python3 maltego_transform.py
+python3 maltego_import.py
+
+# Launch Maltego
+maltego &
+Maltego Operations:
+
+Create New Graph: File → New Graph
+Import Entities:
+Right-click graph → Import → CSV
+Select linkedin_entities.csv
+Map columns: Entity Type, Entity Value, Properties
+Apply Transforms:
+Select Person entities
+Right-click → Run Transform → To URLs
+Explore available LinkedIn transforms
+Analyze Graph:
+Identify relationship clusters
+Note connection patterns
+Export findings
+Task 3: Automate Data Collection Framework
+Overview
+Create a comprehensive automation framework for systematic OSINT data collection with proper rate limiting and error handling.
+
+Step 1: Create Main Automation Framework
+Create linkedin_automation.py:
+
+#!/usr/bin/env python3
+import time
+import random
+import logging
+from dataclasses import dataclass, asdict
+from typing import List, Dict, Optional
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+@dataclass
+class ProfileData:
+    name: str
+    title: str
+    company: str
+    location: str
+    profile_url: str
+    about: str
+    connections_count: int
+    skills: List[str]
+
+class LinkedInAutomationFramework:
+    def __init__(self):
+        self.rate_limit_delay = (3, 7)
+        self.profiles_collected = []
+    
+    def search_profiles(self, query_terms: List[str], max_results: int = 20) -> List[str]:
+        """
+        Search for LinkedIn profiles using search engines.
+        
+        Args:
+            query_terms: List of search queries
+            max_results: Maximum results per query
+        
+        Returns:
+            List of unique profile URLs
+        """
+        profile_urls = []
+        
+        for query in query_terms:
+            # TODO: Build search query with site operator
+            # TODO: Execute search with rate limiting
+            # TODO: Extract LinkedIn URLs from results
+            # TODO: Clean and deduplicate URLs
+            
+            time.sleep(random.uniform(*self.rate_limit_delay))
+        
+        return list(set(profile_urls))
+    
+    def extract_profile_data(self, profile_url: str) -> Optional[ProfileData]:
+        """
+        Extract comprehensive data from profile.
+        
+        Args:
+            profile_url: LinkedIn profile URL
+        
+        Returns:
+            ProfileData object or None if extraction fails
+        """
+        # TODO: Fetch profile page with proper headers
+        # TODO: Parse HTML for profile information
+        # TODO: Extract name, title, company, location
+        # TODO: Extract about section and skills
+        # TODO: Return ProfileData object
+        pass
+    
+    def batch_collect_profiles(self, profile_urls: List[str]) -> List[ProfileData]:
+        """
+        Collect data from multiple profiles with rate limiting.
+        
+        Args:
+            profile_urls: List of profile URLs to process
+        
+        Returns:
+            List of successfully collected ProfileData objects
+        """
+        collected = []
+        
+        for url in profile_urls:
+            # TODO: Extract profile data
+            # TODO: Add to collected list if successful
+            # TODO: Implement rate limiting
+            # TODO: Log progress
+            pass
+        
+        return collected
+    
+    def export_to_csv(self, profiles: List[ProfileData], filename: str):
+        """Export collected profiles to CSV format."""
+        # TODO: Define CSV structure
+        # TODO: Write profile data to CSV
+        # TODO: Handle nested data (skills list)
+        pass
+    
+    def export_to_json(self, profiles: List[ProfileData], filename: str):
+        """Export collected profiles to JSON format."""
+        # TODO: Convert ProfileData objects to dictionaries
+        # TODO: Write to JSON with proper formatting
+        pass
+    
+    def generate_summary_report(self, profiles: List[ProfileData]) -> Dict:
+        """
+        Generate summary statistics from collected profiles.
+        
+        Returns:
+            Dictionary containing summary statistics
+        """
+        summary = {
+            'total_profiles': len(profiles),
+            'companies': {},
+            'locations': {},
+            'top_skills': {}
+        }
+        
+        # TODO: Count profiles by company
+        # TODO: Count profiles by location
+        # TODO: Aggregate and rank skills
+        # TODO: Calculate additional statistics
+        
+        return summary
+
+# Example usage
+if __name__ == "__main__":
+    framework = LinkedInAutomationFramework()
+    
+    # TODO: Define search queries
+    # TODO: Search for profiles
+    # TODO: Collect profile data
+    # TODO: Export results
+    # TODO: Generate summary report
+Step 2: Create Network Analysis Module
+Create network_analyzer.py:
+
+#!/usr/bin/env python3
+import json
+from typing import List, Dict, Set
+import networkx as nx
+import matplotlib.pyplot as plt
+
+class NetworkAnalyzer:
+    def __init__(self):
+        self.graph = nx.Graph()
+    
+    def build_network_graph(self, profiles: List[Dict]):
+        """
+        Build network graph from profile data.
+        
+        Args:
+            profiles: List of profile dictionaries
+        """
+        # TODO: Add nodes for each profile
+        # TODO: Create edges based on shared companies
+        # TODO: Create edges based on shared locations
+        # TODO: Add node attributes (title, company, etc.)
+        pass
+    
+    def identify_clusters(self) -> List[Set]:
+        """
+        Identify clusters in the network.
+        
+        Returns:
+            List of node sets representing clusters
+        """
+        # TODO: Apply community detection algorithm
+        # TODO: Return identified clusters
+        pass
+    
+    def find_key_nodes(self, top_n: int = 10) -> List[tuple]:
+        """
+        Identify key nodes by centrality measures.
+        
+        Args:
+            top_n: Number of top nodes to return
+        
+        Returns:
+            List of (node, centrality_score) tuples
+        """
+        # TODO: Calculate betweenness centrality
+        # TODO: Sort nodes by centrality
+        # TODO: Return top N nodes
+        pass
+    
+    def visualize_network(self, output_file: str = 'network_graph.png'):
+        """Generate and save network visualization."""
+        # TODO: Create figure and layout
+        # TODO: Draw nodes with size based on centrality
+        # TODO: Draw edges with appropriate styling
+        # TODO: Save to file
+        pass
+    
+    def export_graph_data(self, filename: str):
+        """Export graph in standard format for further analysis."""
+        # TODO: Export as GraphML or GEXF format
+        pass
+
+# Example usage
+if __name__ == "__main__":
+    # TODO: Load collected profile data
+    # TODO: Build network graph
+    # TODO: Identify clusters and key nodes
+    # TODO: Generate visualization
+    # TODO: Export graph data
+    pass
+Step 3: Execute Complete Workflow
+Create run_complete_workflow.sh:
+
+#!/bin/bash
+
+echo "Starting LinkedIn OSINT Workflow..."
+
+# Step 1: Query OpenSanctions
+echo "Step 1: Querying OpenSanctions database..."
+python3 opensanctions_query.py
+
+# Step 2: Correlation analysis
+echo "Step 2: Performing correlation analysis..."
+python3 correlation_analyzer.py
+
+# Step 3: Maltego transform preparation
+echo "Step 3: Preparing Maltego transforms..."
+python3 maltego_transform.py
+python3 maltego_import.py
+
+# Step 4: Automated data collection
+echo "Step 4: Collecting profile data..."
+python3 linkedin_automation.py
+
+# Step 5: Network analysis
+echo "Step 5: Analyzing network relationships..."
+python3 network_analyzer.py
+
+echo "Workflow complete! Review generated reports and visualizations."
+Make executable and run:
+
+chmod +x run_complete_workflow.sh
+./run_complete_workflow.sh
+Expected Outcomes
+Upon completion, students will have:
+
+Data Files: JSON files containing OpenSanctions queries and correlation analyses
+Maltego Graphs: XML and CSV files ready for import into Maltego
+Profile Database: CSV/JSON exports of collected profile data
+Network Visualizations: Graph images showing relationship patterns
+Investigation Reports: Prioritized leads with risk assessments
+Sample Output Structure:
+
+linkedin_osint/
+├── opensanctions_results.json
+├── linkedin_investigation_leads.json
+├── linkedin_maltego_graph.json
+├── linkedin_entities.csv
+├── collected_profiles.csv
+├── network_graph.png
+└── summary_report.json
+Troubleshooting Tips
+Issue: API rate limiting or blocked requests
+
+Solution: Increase delay between requests in rate_limit_delay settings
+Use rotating user agents and implement exponential backoff
+Issue: Maltego import fails
+
+Solution: Verify CSV format matches Maltego requirements
+Check entity types are valid Maltego entity names
+Ensure XML structure follows Maltego schema
+Issue: Incomplete data extraction
+
+Solution: Update CSS selectors if LinkedIn changes page structure
+Implement fallback selectors for critical data fields
+Add logging to identify which fields fail extraction
+Issue: Memory errors with large datasets
+
+Solution: Process profiles in smaller batches
+Implement streaming JSON parsing for large files
+Clear collected data periodically during batch processing
+Conclusion
+This lab introduced practical OSINT techniques for professional network intelligence gathering. You learned to:
+
+Query structured intelligence databases (OpenSanctions)
+Correlate data from multiple sources for enhanced analysis
+Use Maltego for visual relationship mapping
+Automate data collection with Python frameworks
+Analyze network structures to identify key entities
+Key Takeaways:
+
+Always operate within legal and ethical boundaries
+Respect rate limits and terms of service
+Validate and cross-reference collected data
+Document your methodology for reproducibility
+Consider privacy implications of your investigations
+Next Steps:
+
+Explore advanced Maltego transforms
+Integrate additional OSINT data sources
+Develop custom entity recognition algorithms
+Practice on authorized penetration testing scenarios
+Remember: OSINT skills are powerful tools. Use them responsibly and ethically.
