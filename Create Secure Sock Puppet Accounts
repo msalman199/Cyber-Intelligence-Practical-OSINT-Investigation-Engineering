@@ -1,0 +1,624 @@
+Create Secure Sock Puppet Accounts
+Objectives
+By the end of this lab, students will be able to:
+
+Understand legitimate uses and legal boundaries of sock puppet accounts in OSINT
+Create secure email accounts using privacy-focused services
+Develop realistic persona profiles for investigative purposes
+Configure browsers with proper operational security (OPSEC)
+Implement Python scripts for account management and content generation
+Apply security best practices to minimize digital footprints
+Prerequisites
+Basic Linux command line operations
+Fundamental Python programming skills
+Understanding of OSINT concepts
+Familiarity with web browsers and social media platforms
+Basic knowledge of privacy and anonymity concepts
+Lab Environment
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS
+Python 3.10+
+Firefox browser
+Tor browser
+Essential Python libraries
+Text editors (nano, vim)
+Access your environment by clicking Start Lab.
+
+Task 1: Legal Framework and Documentation
+Step 1: Create Project Structure
+mkdir ~/osint-lab3
+cd ~/osint-lab3
+Step 2: Document Legal Guidelines
+nano legal_guidelines.txt
+Add the following content:
+
+LEGAL AND ETHICAL GUIDELINES FOR SOCK PUPPET ACCOUNTS
+
+LEGITIMATE USES:
+- Corporate security investigations (with authorization)
+- Law enforcement operations (with proper warrants)
+- Academic research (with institutional approval)
+- Cybersecurity threat intelligence
+- Personal security testing
+
+PROHIBITED USES:
+- Identity theft or impersonation of real individuals
+- Harassment, cyberbullying, or stalking
+- Fraud or financial crimes
+- Spreading misinformation or propaganda
+- Violating platform Terms of Service maliciously
+
+BEST PRACTICES:
+- Always obtain proper authorization before creating accounts
+- Document legitimate business purposes
+- Respect platform policies and community guidelines
+- Maintain operational security at all times
+- Conduct regular security audits of accounts
+Step 3: Create Investigation Case Template
+nano case_template.txt
+OSINT INVESTIGATION CASE FILE
+
+Case ID: [UNIQUE_IDENTIFIER]
+Date: [DATE]
+Investigator: [NAME]
+Authorization: [APPROVAL_REFERENCE]
+
+SCOPE:
+- Objective: [SPECIFIC_GOAL]
+- Target Platform(s): [PLATFORMS]
+- Duration: [TIMEFRAME]
+- Legal Basis: [AUTHORIZATION]
+
+PERSONA:
+- Name: [FAKE_NAME]
+- Age: [AGE]
+- Location: [GENERAL_AREA]
+- Interests: [RELEVANT_TOPICS]
+- Background: [BRIEF_HISTORY]
+
+OPSEC MEASURES:
+- VPN/Proxy: [YES/NO]
+- Dedicated Device: [YES/NO]
+- Secure Email: [EMAIL]
+- Password Manager: [YES/NO]
+Task 2: Generate Secure Personas
+Step 1: Create Persona Generator Script
+nano persona_generator.py
+#!/usr/bin/env python3
+import random
+import secrets
+import string
+
+class PersonaGenerator:
+    def __init__(self):
+        self.first_names = [
+            "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley",
+            "Avery", "Quinn", "Sage", "River", "Phoenix", "Rowan"
+        ]
+        self.last_names = [
+            "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia",
+            "Miller", "Davis", "Rodriguez", "Martinez"
+        ]
+    
+    def generate_persona(self):
+        """
+        Generate a realistic persona profile.
+        
+        Returns:
+            dict: Persona information including name, age, and background
+        """
+        # TODO: Select random first and last name
+        # TODO: Generate random birth year between 1980-2000
+        # TODO: Calculate current age
+        # TODO: Return persona dictionary with all fields
+        pass
+    
+    def generate_email_variations(self, first_name, last_name):
+        """
+        Generate email address variations for a persona.
+        
+        Args:
+            first_name: First name of persona
+            last_name: Last name of persona
+        
+        Returns:
+            list: Multiple email variations
+        """
+        # TODO: Create variations using name combinations
+        # TODO: Add random numbers where appropriate
+        # TODO: Combine with different email domains
+        # TODO: Return list of 5-10 email options
+        pass
+    
+    def generate_secure_password(self, length=16):
+        """
+        Generate a cryptographically secure password.
+        
+        Args:
+            length: Password length (default 16)
+        
+        Returns:
+            str: Secure random password
+        """
+        # TODO: Define character set (letters, digits, symbols)
+        # TODO: Use secrets module for cryptographic randomness
+        # TODO: Return generated password
+        pass
+    
+    def generate_security_answers(self):
+        """
+        Generate consistent security question answers.
+        
+        Returns:
+            dict: Security question answers
+        """
+        pets = ["Buddy", "Max", "Bella", "Charlie", "Lucy"]
+        cities = ["Springfield", "Madison", "Franklin", "Georgetown"]
+        schools = ["Lincoln High", "Washington Elementary"]
+        
+        # TODO: Select random answers from lists
+        # TODO: Return dictionary with all security answers
+        pass
+    
+    def create_complete_profile(self):
+        """
+        Create a complete account profile with all details.
+        
+        Returns:
+            dict: Complete profile with persona, emails, passwords, security info
+        """
+        # TODO: Generate persona using generate_persona()
+        # TODO: Generate email variations
+        # TODO: Generate secure password
+        # TODO: Generate security answers
+        # TODO: Combine all into complete profile dictionary
+        pass
+
+def main():
+    generator = PersonaGenerator()
+    
+    print("=== PERSONA GENERATOR ===\n")
+    
+    # TODO: Generate 3 different profiles
+    # TODO: Display each profile with formatted output
+    # TODO: Save profiles to file
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Test Persona Generator
+python3 persona_generator.py > personas.txt
+cat personas.txt
+Task 3: Configure Secure Browser Environment
+Step 1: Create Browser Configuration Script
+nano browser_setup.sh
+#!/bin/bash
+
+echo "=== BROWSER OPSEC CONFIGURATION ==="
+
+# Create dedicated Firefox profile
+firefox -CreateProfile "sockpuppet"
+
+PROFILE_DIR="$HOME/.mozilla/firefox/sockpuppet"
+mkdir -p "$PROFILE_DIR"
+
+# Create privacy-focused user.js
+cat > "$PROFILE_DIR/user.js" << 'EOF'
+// Disable telemetry and data collection
+user_pref("toolkit.telemetry.enabled", false);
+user_pref("datareporting.healthreport.uploadEnabled", false);
+
+// Disable location services
+user_pref("geo.enabled", false);
+
+// Disable WebRTC (prevents IP leaks)
+user_pref("media.peerconnection.enabled", false);
+
+// Enable fingerprinting protection
+user_pref("privacy.resistFingerprinting", true);
+
+// Disable prefetching
+user_pref("network.prefetch-next", false);
+user_pref("network.dns.disablePrefetch", true);
+
+// Clear data on shutdown
+user_pref("privacy.sanitize.sanitizeOnShutdown", true);
+user_pref("privacy.clearOnShutdown.cache", true);
+user_pref("privacy.clearOnShutdown.cookies", true);
+user_pref("privacy.clearOnShutdown.history", true);
+
+// Disable password saving
+user_pref("signon.rememberSignons", false);
+EOF
+
+echo "Browser profile configured!"
+echo "Launch with: firefox -P sockpuppet -no-remote"
+Step 2: Execute Browser Setup
+chmod +x browser_setup.sh
+./browser_setup.sh
+Step 3: Create Platform Analysis Tool
+nano platform_analyzer.py
+#!/usr/bin/env python3
+import json
+
+class PlatformAnalyzer:
+    def __init__(self):
+        self.platforms = {
+            "reddit": {
+                "verification_level": "low",
+                "phone_required": False,
+                "difficulty": 1,
+                "timeline": "1-2 days"
+            },
+            "twitter": {
+                "verification_level": "medium",
+                "phone_required": True,
+                "difficulty": 2,
+                "timeline": "1-2 weeks"
+            },
+            "instagram": {
+                "verification_level": "medium",
+                "phone_required": False,
+                "difficulty": 2,
+                "timeline": "1-2 weeks"
+            },
+            "facebook": {
+                "verification_level": "high",
+                "phone_required": True,
+                "difficulty": 3,
+                "timeline": "2-4 weeks"
+            }
+        }
+    
+    def analyze_platform(self, platform_name):
+        """
+        Analyze platform requirements for sock puppet creation.
+        
+        Args:
+            platform_name: Name of social media platform
+        
+        Returns:
+            dict: Analysis with recommendations and timeline
+        """
+        # TODO: Retrieve platform data from self.platforms
+        # TODO: Calculate difficulty score
+        # TODO: Generate recommendations based on requirements
+        # TODO: Return analysis dictionary
+        pass
+    
+    def get_recommendations(self, platform_data):
+        """
+        Generate OPSEC recommendations for platform.
+        
+        Args:
+            platform_data: Platform configuration data
+        
+        Returns:
+            list: Security recommendations
+        """
+        # TODO: Create base recommendations list
+        # TODO: Add phone-specific recommendations if needed
+        # TODO: Add verification-specific recommendations
+        # TODO: Return complete recommendations list
+        pass
+    
+    def generate_report(self):
+        """
+        Generate comprehensive analysis report for all platforms.
+        
+        Returns:
+            dict: Complete analysis report
+        """
+        # TODO: Iterate through all platforms
+        # TODO: Analyze each platform
+        # TODO: Compile into report dictionary
+        # TODO: Return complete report
+        pass
+
+def main():
+    analyzer = PlatformAnalyzer()
+    
+    # TODO: Analyze each platform
+    # TODO: Display formatted results
+    # TODO: Save report to JSON file
+    pass
+
+if __name__ == "__main__":
+    main()
+Task 4: Account Management System
+Step 1: Create Account Manager
+nano account_manager.py
+#!/usr/bin/env python3
+import json
+import hashlib
+import getpass
+from datetime import datetime
+import secrets
+
+class AccountManager:
+    def __init__(self):
+        self.accounts_file = "accounts.json"
+        self.accounts = {}
+        self.load_accounts()
+    
+    def load_accounts(self):
+        """Load accounts from JSON file."""
+        # TODO: Try to open and read accounts_file
+        # TODO: Parse JSON data into self.accounts
+        # TODO: Handle FileNotFoundError for new installations
+        pass
+    
+    def save_accounts(self):
+        """Save accounts to JSON file."""
+        # TODO: Open accounts_file for writing
+        # TODO: Write self.accounts as formatted JSON
+        # TODO: Handle any write errors
+        pass
+    
+    def add_account(self, platform, account_data):
+        """
+        Add new account to manager.
+        
+        Args:
+            platform: Social media platform name
+            account_data: Dictionary with account details
+        
+        Returns:
+            str: Unique account ID
+        """
+        # TODO: Generate unique account_id
+        # TODO: Create account record with all fields
+        # TODO: Add creation timestamp
+        # TODO: Save to self.accounts
+        # TODO: Call save_accounts()
+        # TODO: Return account_id
+        pass
+    
+    def update_activity(self, account_id, activity_type, description=""):
+        """
+        Log activity for an account.
+        
+        Args:
+            account_id: Unique account identifier
+            activity_type: Type of activity performed
+            description: Optional activity description
+        """
+        # TODO: Check if account_id exists
+        # TODO: Create activity log entry with timestamp
+        # TODO: Append to account's activity_log
+        # TODO: Update last_activity timestamp
+        # TODO: Save changes
+        pass
+    
+    def get_account_status(self, account_id):
+        """
+        Get current status and statistics for account.
+        
+        Args:
+            account_id: Unique account identifier
+        
+        Returns:
+            dict: Account status information
+        """
+        # TODO: Retrieve account from self.accounts
+        # TODO: Calculate days since last activity
+        # TODO: Count total activities
+        # TODO: Return status dictionary
+        pass
+    
+    def list_accounts(self):
+        """
+        List all managed accounts.
+        
+        Returns:
+            list: Summary of all accounts
+        """
+        # TODO: Iterate through self.accounts
+        # TODO: Create summary for each account
+        # TODO: Return list of summaries
+        pass
+    
+    def generate_activity_schedule(self, account_id, days=7):
+        """
+        Generate activity schedule for maintaining account authenticity.
+        
+        Args:
+            account_id: Unique account identifier
+            days: Number of days to schedule
+        
+        Returns:
+            list: Daily activity schedule
+        """
+        # TODO: Get account platform
+        # TODO: Define platform-specific activities
+        # TODO: Generate schedule for specified days
+        # TODO: Return schedule list
+        pass
+
+def main():
+    manager = AccountManager()
+    
+    # TODO: Create interactive menu
+    # TODO: Handle user input for different operations
+    # TODO: Call appropriate manager methods
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Create Content Generator
+nano content_generator.py
+#!/usr/bin/env python3
+import random
+from datetime import datetime
+
+class ContentGenerator:
+    def __init__(self):
+        self.topics = {
+            "technology": ["AI", "cybersecurity", "cloud computing"],
+            "lifestyle": ["fitness", "cooking", "travel"],
+            "business": ["entrepreneurship", "marketing", "productivity"]
+        }
+        
+        self.post_templates = {
+            "question": "What's your take on {topic}?",
+            "opinion": "I think {topic} is really changing {field}.",
+            "share": "Just discovered something interesting about {topic}."
+        }
+    
+    def generate_post(self, category, post_type):
+        """
+        Generate social media post content.
+        
+        Args:
+            category: Content category (technology, lifestyle, business)
+            post_type: Type of post (question, opinion, share)
+        
+        Returns:
+            str: Generated post content
+        """
+        # TODO: Select random topic from category
+        # TODO: Get template for post_type
+        # TODO: Format template with topic
+        # TODO: Return generated post
+        pass
+    
+    def generate_comment(self, context="general"):
+        """
+        Generate realistic comment for engagement.
+        
+        Args:
+            context: Context for comment generation
+        
+        Returns:
+            str: Generated comment
+        """
+        # TODO: Define comment templates
+        # TODO: Select appropriate template
+        # TODO: Return formatted comment
+        pass
+    
+    def generate_bio(self, persona_data):
+        """
+        Generate social media bio from persona data.
+        
+        Args:
+            persona_data: Dictionary with persona information
+        
+        Returns:
+            str: Generated bio text
+        """
+        # TODO: Extract relevant persona fields
+        # TODO: Create bio template
+        # TODO: Format with persona data
+        # TODO: Return bio string
+        pass
+    
+    def generate_content_calendar(self, days=7):
+        """
+        Generate content posting schedule.
+        
+        Args:
+            days: Number of days to schedule
+        
+        Returns:
+            list: Content calendar with posts
+        """
+        # TODO: Create list for calendar
+        # TODO: For each day, generate post ideas
+        # TODO: Include posting times
+        # TODO: Return complete calendar
+        pass
+
+def main():
+    generator = ContentGenerator()
+    
+    # TODO: Demonstrate content generation
+    # TODO: Generate sample posts
+    # TODO: Generate sample comments
+    # TODO: Display results
+    pass
+
+if __name__ == "__main__":
+    main()
+Task 5: Manual Account Creation
+Step 1: Create Email Account
+Launch configured browser:
+firefox -P sockpuppet -no-remote &
+Navigate to ProtonMail (https://protonmail.com)
+Click "Create account"
+Use generated persona name and secure password
+Complete verification process
+Save credentials in account manager
+Step 2: Create Reddit Account (Starter Platform)
+Why Reddit First:
+
+Lowest verification requirements
+No phone number needed
+Good for building history
+Less sophisticated detection
+Steps:
+
+Navigate to reddit.com
+Click "Sign Up"
+Use persona email and username
+Complete CAPTCHA
+Skip phone verification
+Join 5-10 relevant subreddits
+Log account in account manager
+Step 3: Build Account History
+Daily Activities (Week 1-2):
+
+Comment on 2-3 posts daily
+Upvote 10-15 posts
+Join new subreddits gradually
+Maintain consistent persona voice
+Weekly Activities:
+
+Submit 1-2 original posts
+Engage with replies to your comments
+Build karma gradually (target: 100+ in 2 weeks)
+Expected Outcomes
+After completing this lab, you should have:
+
+Legal framework documentation for OSINT investigations
+Working persona generator script
+Configured browser with OPSEC settings
+Platform analysis tool
+Account management system
+Content generation capabilities
+At least one active sock puppet account with initial history
+Troubleshooting Tips
+Issue: Browser fingerprinting detected
+
+Solution: Use Tor browser for additional anonymity
+Verify privacy.resistFingerprinting is enabled
+Clear cookies between sessions
+Issue: Email verification failing
+
+Solution: Use different email provider (Tutanota, Guerrilla Mail)
+Wait 24 hours before attempting verification
+Check spam folder for verification emails
+Issue: Account suspended immediately
+
+Solution: IP address may be flagged; use VPN/Tor
+Slow down account creation (1 per day maximum)
+Ensure browser has proper OPSEC configuration
+Build account history gradually
+Conclusion
+This lab introduced secure sock puppet account creation for legitimate OSINT investigations. You learned to generate realistic personas, configure browsers for operational security, and manage multiple accounts systematically. Remember that sock puppet accounts must only be used for authorized investigations within legal and ethical boundaries. Always document your authorization and maintain proper OPSEC throughout the account lifecycle.
+
+Key Takeaways:
+
+Legal authorization is mandatory before creating investigative accounts
+Proper OPSEC prevents account detection and compromise
+Gradual account building appears more authentic
+Systematic management prevents operational mistakes
+Platform-specific strategies improve success rates
+Next Steps:
+
+Complete the Python scripts with full implementations
+Create and age accounts over 2-4 weeks
+Practice maintaining consistent personas
+Study advanced OPSEC techniques
+Review platform-specific detection methods
