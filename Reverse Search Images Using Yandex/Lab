@@ -1,0 +1,475 @@
+Reverse Image Search Using Yandex & TinEye
+Objectives
+By the end of this lab, students will be able to:
+
+Perform manual reverse image searches using Yandex, Bing, and TinEye
+Understand differences between reverse image search platforms
+Develop Python automation scripts for reverse image searching
+Analyze and compare results across multiple platforms
+Apply reverse image search techniques for OSINT investigations
+Prerequisites
+Basic Linux command line knowledge
+Python programming fundamentals (functions, loops, file I/O)
+Understanding of HTTP requests and web scraping concepts
+Familiarity with JSON data format
+Lab Environment
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS
+Python 3.10+ with pip
+Firefox browser
+Pre-installed libraries: requests, beautifulsoup4, selenium
+Text editors: nano, vim
+Task 1: Manual Reverse Image Search
+Step 1: Setup Working Directory
+# Create lab structure
+mkdir -p ~/reverse_image_lab/{sample_images,results,scripts}
+cd ~/reverse_image_lab
+
+# Download sample images
+wget -O sample_images/landmark.jpg "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Vd-Orig.jpg/800px-Vd-Orig.jpg"
+wget -O sample_images/tech_logo.jpg "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/800px-Apple_logo_black.svg.png"
+
+# Verify downloads
+ls -lh sample_images/
+Step 2: Yandex Reverse Image Search
+# Open Firefox
+firefox https://yandex.com/images/ &
+Manual search process:
+
+Click the camera icon in the search bar
+Upload sample_images/landmark.jpg
+Analyze results: similar images, source websites, related keywords
+Document findings in results/yandex_manual.txt
+Documentation template:
+
+nano results/yandex_manual.txt
+Image: landmark.jpg
+- Similar images found: ___
+- Top 3 source websites: ___
+- Related keywords: ___
+- Image variations detected: ___
+- Notable findings: ___
+Step 3: Bing Visual Search
+Navigate to https://www.bing.com/images:
+
+Click camera icon
+Upload the same image
+Compare results with Yandex
+Note unique features (visual matches, shopping results)
+Document in results/bing_manual.txt
+Step 4: TinEye Search
+Navigate to https://tineye.com/:
+
+Upload image using arrow icon
+Review exact match results
+Check "First indexed" date
+Examine image modification tracking
+Document in results/tineye_manual.txt
+Key differences to note:
+
+Yandex: Best for international sources, visual similarity
+Bing: Strong for commercial/shopping results
+TinEye: Exact matches, usage tracking, historical data
+Task 2: Python Automation Framework
+Step 1: Install Dependencies
+# Update system
+sudo apt update
+
+# Install required packages
+pip3 install requests beautifulsoup4 selenium pillow
+sudo apt install firefox-geckodriver -y
+Step 2: Create Base Automation Script
+nano scripts/reverse_search.py
+#!/usr/bin/env python3
+"""
+Reverse Image Search Automation
+Students: Complete the TODO sections
+"""
+
+import requests
+import json
+import time
+import os
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.firefox.options import Options
+
+class ReverseImageSearcher:
+    def __init__(self):
+        self.session = requests.Session()
+        self.session.headers.update({
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36'
+        })
+    
+    def setup_driver(self):
+        """Setup headless Firefox driver"""
+        options = Options()
+        options.add_argument('--headless')
+        # TODO: Add additional options for stability
+        # TODO: Return configured webdriver
+        pass
+    
+    def search_yandex(self, image_path):
+        """
+        Perform Yandex reverse image search
+        
+        Args:
+            image_path: Path to image file
+        
+        Returns:
+            Dictionary with search results
+        """
+        print(f"Searching Yandex: {image_path}")
+        
+        # TODO: Open image file in binary mode
+        # TODO: POST to https://yandex.com/images/search with files={'upfile': file}
+        # TODO: Parse response HTML with BeautifulSoup
+        # TODO: Extract similar images (class: serp-item__thumb)
+        # TODO: Extract related searches (class: link)
+        # TODO: Return results dictionary with keys:
+        #       - platform, status, similar_images, related_searches
+        
+        return {
+            'platform': 'Yandex',
+            'status': 'not_implemented',
+            'similar_images': [],
+            'related_searches': []
+        }
+    
+    def search_bing(self, image_path):
+        """
+        Perform Bing Visual Search using Selenium
+        
+        Args:
+            image_path: Path to image file
+        
+        Returns:
+            Dictionary with search results
+        """
+        print(f"Searching Bing: {image_path}")
+        
+        # TODO: Setup Selenium driver
+        # TODO: Navigate to https://www.bing.com/images
+        # TODO: Find and click camera icon (aria-label='Search using an image')
+        # TODO: Upload image via file input
+        # TODO: Wait for results to load
+        # TODO: Extract similar images (class: mimg)
+        # TODO: Extract related searches (class: tilk)
+        # TODO: Close driver and return results
+        
+        return {
+            'platform': 'Bing',
+            'status': 'not_implemented',
+            'similar_images': [],
+            'related_searches': []
+        }
+    
+    def search_tineye(self, image_path):
+        """
+        Perform TinEye reverse image search
+        
+        Args:
+            image_path: Path to image file
+        
+        Returns:
+            Dictionary with match details
+        """
+        print(f"Searching TinEye: {image_path}")
+        
+        # TODO: POST image to https://tineye.com/search
+        # TODO: Parse response with BeautifulSoup
+        # TODO: Extract match count (class: search-results-count)
+        # TODO: Extract match details (class: match)
+        # TODO: Get domain names and image URLs
+        # TODO: Return results with total_matches and match_details
+        
+        return {
+            'platform': 'TinEye',
+            'status': 'not_implemented',
+            'total_matches': 0,
+            'match_details': []
+        }
+    
+    def search_all(self, image_path):
+        """Search across all platforms"""
+        results = {}
+        
+        # TODO: Call search_yandex and store results
+        # TODO: Add 2-second delay
+        # TODO: Call search_bing and store results
+        # TODO: Add 2-second delay
+        # TODO: Call search_tineye and store results
+        
+        return results
+    
+    def save_results(self, results, output_file):
+        """Save results to JSON file"""
+        # TODO: Write results dictionary to JSON file
+        # TODO: Use indent=2 for readability
+        pass
+    
+    def generate_report(self, results, image_name):
+        """
+        Generate human-readable report
+        
+        Args:
+            results: Dictionary of search results
+            image_name: Name of searched image
+        
+        Returns:
+            Formatted report string
+        """
+        # TODO: Create formatted report with:
+        #       - Header with image name and timestamp
+        #       - Results from each platform
+        #       - Statistics (matches found, similar images)
+        #       - Related searches summary
+        
+        report = f"REVERSE IMAGE SEARCH REPORT\n"
+        report += f"Image: {image_name}\n"
+        # TODO: Complete report generation
+        
+        return report
+
+def main():
+    """Main execution function"""
+    import sys
+    
+    if len(sys.argv) != 2:
+        print("Usage: python3 reverse_search.py <image_path>")
+        sys.exit(1)
+    
+    image_path = sys.argv[1]
+    
+    # TODO: Verify image file exists
+    # TODO: Create ReverseImageSearcher instance
+    # TODO: Perform searches
+    # TODO: Save JSON results
+    # TODO: Generate and save text report
+    # TODO: Print summary
+
+if __name__ == "__main__":
+    main()
+Step 3: Create Batch Processing Script
+nano scripts/batch_search.py
+#!/usr/bin/env python3
+"""
+Batch Reverse Image Search
+Students: Complete the implementation
+"""
+
+import os
+import sys
+import json
+from reverse_search import ReverseImageSearcher
+
+def process_directory(directory_path, output_dir):
+    """
+    Process all images in directory
+    
+    Args:
+        directory_path: Path to image directory
+        output_dir: Path to save results
+    """
+    supported_formats = ['.jpg', '.jpeg', '.png', '.gif', '.bmp']
+    
+    # TODO: List all files in directory
+    # TODO: Filter for supported image formats
+    # TODO: Create ReverseImageSearcher instance
+    # TODO: Loop through images:
+    #       - Perform search_all()
+    #       - Save individual results
+    #       - Add 10-second delay between searches
+    # TODO: Generate batch summary report
+    
+    pass
+
+def generate_summary(batch_results, output_dir):
+    """
+    Generate summary statistics
+    
+    Args:
+        batch_results: Dictionary of all results
+        output_dir: Directory to save summary
+    """
+    # TODO: Calculate statistics:
+    #       - Total images processed
+    #       - Success/failure counts per platform
+    #       - Average results per platform
+    #       - Most common sources found
+    # TODO: Write summary report to file
+    
+    pass
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 batch_search.py <directory_path>")
+        sys.exit(1)
+    
+    # TODO: Validate directory path
+    # TODO: Create output directory
+    # TODO: Call process_directory()
+
+if __name__ == "__main__":
+    main()
+Step 4: Test Your Implementation
+# Make scripts executable
+chmod +x scripts/*.py
+
+# Test single image search
+python3 scripts/reverse_search.py sample_images/landmark.jpg
+
+# Test batch processing
+python3 scripts/batch_search.py sample_images/
+
+# Review results
+ls -lh results/
+cat results/*.txt
+Task 3: Results Analysis
+Step 1: Create Analysis Script
+nano scripts/analyze_results.py
+#!/usr/bin/env python3
+"""
+Results Analysis Tool
+Students: Implement analysis functions
+"""
+
+import json
+from collections import defaultdict
+
+class ResultsAnalyzer:
+    def __init__(self, results_file):
+        # TODO: Load JSON results file
+        # TODO: Initialize analysis variables
+        pass
+    
+    def compare_platforms(self):
+        """
+        Compare performance across platforms
+        
+        Returns:
+            Dictionary with platform statistics
+        """
+        # TODO: For each platform, calculate:
+        #       - Success rate
+        #       - Average results count
+        #       - Total searches performed
+        # TODO: Return comparison dictionary
+        pass
+    
+    def find_common_sources(self):
+        """
+        Identify frequently appearing sources
+        
+        Returns:
+            Dictionary of source frequencies
+        """
+        # TODO: Extract all source domains
+        # TODO: Count frequency of each domain
+        # TODO: Return sorted dictionary (most to least common)
+        pass
+    
+    def generate_recommendations(self):
+        """
+        Generate platform recommendations based on analysis
+        
+        Returns:
+            String with recommendations
+        """
+        # TODO: Analyze platform strengths
+        # TODO: Generate recommendations for:
+        #       - Best success rate
+        #       - Most comprehensive results
+        #       - Specific use cases
+        pass
+
+def main():
+    import sys
+    
+    if len(sys.argv) != 2:
+        print("Usage: python3 analyze_results.py <results_json>")
+        sys.exit(1)
+    
+    # TODO: Create analyzer instance
+    # TODO: Run all analysis functions
+    # TODO: Generate and save report
+
+if __name__ == "__main__":
+    main()
+Step 2: Perform Comparative Analysis
+# Analyze batch results
+python3 scripts/analyze_results.py results/batch_results_*.json
+
+# Compare manual vs automated results
+diff results/yandex_manual.txt results/automated_report_landmark.jpg_*.txt
+Step 3: Document Findings
+Create comprehensive analysis document:
+
+nano results/final_analysis.md
+Include:
+
+Platform comparison table (success rates, average results)
+Common sources identified across platforms
+Unique features of each platform
+Recommendations for different use cases
+Limitations encountered
+Best practices for reverse image searching
+Expected Outcomes
+After completing this lab, you should have:
+
+Manual search experience with three major platforms
+Working automation scripts that:
+Search images across Yandex, Bing, and TinEye
+Process multiple images in batch mode
+Generate JSON and text reports
+Analysis capabilities to:
+Compare platform performance
+Identify common sources
+Generate recommendations
+Documentation of findings and best practices
+Deliverables:
+
+Completed Python scripts in scripts/ directory
+Manual search documentation in results/
+Automated search results (JSON and text)
+Comparative analysis report
+Troubleshooting Tips
+Issue: Selenium driver not found
+
+# Reinstall geckodriver
+sudo apt remove firefox-geckodriver
+sudo apt install firefox-geckodriver -y
+Issue: Rate limiting / blocked requests
+
+Add longer delays between requests (10-15 seconds)
+Rotate User-Agent headers
+Use proxy servers for distributed requests
+Respect robots.txt and terms of service
+Issue: BeautifulSoup parsing errors
+
+Verify HTML structure hasn't changed (websites update frequently)
+Add error handling with try-except blocks
+Print response.text to debug parsing issues
+Use browser developer tools to inspect current HTML structure
+Issue: Image upload failures
+
+Verify image file exists and is readable
+Check file size (some platforms have limits)
+Ensure image format is supported
+Convert images to JPEG if needed: convert input.png output.jpg
+Conclusion
+This lab introduced reverse image search techniques for OSINT investigations. You learned to manually search across multiple platforms, automate searches with Python, and analyze results comparatively. Key takeaways:
+
+Yandex excels at international sources and visual similarity
+Bing provides strong commercial and shopping results
+TinEye specializes in exact matches and usage tracking
+Automation enables efficient batch processing and consistent documentation
+Multi-platform approach provides comprehensive coverage
+Next steps:
+
+Integrate reverse image search into larger OSINT workflows
+Explore additional platforms (Google Images, Baidu)
+Implement image preprocessing (cropping, filtering) for better results
+Develop case-specific search strategies based on investigation needs
+Security reminder: Always respect privacy, terms of service, and legal boundaries when conducting OSINT investigations
