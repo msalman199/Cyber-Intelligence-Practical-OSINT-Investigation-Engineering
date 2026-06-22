@@ -1,0 +1,593 @@
+Sun Position and Shadow Analysis for Timestamp Estimation
+Objectives
+By the end of this lab, students will be able to:
+
+Calculate sun positions using astronomical algorithms for any location and time
+Analyze shadow patterns in images to extract directional information
+Correlate shadow characteristics with solar positioning data
+Estimate photograph timestamps using shadow analysis techniques
+Apply these techniques for digital forensics and OSINT investigations
+Prerequisites
+Basic Python programming skills
+Understanding of coordinate systems (latitude/longitude)
+Familiarity with image analysis concepts
+Basic trigonometry knowledge (angles, ratios)
+Linux command line experience
+Lab Environment
+This lab uses Al Nafi's pre-configured cloud machines with all necessary tools installed. Click Start Lab to access your environment with Python 3, OpenCV, and required libraries pre-installed.
+
+Task 1: Set Up the Lab Environment
+Step 1: Create Directory Structure
+mkdir -p ~/shadow_lab/{scripts,images,results}
+cd ~/shadow_lab
+Step 2: Install Required Libraries
+pip3 install --user numpy matplotlib pillow opencv-python astral pytz
+Step 3: Download Sample Images
+cd ~/shadow_lab/images
+wget -O sample1.jpg "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800"
+wget -O sample2.jpg "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800"
+Step 4: Verify Installation
+python3 -c "import cv2, numpy, astral; print('All libraries installed successfully')"
+Task 2: Implement Sun Position Calculator
+Step 1: Create Sun Calculator Module
+Create ~/shadow_lab/scripts/sun_calculator.py:
+
+#!/usr/bin/env python3
+"""
+Sun Position Calculator using astronomical formulas
+"""
+
+import math
+import datetime
+import pytz
+from astral import LocationInfo
+from astral.sun import sun
+
+class SunCalculator:
+    def __init__(self, latitude, longitude, timezone='UTC'):
+        """
+        Initialize calculator with location parameters.
+        
+        Args:
+            latitude: Location latitude in degrees
+            longitude: Location longitude in degrees
+            timezone: Timezone string (e.g., 'America/New_York')
+        """
+        self.latitude = latitude
+        self.longitude = longitude
+        self.timezone = timezone
+        self.location = LocationInfo("Custom", "Region", timezone, latitude, longitude)
+    
+    def calculate_sun_position(self, date_time):
+        """
+        Calculate sun azimuth and elevation for given datetime.
+        
+        Args:
+            date_time: datetime object (timezone-aware)
+        
+        Returns:
+            Dictionary with azimuth, elevation, and solar events
+        """
+        # TODO: Convert to timezone-aware datetime if needed
+        # TODO: Calculate Julian day number
+        # TODO: Calculate solar coordinates using astronomical formulas
+        # TODO: Calculate declination and hour angle
+        # TODO: Calculate elevation angle
+        # TODO: Calculate azimuth angle (0-360 degrees from North)
+        # TODO: Get sunrise, sunset, and solar noon times
+        # TODO: Return dictionary with all calculated values
+        pass
+    
+    def _to_julian_day(self, dt):
+        """
+        Convert datetime to Julian day number.
+        
+        Args:
+            dt: datetime object
+        
+        Returns:
+            Julian day number as float
+        """
+        # TODO: Implement Julian day calculation
+        # Formula: JD = day + (153*m + 2)/5 + 365*y + y/4 - y/100 + y/400 - 32045
+        # Add fractional day from hours, minutes, seconds
+        pass
+    
+    def generate_sun_path(self, date, hour_start=6, hour_end=18):
+        """
+        Generate sun positions for entire day.
+        
+        Args:
+            date: date object
+            hour_start: Starting hour (default 6 AM)
+            hour_end: Ending hour (default 6 PM)
+        
+        Returns:
+            List of position dictionaries
+        """
+        # TODO: Loop through hours and calculate positions
+        # TODO: Only include positions where sun is above horizon
+        # TODO: Return list of all positions
+        pass
+
+def main():
+    # TODO: Test with sample coordinates (e.g., New York: 40.7128, -74.0060)
+    # TODO: Calculate current sun position
+    # TODO: Display results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Create Interactive Calculator
+Create ~/shadow_lab/scripts/interactive_sun.py:
+
+#!/usr/bin/env python3
+"""
+Interactive sun position calculator
+"""
+
+from sun_calculator import SunCalculator
+import datetime
+
+def get_user_input():
+    """
+    Get location and time from user.
+    
+    Returns:
+        Tuple of (latitude, longitude, timezone, datetime)
+    """
+    # TODO: Prompt for latitude and longitude
+    # TODO: Prompt for timezone (default to UTC)
+    # TODO: Prompt for date (default to today)
+    # TODO: Prompt for time (default to now)
+    # TODO: Validate inputs and return tuple
+    pass
+
+def display_results(position_data):
+    """
+    Display formatted sun position results.
+    
+    Args:
+        position_data: Dictionary from calculate_sun_position()
+    """
+    # TODO: Display datetime, azimuth, elevation
+    # TODO: Interpret azimuth as compass direction (N, E, S, W)
+    # TODO: Calculate shadow direction (opposite to sun)
+    # TODO: Display sunrise, solar noon, sunset times
+    pass
+
+def main():
+    # TODO: Get user input
+    # TODO: Create SunCalculator instance
+    # TODO: Calculate position
+    # TODO: Display results
+    # TODO: Ask if user wants to continue
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 3: Test the Calculator
+cd ~/shadow_lab/scripts
+chmod +x sun_calculator.py interactive_sun.py
+python3 interactive_sun.py
+Test with known values:
+
+Location: 40.7128, -74.0060 (New York)
+Date: 2024-06-21 (Summer solstice)
+Time: 12:00 (Solar noon)
+Task 3: Implement Shadow Analysis
+Step 1: Create Shadow Analyzer
+Create ~/shadow_lab/scripts/shadow_analyzer.py:
+
+#!/usr/bin/env python3
+"""
+Shadow detection and analysis in images
+"""
+
+import cv2
+import numpy as np
+import math
+
+class ShadowAnalyzer:
+    def __init__(self, image_path):
+        """
+        Initialize analyzer with image.
+        
+        Args:
+            image_path: Path to image file
+        """
+        self.image_path = image_path
+        self.image = cv2.imread(image_path)
+        self.gray = cv2.cvtColor(self.image, cv2.COLOR_BGR2GRAY)
+        self.height, self.width = self.gray.shape
+    
+    def detect_shadows(self, threshold=50):
+        """
+        Detect shadow regions using brightness thresholding.
+        
+        Args:
+            threshold: Brightness threshold (0-255)
+        
+        Returns:
+            Binary mask of shadow regions
+        """
+        # TODO: Convert image to HSV color space
+        # TODO: Threshold the Value (brightness) channel
+        # TODO: Apply morphological operations to clean mask
+        # TODO: Return binary shadow mask
+        pass
+    
+    def find_shadow_edges(self, shadow_mask):
+        """
+        Find edges and contours of shadows.
+        
+        Args:
+            shadow_mask: Binary shadow mask
+        
+        Returns:
+            Tuple of (edges, contours)
+        """
+        # TODO: Apply Canny edge detection
+        # TODO: Find contours using cv2.findContours()
+        # TODO: Return edges and contours
+        pass
+    
+    def analyze_shadow_direction(self, contours, min_area=1000):
+        """
+        Analyze shadow direction from contours.
+        
+        Args:
+            contours: List of contours from find_shadow_edges()
+            min_area: Minimum contour area to consider
+        
+        Returns:
+            Tuple of (average_angle, list_of_angles)
+        """
+        # TODO: Filter contours by area
+        # TODO: Fit ellipse to each contour
+        # TODO: Extract orientation angle
+        # TODO: Calculate average angle
+        # TODO: Return average and list of individual angles
+        pass
+    
+    def measure_shadow_length(self, start_point, end_point):
+        """
+        Calculate distance between two points.
+        
+        Args:
+            start_point: Tuple (x, y)
+            end_point: Tuple (x, y)
+        
+        Returns:
+            Distance in pixels
+        """
+        # TODO: Calculate Euclidean distance
+        pass
+    
+    def estimate_sun_elevation(self, object_height, shadow_length):
+        """
+        Estimate sun elevation from shadow ratio.
+        
+        Args:
+            object_height: Height of object in pixels
+            shadow_length: Length of shadow in pixels
+        
+        Returns:
+            Estimated sun elevation angle in degrees
+        """
+        # TODO: Calculate shadow ratio
+        # TODO: Use arctangent to find elevation angle
+        # Formula: elevation = atan(object_height / shadow_length)
+        pass
+
+def main():
+    # TODO: Load sample image
+    # TODO: Create ShadowAnalyzer instance
+    # TODO: Detect shadows
+    # TODO: Find contours
+    # TODO: Analyze direction
+    # TODO: Display results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Create Manual Measurement Tool
+Create ~/shadow_lab/scripts/manual_measure.py:
+
+#!/usr/bin/env python3
+"""
+Interactive tool for manual shadow measurements
+"""
+
+import cv2
+import math
+
+class ManualMeasureTool:
+    def __init__(self, image_path):
+        self.image = cv2.imread(image_path)
+        self.display = self.image.copy()
+        self.points = []
+        self.measurements = []
+    
+    def mouse_callback(self, event, x, y, flags, param):
+        """
+        Handle mouse clicks for measurement.
+        
+        Args:
+            event: OpenCV mouse event
+            x, y: Mouse coordinates
+        """
+        # TODO: On left click, add point to list
+        # TODO: If two points collected, draw line and calculate distance
+        # TODO: Calculate angle from horizontal
+        # TODO: Store measurement and reset points
+        pass
+    
+    def calculate_distance(self, pt1, pt2):
+        """Calculate distance between two points."""
+        # TODO: Implement Euclidean distance formula
+        pass
+    
+    def calculate_angle(self, pt1, pt2):
+        """Calculate angle of line from horizontal."""
+        # TODO: Use atan2 to calculate angle
+        # TODO: Convert to degrees
+        pass
+    
+    def run(self):
+        """
+        Run interactive measurement tool.
+        
+        Instructions displayed to user:
+        - Click two points to measure
+        - Press 'r' to reset
+        - Press 'q' to quit
+        """
+        # TODO: Create window and set mouse callback
+        # TODO: Display instructions
+        # TODO: Main loop to handle key presses
+        # TODO: Return list of measurements
+        pass
+
+def main():
+    # TODO: List available images
+    # TODO: Get user selection
+    # TODO: Run measurement tool
+    # TODO: Display final measurements
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 3: Test Shadow Analysis
+cd ~/shadow_lab/scripts
+chmod +x shadow_analyzer.py manual_measure.py
+python3 shadow_analyzer.py
+Task 4: Automate Timestamp Estimation
+Step 1: Create Timestamp Estimator
+Create ~/shadow_lab/scripts/timestamp_estimator.py:
+
+#!/usr/bin/env python3
+"""
+Automated timestamp estimation from shadow analysis
+"""
+
+import datetime
+from sun_calculator import SunCalculator
+from shadow_analyzer import ShadowAnalyzer
+
+class TimestampEstimator:
+    def __init__(self, latitude, longitude, timezone='UTC'):
+        """
+        Initialize estimator with location.
+        
+        Args:
+            latitude: Location latitude
+            longitude: Location longitude
+            timezone: Timezone string
+        """
+        self.latitude = latitude
+        self.longitude = longitude
+        self.timezone = timezone
+        self.sun_calc = SunCalculator(latitude, longitude, timezone)
+    
+    def estimate_from_shadow(self, image_path, shadow_angle=None, 
+                           sun_elevation=None, date_range=None):
+        """
+        Estimate timestamp from shadow characteristics.
+        
+        Args:
+            image_path: Path to image
+            shadow_angle: Known shadow direction (degrees)
+            sun_elevation: Known sun elevation (degrees)
+            date_range: Tuple of (start_date, end_date)
+        
+        Returns:
+            List of candidate timestamps with match scores
+        """
+        # TODO: Analyze image if shadow_angle not provided
+        # TODO: Set default date range if not provided
+        # TODO: Search for matching sun positions
+        # TODO: Return sorted list of candidates
+        pass
+    
+    def _search_positions(self, target_angle, target_elevation, 
+                         date_range, angle_tolerance=10, elev_tolerance=5):
+        """
+        Search for sun positions matching criteria.
+        
+        Args:
+            target_angle: Target shadow angle
+            target_elevation: Target sun elevation
+            date_range: Date range to search
+            angle_tolerance: Acceptable angle difference
+            elev_tolerance: Acceptable elevation difference
+        
+        Returns:
+            List of matching positions with scores
+        """
+        # TODO: Loop through date range
+        # TODO: For each day, check hourly positions (6 AM - 6 PM)
+        # TODO: Calculate sun position for each time
+        # TODO: Compare with target values
+        # TODO: Calculate match score
+        # TODO: Add candidates that meet tolerance criteria
+        # TODO: Sort by match score
+        pass
+    
+    def generate_report(self, candidates, output_file=None):
+        """
+        Generate estimation report.
+        
+        Args:
+            candidates: List of candidate timestamps
+            output_file: Optional file to save report
+        """
+        # TODO: Format candidates as readable report
+        # TODO: Include match scores and confidence levels
+        # TODO: Save to file if specified
+        # TODO: Print to console
+        pass
+
+def main():
+    # TODO: Get image path from user
+    # TODO: Get location coordinates
+    # TODO: Get optional shadow measurements
+    # TODO: Create estimator and run estimation
+    # TODO: Display results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 2: Create Complete Analysis Pipeline
+Create ~/shadow_lab/scripts/analyze_photo.py:
+
+#!/usr/bin/env python3
+"""
+Complete photo analysis pipeline
+"""
+
+import sys
+import json
+from timestamp_estimator import TimestampEstimator
+from shadow_analyzer import ShadowAnalyzer
+
+def analyze_photo(image_path, latitude, longitude, timezone='UTC'):
+    """
+    Complete analysis pipeline for photo timestamp estimation.
+    
+    Args:
+        image_path: Path to photo
+        latitude: Location latitude
+        longitude: Location longitude
+        timezone: Timezone string
+    
+    Returns:
+        Dictionary with analysis results
+    """
+    results = {
+        'image': image_path,
+        'location': {'lat': latitude, 'lon': longitude},
+        'shadow_analysis': {},
+        'timestamp_candidates': []
+    }
+    
+    # TODO: Analyze shadows in image
+    # TODO: Extract shadow angle and characteristics
+    # TODO: Estimate sun elevation if possible
+    # TODO: Run timestamp estimation
+    # TODO: Compile results
+    # TODO: Return results dictionary
+    pass
+
+def save_results(results, output_file):
+    """Save results to JSON file."""
+    # TODO: Write results to JSON file
+    pass
+
+def main():
+    # TODO: Parse command line arguments
+    # TODO: Run analysis pipeline
+    # TODO: Save and display results
+    pass
+
+if __name__ == "__main__":
+    main()
+Step 3: Test Complete Pipeline
+cd ~/shadow_lab/scripts
+chmod +x timestamp_estimator.py analyze_photo.py
+
+# Test with sample image
+python3 analyze_photo.py ../images/sample1.jpg 40.7128 -74.0060 America/New_York
+Step 4: Create Batch Analysis Script
+Create ~/shadow_lab/scripts/batch_analyze.sh:
+
+#!/bin/bash
+# Batch analyze multiple images
+
+IMAGE_DIR="../images"
+RESULTS_DIR="../results"
+LAT="40.7128"
+LON="-74.0060"
+TZ="America/New_York"
+
+mkdir -p "$RESULTS_DIR"
+
+for img in "$IMAGE_DIR"/*.jpg; do
+    filename=$(basename "$img")
+    echo "Analyzing $filename..."
+    python3 analyze_photo.py "$img" "$LAT" "$LON" "$TZ" > "$RESULTS_DIR/${filename%.jpg}_results.json"
+done
+
+echo "Batch analysis complete. Results in $RESULTS_DIR"
+chmod +x batch_analyze.sh
+./batch_analyze.sh
+Expected Outcomes
+After completing this lab, you should have:
+
+Working sun position calculator with astronomical accuracy
+Shadow detection and analysis tools
+Automated timestamp estimation system
+Understanding of solar geometry and shadow relationships
+Practical experience with forensic image analysis
+Key Results:
+
+Sun position calculations accurate to ±1 degree
+Shadow angle detection within ±5 degrees
+Timestamp estimates within ±30 minutes (ideal conditions)
+Complete analysis pipeline for batch processing
+Troubleshooting Tips
+Issue: Shadow detection fails
+
+Adjust threshold values in detect_shadows() method
+Try different color spaces (HSV, LAB)
+Ensure image has sufficient contrast
+Issue: Inaccurate sun position calculations
+
+Verify latitude/longitude coordinates are correct
+Check timezone matches location
+Ensure datetime is timezone-aware
+Issue: No timestamp candidates found
+
+Expand date range for search
+Increase angle/elevation tolerance values
+Verify shadow measurements are accurate
+Issue: OpenCV display issues
+
+Check X11 forwarding if using SSH
+Use cv2.imwrite() to save instead of display
+Verify OpenCV installation: python3 -c "import cv2; print(cv2.__version__)"
+Conclusion
+This lab demonstrated practical techniques for timestamp estimation using solar positioning and shadow analysis. You implemented astronomical calculations, image processing algorithms, and automated analysis pipelines. These skills are valuable for digital forensics, OSINT investigations, and understanding the relationship between solar geometry and photographic evidence.
+
+Key Takeaways:
+
+Sun position can be calculated precisely using astronomical formulas
+Shadow characteristics provide temporal and directional information
+Automated analysis requires combining multiple data sources
+Accuracy depends on image quality and known reference points
+Further Practice:
+
+Analyze photos from different locations and times
+Incorporate additional metadata (EXIF data, landmarks)
+Improve shadow detection algorithms
+Create visualization tools for sun paths and shadow predictions
