@@ -1,0 +1,420 @@
+Analyze Video Metadata with ffprobe
+Objectives
+By the end of this lab, students will be able to:
+
+Extract video metadata using ffprobe and related command-line tools
+Analyze video file properties for forensic investigations
+Automate metadata extraction using Python scripts
+Identify anomalies and evidence in video file metadata
+Generate comprehensive forensic reports from video analysis
+Prerequisites
+Basic Linux command-line operations
+Understanding of video file formats (MP4, AVI, MOV, MKV)
+Basic Python programming knowledge
+Familiarity with JSON data structures
+Lab Environment
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS with FFmpeg suite (ffprobe)
+Python 3.10 with pip
+ExifTool and MediaInfo
+Sample video files in /home/student/lab20-samples
+Text editors (nano, vim)
+Task 1: Basic Metadata Extraction with ffprobe
+Step 1: Verify Installation and Explore Sample Files
+# Check ffprobe version
+ffprobe -version
+
+# Navigate to sample directory
+cd /home/student/lab20-samples
+ls -lh
+
+# View basic file information
+file sample_video.mp4
+Step 2: Extract Basic Video Metadata
+# Display general information
+ffprobe -i sample_video.mp4
+
+# Extract format information in JSON
+ffprobe -v quiet -print_format json -show_format sample_video.mp4
+
+# Extract stream information
+ffprobe -v quiet -print_format json -show_streams sample_video.mp4
+
+# Save complete metadata
+ffprobe -v quiet -print_format json -show_format -show_streams sample_video.mp4 > metadata.json
+Step 3: Extract Specific Metadata Fields
+# Video stream properties only
+ffprobe -v quiet -select_streams v:0 -show_entries stream=width,height,codec_name,duration,bit_rate -of csv=p=0 sample_video.mp4
+
+# Extract creation timestamp
+ffprobe -v quiet -show_entries format_tags=creation_time -of default=noprint_wrappers=1:nokey=1 sample_video.mp4
+
+# Frame-level analysis (first 20 frames)
+ffprobe -v quiet -select_streams v:0 -show_entries frame=n,pts_time,pkt_size -of csv sample_video.mp4 | head -20
+Step 4: Create Multi-Format Analysis Script
+Create analyze_videos.sh:
+
+#!/bin/bash
+
+# TODO: Add error checking for file existence
+# TODO: Loop through all video files in current directory
+# TODO: Extract codec, resolution, duration, and bitrate for each file
+# TODO: Save results to analysis_report.txt
+
+# Starter template:
+for video in *.mp4 *.avi *.mov *.mkv; do
+    if [ -f "$video" ]; then
+        echo "Analyzing: $video"
+        # TODO: Add ffprobe commands here
+    fi
+done
+Make executable and run:
+
+chmod +x analyze_videos.sh
+./analyze_videos.sh
+Task 2: Advanced Analysis with Forensic Tools
+Step 1: Install Additional Tools
+# Install ExifTool
+sudo apt update
+sudo apt install libimage-exiftool-perl -y
+
+# Install MediaInfo
+sudo apt install mediainfo -y
+
+# Verify installations
+exiftool -ver
+mediainfo --version
+Step 2: Extract Metadata with ExifTool
+# Display all metadata
+exiftool sample_video.mp4
+
+# Export to JSON
+exiftool -json sample_video.mp4 > exiftool_output.json
+
+# Extract specific fields
+exiftool -CreateDate -ModifyDate -Duration -ImageSize sample_video.mp4
+
+# Check for GPS data
+exiftool -gps:all -c "%.6f" sample_video.mp4
+Step 3: Analyze with MediaInfo
+# Full media information
+mediainfo sample_video.mp4
+
+# Export to JSON
+mediainfo --Output=JSON sample_video.mp4 > mediainfo_output.json
+
+# Extract specific stream information
+mediainfo --Inform="Video;%Format%,%Width%,%Height%,%FrameRate%" sample_video.mp4
+Step 4: Create Comprehensive Forensic Script
+Create forensic_analysis.sh:
+
+#!/bin/bash
+
+VIDEO_FILE="$1"
+
+# TODO: Validate input file exists
+# TODO: Create timestamped output directory
+# TODO: Calculate MD5 and SHA256 hashes
+# TODO: Run ffprobe analysis and save to JSON
+# TODO: Run exiftool analysis and save results
+# TODO: Run mediainfo analysis and save results
+# TODO: Extract frame information
+# TODO: Generate summary report
+
+# Starter template:
+if [ -z "$VIDEO_FILE" ]; then
+    echo "Usage: $0 <video_file>"
+    exit 1
+fi
+
+REPORT_DIR="forensic_$(date +%Y%m%d_%H%M%S)"
+mkdir -p "$REPORT_DIR"
+
+# TODO: Add analysis commands here
+echo "Analysis complete. Results in $REPORT_DIR"
+Task 3: Python Automation for Metadata Extraction
+Step 1: Install Python Libraries
+pip3 install ffmpeg-python pymediainfo
+Step 2: Create Video Metadata Extractor Class
+Create video_analyzer.py:
+
+#!/usr/bin/env python3
+
+import json
+import sys
+import os
+import hashlib
+from datetime import datetime
+import ffmpeg
+from pymediainfo import MediaInfo
+
+class VideoMetadataExtractor:
+    def __init__(self, video_path):
+        """
+        Initialize the metadata extractor.
+        
+        Args:
+            video_path: Path to the video file
+        """
+        self.video_path = video_path
+        self.metadata = {}
+    
+    def extract_file_info(self):
+        """
+        Extract basic file system information and calculate hashes.
+        
+        TODO: Get file size, timestamps (created, modified, accessed)
+        TODO: Calculate MD5 and SHA256 hashes
+        TODO: Store results in self.metadata['file_info']
+        """
+        pass
+    
+    def extract_ffprobe_metadata(self):
+        """
+        Extract metadata using ffprobe.
+        
+        TODO: Use ffmpeg.probe() to get format and stream information
+        TODO: Separate video and audio streams
+        TODO: Store results in self.metadata['ffprobe']
+        """
+        pass
+    
+    def extract_mediainfo_metadata(self):
+        """
+        Extract metadata using MediaInfo library.
+        
+        TODO: Parse video file with MediaInfo
+        TODO: Extract all track information
+        TODO: Store results in self.metadata['mediainfo']
+        """
+        pass
+    
+    def analyze_properties(self):
+        """
+        Analyze video properties and detect anomalies.
+        
+        TODO: Extract resolution, codec, duration, frame rate
+        TODO: Check for suspicious properties (very short duration, tiny resolution)
+        TODO: Store analysis and anomalies in self.metadata['analysis']
+        """
+        pass
+    
+    def extract_all(self):
+        """Extract all metadata and return results."""
+        # TODO: Call all extraction methods
+        # TODO: Add extraction timestamp
+        return self.metadata
+    
+    def save_to_file(self, output_file):
+        """
+        Save metadata to JSON file.
+        
+        Args:
+            output_file: Path to output JSON file
+        """
+        # TODO: Write self.metadata to JSON file with proper formatting
+        pass
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 video_analyzer.py <video_file>")
+        sys.exit(1)
+    
+    # TODO: Validate file exists
+    # TODO: Create extractor instance
+    # TODO: Extract all metadata
+    # TODO: Save to JSON file
+    # TODO: Print summary
+
+if __name__ == "__main__":
+    main()
+Step 3: Create Batch Processing Script
+Create batch_analyzer.py:
+
+#!/usr/bin/env python3
+
+import os
+import sys
+import json
+import glob
+from datetime import datetime
+
+class BatchVideoAnalyzer:
+    def __init__(self, input_dir, output_dir):
+        """
+        Initialize batch analyzer.
+        
+        Args:
+            input_dir: Directory containing video files
+            output_dir: Directory for output reports
+        """
+        self.input_dir = input_dir
+        self.output_dir = output_dir
+        self.supported_formats = ['.mp4', '.avi', '.mov', '.mkv', '.wmv']
+    
+    def find_videos(self):
+        """
+        Find all video files in input directory.
+        
+        TODO: Search for files with supported extensions
+        TODO: Return sorted list of video file paths
+        """
+        pass
+    
+    def process_videos(self):
+        """
+        Process all found video files.
+        
+        TODO: Find all video files
+        TODO: Loop through each file and extract metadata
+        TODO: Save individual metadata files
+        TODO: Collect summary statistics
+        TODO: Generate batch processing report
+        """
+        pass
+
+def main():
+    if len(sys.argv) != 3:
+        print("Usage: python3 batch_analyzer.py <input_dir> <output_dir>")
+        sys.exit(1)
+    
+    # TODO: Validate input directory exists
+    # TODO: Create BatchVideoAnalyzer instance
+    # TODO: Process all videos
+    # TODO: Display summary
+
+if __name__ == "__main__":
+    main()
+Step 4: Create Forensic Report Generator
+Create report_generator.py:
+
+#!/usr/bin/env python3
+
+import json
+import sys
+from datetime import datetime
+
+class ForensicReportGenerator:
+    def __init__(self, metadata_file):
+        """
+        Initialize report generator.
+        
+        Args:
+            metadata_file: Path to JSON metadata file
+        """
+        # TODO: Load metadata from JSON file
+        pass
+    
+    def generate_executive_summary(self):
+        """
+        Generate executive summary section.
+        
+        TODO: Extract key information (filename, size, resolution, duration)
+        TODO: Highlight any detected anomalies
+        TODO: Return formatted summary string
+        """
+        pass
+    
+    def generate_technical_details(self):
+        """
+        Generate technical details section.
+        
+        TODO: Include file system information and hashes
+        TODO: Detail video and audio stream properties
+        TODO: Return formatted technical details string
+        """
+        pass
+    
+    def generate_forensic_analysis(self):
+        """
+        Generate forensic analysis section.
+        
+        TODO: Analyze file timestamps for modifications
+        TODO: Check for embedded metadata
+        TODO: Assess video quality and authenticity indicators
+        TODO: Return formatted analysis string
+        """
+        pass
+    
+    def generate_full_report(self):
+        """
+        Generate complete forensic report.
+        
+        TODO: Combine all sections
+        TODO: Add header with report generation timestamp
+        TODO: Return complete report as string
+        """
+        pass
+    
+    def save_report(self, output_file):
+        """Save report to text file."""
+        # TODO: Write report to file
+        pass
+
+def main():
+    if len(sys.argv) != 2:
+        print("Usage: python3 report_generator.py <metadata_json>")
+        sys.exit(1)
+    
+    # TODO: Create report generator
+    # TODO: Generate full report
+    # TODO: Save to file and display
+
+if __name__ == "__main__":
+    main()
+Step 5: Test Your Python Scripts
+# Test single video analyzer
+python3 video_analyzer.py sample_video.mp4
+
+# View generated metadata
+cat metadata_sample_video.mp4.json | python3 -m json.tool | head -50
+
+# Test batch processor
+python3 batch_analyzer.py /home/student/lab20-samples ./batch_output
+
+# Generate forensic report
+python3 report_generator.py metadata_sample_video.mp4.json
+Expected Outcomes
+After completing this lab, you should have:
+
+Extracted comprehensive metadata from video files using multiple tools
+Created shell scripts for automated video analysis
+Developed Python programs for batch metadata extraction
+Generated forensic reports identifying file properties and anomalies
+Understanding of video metadata structure and forensic significance
+Key files created:
+
+metadata.json - Complete video metadata
+analyze_videos.sh - Multi-file analysis script
+forensic_analysis.sh - Comprehensive forensic script
+video_analyzer.py - Python metadata extractor
+batch_analyzer.py - Batch processing script
+report_generator.py - Report generation tool
+Troubleshooting Tips
+Issue: ffprobe command not found
+
+Solution: Install FFmpeg suite: sudo apt install ffmpeg -y
+Issue: Python import errors for ffmpeg or pymediainfo
+
+Solution: Reinstall libraries: pip3 install --upgrade ffmpeg-python pymediainfo
+Issue: Permission denied when running scripts
+
+Solution: Make scripts executable: chmod +x script_name.sh or chmod +x script_name.py
+Issue: No metadata extracted from video file
+
+Solution: Verify file is valid video format: file video_file.mp4 and check file isn't corrupted
+Issue: JSON parsing errors in Python
+
+Solution: Validate JSON output: python3 -m json.tool metadata.json
+Conclusion
+This lab introduced video metadata analysis techniques essential for digital forensics and OSINT investigations. You learned to use ffprobe for detailed metadata extraction, leverage forensic tools like ExifTool and MediaInfo, and automate analysis workflows with Python scripts.
+
+Key takeaways:
+
+Video metadata contains valuable forensic information including timestamps, codecs, and embedded data
+Multiple tools provide different perspectives on video file properties
+Automation enables efficient batch processing of large video collections
+Anomaly detection helps identify manipulated or suspicious video files
+Comprehensive reporting documents findings for investigative purposes
+Continue practicing by analyzing various video formats and developing more sophisticated detection algorithms for your forensic toolkit.
