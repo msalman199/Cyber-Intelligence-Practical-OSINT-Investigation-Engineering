@@ -1,0 +1,627 @@
+Vehicle Image Analysis with OSINT Techniques
+Objectives
+By the end of this lab, students will be able to:
+
+Set up and configure Python-based vehicle image analysis tools
+Extract metadata and features from vehicle images using computer vision
+Identify vehicle characteristics including body type, color, and distinctive features
+Apply OSINT methodologies for vehicle investigation
+Generate comprehensive vehicle identification reports
+Prerequisites
+Before starting this lab, students should have:
+
+Basic Linux command-line proficiency
+Fundamental Python programming knowledge
+Understanding of image analysis concepts
+Familiarity with OSINT investigation principles
+Lab Environment Setup
+Ready-to-Use Cloud Machines: Al Nafi provides Linux-based cloud machines for this lab. Simply click Start Lab to access your pre-configured environment.
+
+Your cloud machine includes:
+
+Ubuntu 22.04 LTS with Python 3.10+
+OpenCV and image processing libraries pre-installed
+Sample vehicle images for analysis
+All necessary tools and utilities
+Task 1: Set Up Vehicle Analysis Environment
+Step 1: Install Required Dependencies
+Update your system and install necessary packages:
+
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Install Python dependencies
+sudo apt install -y python3-pip git
+
+# Install image processing libraries
+pip3 install opencv-python pillow exifread numpy
+
+# Create working directory
+mkdir -p ~/vehicle_analysis
+cd ~/vehicle_analysis
+Step 2: Create Sample Test Images
+Generate test vehicle images for analysis:
+
+# Create images directory
+mkdir -p ~/vehicle_analysis/test_images
+cd ~/vehicle_analysis/test_images
+
+# Create test image generator script
+cat > generate_test_images.py << 'EOF'
+#!/usr/bin/env python3
+import cv2
+import numpy as np
+
+def create_vehicle_image(filename, color, vehicle_type):
+    """
+    Create a test vehicle image with specified characteristics.
+    
+    TODO: Implement image creation with:
+    - Background color based on vehicle color
+    - Text overlay with vehicle type
+    - Simulated license plate region
+    - Vehicle dimensions appropriate to type
+    """
+    # TODO: Create blank image (800x600)
+    # TODO: Add colored background
+    # TODO: Draw vehicle outline/shape
+    # TODO: Add text labels
+    # TODO: Save image
+    pass
+
+# TODO: Create test images for sedan, SUV, and truck
+# create_vehicle_image("sedan.jpg", (100, 100, 200), "SEDAN")
+# create_vehicle_image("suv.jpg", (200, 100, 100), "SUV")
+# create_vehicle_image("truck.jpg", (100, 200, 100), "TRUCK")
+EOF
+
+chmod +x generate_test_images.py
+Student Task: Complete the create_vehicle_image() function to generate test images with different vehicle characteristics.
+
+Step 3: Verify Environment Setup
+Test your environment:
+
+# Check Python version
+python3 --version
+
+# Verify OpenCV installation
+python3 -c "import cv2; print(f'OpenCV version: {cv2.__version__}')"
+
+# List test images
+ls -lh test_images/
+Task 2: Build Basic Vehicle Identifier
+Step 1: Create Vehicle Analysis Class
+Create the main vehicle identification tool:
+
+cd ~/vehicle_analysis
+
+cat > vehicle_identifier.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Vehicle Identification Tool using Computer Vision and OSINT
+"""
+
+import cv2
+import os
+import json
+import exifread
+from datetime import datetime
+import numpy as np
+
+class VehicleIdentifier:
+    def __init__(self):
+        self.results = {}
+    
+    def extract_exif_data(self, image_path):
+        """
+        Extract EXIF metadata from image file.
+        
+        Args:
+            image_path: Path to the image file
+        
+        Returns:
+            Dictionary containing EXIF data
+        
+        TODO: Implement EXIF extraction
+        - Open image file in binary mode
+        - Use exifread to process file
+        - Filter relevant tags
+        - Return dictionary of metadata
+        """
+        pass
+    
+    def analyze_image_properties(self, image_path):
+        """
+        Analyze basic image properties.
+        
+        TODO: Implement property analysis
+        - Load image with OpenCV
+        - Extract dimensions (height, width, channels)
+        - Calculate file size
+        - Compute aspect ratio
+        - Return properties dictionary
+        """
+        pass
+    
+    def detect_features(self, image_path):
+        """
+        Detect vehicle features using edge detection.
+        
+        TODO: Implement feature detection
+        - Convert image to grayscale
+        - Apply Canny edge detection
+        - Find contours
+        - Filter significant contours (area > 1000)
+        - Return list of feature dictionaries
+        """
+        pass
+    
+    def analyze_colors(self, image_path):
+        """
+        Analyze dominant colors in the image.
+        
+        TODO: Implement color analysis
+        - Load image and convert BGR to RGB
+        - Calculate mean color values
+        - Determine dominant color category
+        - Return color analysis dictionary
+        """
+        pass
+    
+    def identify_vehicle_type(self, features, properties):
+        """
+        Identify vehicle type based on features and properties.
+        
+        TODO: Implement classification logic
+        - Use aspect ratio and feature count
+        - Apply heuristics for vehicle types:
+          * Sedan: aspect_ratio > 1.5, features > 5
+          * SUV: aspect_ratio > 1.3, features > 8
+          * Truck: aspect_ratio > 1.2, features > 10
+        - Return vehicle type string
+        """
+        pass
+    
+    def generate_report(self, image_path):
+        """
+        Generate comprehensive analysis report.
+        
+        TODO: Implement report generation
+        - Call all analysis methods
+        - Format output with clear sections
+        - Store results in self.results
+        - Return complete analysis dictionary
+        """
+        pass
+
+def main():
+    """
+    Main function to run vehicle identification.
+    
+    TODO: Implement main logic
+    - Parse command-line arguments (image path, output file)
+    - Create VehicleIdentifier instance
+    - Run analysis
+    - Save results to JSON if specified
+    """
+    pass
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x vehicle_identifier.py
+Student Task: Complete all TODO sections in the VehicleIdentifier class to create a functional vehicle analysis tool.
+
+Step 2: Test Basic Analysis
+Run your vehicle identifier:
+
+# Test with a sample image
+python3 vehicle_identifier.py test_images/sedan.jpg
+
+# Test with JSON output
+python3 vehicle_identifier.py test_images/suv.jpg --output results.json
+
+# View results
+cat results.json | python3 -m json.tool
+Task 3: Implement Advanced Feature Detection
+Step 1: Create Advanced Feature Extractor
+Build a tool for detailed feature extraction:
+
+cat > advanced_features.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Advanced Vehicle Feature Extraction
+"""
+
+import cv2
+import numpy as np
+import json
+from datetime import datetime
+
+class AdvancedFeatureExtractor:
+    def __init__(self):
+        self.features = {}
+    
+    def detect_rectangular_regions(self, image_path):
+        """
+        Detect rectangular regions (potential license plates).
+        
+        TODO: Implement rectangle detection
+        - Load and convert to grayscale
+        - Apply Canny edge detection
+        - Find contours
+        - Filter for rectangular shapes with:
+          * 4 corners (approximate polygon)
+          * Aspect ratio between 2.0 and 6.0
+          * Minimum area of 500 pixels
+        - Return list of region dictionaries
+        """
+        pass
+    
+    def analyze_body_type(self, image_path):
+        """
+        Analyze vehicle body type using morphological operations.
+        
+        TODO: Implement body type analysis
+        - Convert to grayscale
+        - Create horizontal kernel (25x1)
+        - Create vertical kernel (1x25)
+        - Apply morphological opening
+        - Count significant lines
+        - Classify body type based on line patterns
+        - Return analysis dictionary
+        """
+        pass
+    
+    def extract_color_features(self, image_path):
+        """
+        Extract detailed color features.
+        
+        TODO: Implement color feature extraction
+        - Load image
+        - Convert to HSV and LAB color spaces
+        - Calculate mean values for each channel
+        - Determine primary color category
+        - Calculate brightness and variance
+        - Return color features dictionary
+        """
+        pass
+    
+    def detect_windows(self, image_path):
+        """
+        Detect potential vehicle windows.
+        
+        TODO: Implement window detection
+        - Convert to grayscale
+        - Apply threshold to find dark regions
+        - Find contours in thresholded image
+        - Filter for window-like shapes:
+          * Area > 1000
+          * Aspect ratio between 0.5 and 3.0
+        - Return list of window dictionaries
+        """
+        pass
+    
+    def calculate_confidence_score(self, results):
+        """
+        Calculate overall confidence score (0-100).
+        
+        TODO: Implement scoring algorithm
+        - Award points for:
+          * License plate detection (up to 40 points)
+          * Body type identification (25 points)
+          * Color analysis (20 points)
+          * Window detection (up to 15 points)
+        - Return total score (max 100)
+        """
+        pass
+    
+    def generate_report(self, image_path):
+        """
+        Generate comprehensive feature report.
+        
+        TODO: Implement report generation
+        - Run all detection methods
+        - Calculate confidence score
+        - Format output with clear sections
+        - Return complete results dictionary
+        """
+        pass
+
+def main():
+    """
+    TODO: Implement main function
+    - Parse arguments
+    - Create extractor instance
+    - Run analysis
+    - Save results
+    """
+    pass
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x advanced_features.py
+Student Task: Implement all detection and analysis methods in the AdvancedFeatureExtractor class.
+
+Step 2: Create Vehicle Comparison Tool
+Build a tool to compare multiple vehicles:
+
+cat > vehicle_comparison.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Vehicle Feature Comparison Tool
+"""
+
+import json
+import os
+
+class VehicleComparison:
+    def __init__(self):
+        self.vehicles = {}
+    
+    def load_analysis(self, json_file, vehicle_name=None):
+        """
+        Load vehicle analysis from JSON file.
+        
+        TODO: Implement JSON loading
+        - Open and parse JSON file
+        - Store in self.vehicles dictionary
+        - Use filename as key if name not provided
+        - Return success/failure boolean
+        """
+        pass
+    
+    def compare_body_types(self):
+        """
+        Compare body types across all loaded vehicles.
+        
+        TODO: Implement comparison
+        - Iterate through all vehicles
+        - Extract body type information
+        - Format and print comparison table
+        """
+        pass
+    
+    def compare_colors(self):
+        """
+        Compare color features across vehicles.
+        
+        TODO: Implement color comparison
+        - Extract color data from each vehicle
+        - Display primary colors and RGB values
+        - Show brightness levels
+        """
+        pass
+    
+    def compare_confidence_scores(self):
+        """
+        Compare confidence scores across vehicles.
+        
+        TODO: Implement score comparison
+        - Extract confidence scores
+        - Sort vehicles by score
+        - Display ranked comparison
+        """
+        pass
+    
+    def generate_comparison_report(self):
+        """
+        Generate complete comparison report.
+        
+        TODO: Implement report generation
+        - Call all comparison methods
+        - Create summary statistics
+        - Identify similarities and differences
+        """
+        pass
+
+def main():
+    """
+    TODO: Implement main function
+    - Accept multiple JSON files as arguments
+    - Load all analyses
+    - Generate comparison report
+    """
+    pass
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x vehicle_comparison.py
+Student Task: Complete the comparison tool to analyze multiple vehicles simultaneously.
+
+Step 3: Test Advanced Features
+Test your advanced feature extraction:
+
+# Run advanced analysis
+python3 advanced_features.py test_images/sedan.jpg --output sedan_advanced.json
+
+# Analyze multiple vehicles
+python3 advanced_features.py test_images/suv.jpg --output suv_advanced.json
+python3 advanced_features.py test_images/truck.jpg --output truck_advanced.json
+
+# Compare vehicles
+python3 vehicle_comparison.py sedan_advanced.json suv_advanced.json truck_advanced.json
+Task 4: Create Investigation Workflow
+Step 1: Build Automated Analysis Pipeline
+Create a script to automate the entire analysis workflow:
+
+cat > analyze_batch.sh << 'EOF'
+#!/bin/bash
+# Batch Vehicle Analysis Script
+
+# TODO: Implement batch processing
+# - Accept directory of images as argument
+# - Loop through all images
+# - Run both basic and advanced analysis
+# - Generate individual reports
+# - Create summary comparison report
+# - Save all results to output directory
+
+IMAGES_DIR=$1
+OUTPUT_DIR="analysis_results_$(date +%Y%m%d_%H%M%S)"
+
+# TODO: Validate input directory exists
+# TODO: Create output directory
+# TODO: Process each image
+# TODO: Generate summary report
+
+echo "Batch analysis complete. Results in: $OUTPUT_DIR"
+EOF
+
+chmod +x analyze_batch.sh
+Student Task: Complete the batch processing script to analyze multiple images automatically.
+
+Step 2: Create Investigation Report Template
+Generate a formatted investigation report:
+
+cat > generate_report.py << 'EOF'
+#!/usr/bin/env python3
+"""
+Investigation Report Generator
+"""
+
+import json
+from datetime import datetime
+
+class ReportGenerator:
+    def __init__(self, analysis_file):
+        """
+        TODO: Initialize with analysis JSON file
+        - Load analysis data
+        - Set report metadata
+        """
+        pass
+    
+    def generate_executive_summary(self):
+        """
+        TODO: Create executive summary section
+        - Vehicle type and confidence
+        - Key identifying features
+        - Color and body characteristics
+        """
+        pass
+    
+    def generate_technical_details(self):
+        """
+        TODO: Create technical details section
+        - Image properties
+        - EXIF metadata
+        - Feature detection results
+        - Color analysis data
+        """
+        pass
+    
+    def generate_recommendations(self):
+        """
+        TODO: Create recommendations section
+        - Suggest additional analysis steps
+        - Identify areas needing verification
+        - Recommend follow-up actions
+        """
+        pass
+    
+    def export_html_report(self, output_file):
+        """
+        TODO: Export report as HTML
+        - Create HTML structure
+        - Include all sections
+        - Add styling
+        - Save to file
+        """
+        pass
+    
+    def export_pdf_report(self, output_file):
+        """
+        TODO: Export report as PDF (optional)
+        - Convert HTML to PDF
+        - Include images
+        - Format for printing
+        """
+        pass
+
+def main():
+    """
+    TODO: Implement main function
+    - Parse arguments
+    - Create report generator
+    - Generate and export report
+    """
+    pass
+
+if __name__ == "__main__":
+    main()
+EOF
+
+chmod +x generate_report.py
+Student Task: Implement the report generator to create professional investigation reports.
+
+Expected Outcomes
+Upon completing this lab, students should have:
+
+Functional vehicle analysis tools that extract features from images
+Understanding of computer vision techniques for vehicle identification
+Working knowledge of OSINT methodologies applied to vehicle investigation
+Automated workflows for batch processing and reporting
+Practical experience with Python, OpenCV, and image analysis
+Sample Output Structure
+Your analysis should produce:
+
+vehicle_analysis/
+├── vehicle_identifier.py       # Basic analysis tool
+├── advanced_features.py        # Advanced feature extraction
+├── vehicle_comparison.py       # Comparison tool
+├── generate_report.py          # Report generator
+├── analyze_batch.sh           # Batch processing script
+├── test_images/               # Sample vehicle images
+└── results/                   # Analysis outputs
+    ├── sedan_analysis.json
+    ├── suv_analysis.json
+    ├── comparison_report.txt
+    └── investigation_report.html
+Troubleshooting Tips
+Issue: OpenCV Import Errors
+Solution: Reinstall OpenCV with proper dependencies
+
+pip3 uninstall opencv-python
+pip3 install opencv-python-headless
+Issue: No Features Detected
+Possible causes:
+
+Image quality too low
+Insufficient contrast
+Wrong image format
+Solution: Adjust detection thresholds and try different preprocessing techniques
+
+Issue: EXIF Data Not Found
+Explanation: Not all images contain EXIF metadata. Test images may lack this data.
+
+Solution: Use real photographs from cameras or smartphones for EXIF analysis
+
+Issue: Confidence Scores Always Low
+Solution: Review your scoring algorithm and ensure all detection methods are properly implemented
+
+Conclusion
+This lab introduced vehicle image analysis using computer vision and OSINT techniques. You learned to:
+
+Extract metadata and features from vehicle images
+Implement detection algorithms for vehicle characteristics
+Build automated analysis workflows
+Generate professional investigation reports
+Key Takeaways:
+
+Computer vision enables automated vehicle identification
+Multiple analysis techniques provide comprehensive results
+OSINT methodologies enhance investigation capabilities
+Proper documentation is essential for intelligence work
+Next Steps:
+
+Experiment with real vehicle photographs
+Integrate machine learning models for improved accuracy
+Explore license plate recognition (OCR) techniques
+Study advanced OSINT tools and databases
+Remember: Vehicle identification is a powerful OSINT technique. Always use these skills ethically and legally, respecting privacy and applicable laws.
